@@ -1,0 +1,75 @@
+<!-- index.html (FULL) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Safety & Crime</title>
+
+  <!-- Leaflet CSS (no integrity to avoid blocking) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Safety & Crime Lookup</h1>
+
+    <p class="subtitle">
+      Enter your ZIP code to view safety statistics.
+      <span class="info-tip" tabindex="0"
+        data-tip="Future data will be based on County-level FBI reporting (not exact ZIP-level).">
+        ⓘ
+      </span>
+    </p>
+
+    <div class="search-bar">
+      <label class="compare-toggle">
+        <input type="checkbox" id="compareModeCheckbox">
+        Compare Mode
+      </label>
+
+      <div id="history" class="history"></div>
+      <button id="clearHistoryBtn" class="clear-btn" type="button">Clear History</button>
+
+      <input
+        type="text"
+        id="zipInput"
+        placeholder="Enter ZIP code"
+        maxlength="5"
+      />
+      <button type="button" id="searchBtn">Search</button>
+    </div>
+
+    <button id="clearBtn" class="clear-btn" type="button">Clear All</button>
+
+    <div id="result" class="result"></div>
+
+    <!-- Map -->
+    <div id="mapContainer" class="map-container" aria-label="Map area">
+      <!-- Top-right control bar for custom buttons -->
+      <div class="map-controls" aria-label="Map controls">
+        <button id="toggleLegendBtn" class="map-btn" type="button" title="Toggle legend">Legend</button>
+        <button id="fullscreenMapBtn" class="map-btn" type="button" title="Fullscreen map">Fullscreen</button>
+        <button id="centerMapBtn" class="map-btn" type="button" title="Center map on the US">Center</button>
+      </div>
+
+      <!-- Legend (top-left, offset from Leaflet zoom) -->
+      <div id="mapLegend" class="map-legend" aria-label="Safety color legend">
+        <span class="leg-item"><span class="dot dot-green"></span> Safer</span>
+        <span class="leg-item"><span class="dot dot-yellow"></span> Medium</span>
+        <span class="leg-item"><span class="dot dot-red"></span> Higher risk</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" aria-live="polite"></div>
+
+  <!-- Leaflet JS (no integrity to avoid blocking) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <!-- App JS -->
+  <script src="script.js"></script>
+</body>
+</html>
