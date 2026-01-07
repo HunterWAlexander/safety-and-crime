@@ -1,48 +1,49 @@
-// script.js (FULL)
-
 // ---------------------------
-// Constants & Globals
+// Config
 // ---------------------------
 const MAX_HISTORY = 10;
 
-const DEFAULT_MAP_CENTER = [39.5, -98.35];
-const DEFAULT_MAP_ZOOM = 4;
-const FOCUS_ZOOM = 10;
+// ⚠️ MVP: This exposes your key in the browser. Later we’ll proxy via Cloudflare Worker.
+const FBI_BASE = "https://api.usa.gov/crime/fbi/sapi"; // public base used by CDE frontend :contentReference[oaicite:3]{index=3}
 
-// Demo crime data (real crime API later)
-const crimeData = {
-  "90210": { city: "Beverly Hills, CA", violentCrime: "Low", propertyCrime: "Medium", safetyScore: 82 },
-  "10001": { city: "New York, NY", violentCrime: "Medium", propertyCrime: "High", safetyScore: 65 },
-  "60614": { city: "Chicago, IL", violentCrime: "Medium", propertyCrime: "Medium", safetyScore: 70 }
-};
-
+// ---------------------------
+// Globals
+// ---------------------------
 const searchedZips = [];
 let compareMode = false;
 
-// Leaflet
-let map = null;
-const zipMarkers = new Map(); // zip -> marker
-
-// DOM refs
-let zipInput, resultDiv, historyDiv, clearBtn, clearHistoryBtn, compareCheckbox, searchBtn;
-let mapContainer, centerMapBtn, toggleLegendBtn, fullscreenMapBtn, mapLegend;
+let map;                 // Leaflet map instance
+let markersLayer;        // Layer group for markers
+const markerByZip = {};  // Track markers so we can focus them later
 
 // ---------------------------
 // Helpers
 // ---------------------------
 function crimeIcon(level) {
-  const v = String(level).toLowerCase();
+  const v = String(level || "").toLowerCase();
   if (v === "low") return "🟢";
   if (v === "medium") return "🟡";
   return "🔴";
 }
 
-function safetyColor(score) {
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function safetyColorFromScore(score) {
   if (score >= 80) return "#00b96b";
   if (score >= 60) return "#f1c40f";
   return "#e74c3c";
 }
 
+function formatNumber(n) {
+  if (n === null || n === undefined || Number.isNaN(n)) return "—";
+  return Number(n).toLocaleString();
+}
+
+// ---------------------------
+// History (localStorage)
+// ---------------------------
 function getHistory() {
   return JSON.parse(localStorage.getItem("zipHistory")) || [];
 }
@@ -57,390 +58,408 @@ function saveToHistory(zip) {
 }
 
 function renderHistory() {
+  const historyDiv = document.getElementById("history");
+  if (!historyDiv) return;
+
   const history = getHistory();
   historyDiv.innerHTML = "";
 
   history.forEach(zip => {
     const btn = document.createElement("button");
-    btn.className = "history-pill";
     btn.textContent = zip;
-    btn.title = `Search ${zip}`;
+    btn.className = "history-pill";
     btn.onclick = () => searchZip(zip);
     historyDiv.appendChild(btn);
   });
 }
 
-function clearAllCards() {
-  resultDiv.innerHTML = "";
-  searchedZips.length = 0;
-}
-
-function highlightTopCardIfCompare() {
-  if (!compareMode) return;
-
-  const cards = Array.from(resultDiv.querySelectorAll(".result-card"));
-  cards.forEach(c => c.classList.remove("highlight-card"));
-  if (cards.length === 0) return;
-
-  cards.sort((a, b) => {
-    const aScore = parseInt(a.querySelector(".safety-bar")?.dataset?.width || "0", 10);
-    const bScore = parseInt(b.querySelector(".safety-bar")?.dataset?.width || "0", 10);
-    return bScore - aScore;
-  });
-
-  cards.forEach(c => resultDiv.appendChild(c));
-  cards[0].classList.add("highlight-card");
-}
-
 // ---------------------------
-// Toast
+// ZIP -> location (Zippopotam.us) :contentReference[oaicite:4]{index=4}
 // ---------------------------
-let toastTimer = null;
-function toast(msg) {
-  const el = document.getElementById("toast");
-  if (!el) return;
+async function lookupZip(zip) {
+  const url = `https://api.zippopotam.us/us/${encodeURIComponent(zip)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("ZIP lookup failed");
 
-  el.textContent = msg;
-  el.classList.add("show");
+  const data = await res.json();
+  const place = data.places?.[0];
+  if (!place) throw new Error("ZIP lookup returned no places");
 
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
+  return {
+    zip,
+    city: place["place name"],
+    state: place["state abbreviation"],
+    stateName: place["state"],
+    lat: Number(place["latitude"]),
+    lng: Number(place["longitude"]),
+  };
 }
 
 // ---------------------------
-// ZIP -> real coordinates (free)
-// Zippopotam.us (no key)
+// FBI: State Estimates (free w/ key) :contentReference[oaicite:5]{index=5}
 // ---------------------------
-async function lookupZipGeo(zip) {
-  const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
-  if (!res.ok) return null;
+async function fetchFbiStateEstimates(stateAbbr) {
+  if (!FBI_API_KEY || FBI_API_KEY.includes("PASTE_")) {
+    throw new Error("Missing FBI API key");
+  }
+
+  const endYear = new Date().getFullYear() - 1;      // last completed year
+  const startYear = endYear - 4;                     // last 5 years
+  const url =
+    `${FBI_BASE}/api/estimates/states/${encodeURIComponent(stateAbbr)}/${startYear}/${endYear}?API_KEY=${encodeURIComponent(FBI_API_KEY)}`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("FBI estimates fetch failed");
 
   const json = await res.json();
-  const place = json?.places?.[0];
-  if (!place) return null;
+  const results = json.results || [];
 
-  const lat = parseFloat(place.latitude);
-  const lon = parseFloat(place.longitude);
-  const city = place["place name"];
-  const state = place["state abbreviation"];
+  // Pick the latest year entry available
+  results.sort((a, b) => (b.year || 0) - (a.year || 0));
+  const latest = results[0];
+  if (!latest) throw new Error("No FBI results");
 
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  // The estimates endpoint typically includes rates per 100k for violent/property
+  // Field names can vary; we try common ones.
+  const violentRate =
+    latest.violent_crime_rate ??
+    latest.violent_crime?.rate ??
+    latest.violent_rate ??
+    null;
 
-  return { lat, lon, city, state };
+  const propertyRate =
+    latest.property_crime_rate ??
+    latest.property_crime?.rate ??
+    latest.property_rate ??
+    null;
+
+  const year = latest.year ?? endYear;
+
+  return {
+    year,
+    violentRate: violentRate !== null ? Number(violentRate) : null,
+    propertyRate: propertyRate !== null ? Number(propertyRate) : null,
+    raw: latest
+  };
+}
+
+// Convert rates -> friendly Low/Medium/High (simple MVP thresholds)
+function rateToLevel(rate, type) {
+  if (rate === null || Number.isNaN(rate)) return "Unknown";
+  if (type === "violent") {
+    if (rate < 250) return "Low";
+    if (rate < 450) return "Medium";
+    return "High";
+  }
+  // property
+  if (rate < 1800) return "Low";
+  if (rate < 3200) return "Medium";
+  return "High";
+}
+
+// Convert violent/property rates -> 0..100 safety score (heuristic MVP)
+function ratesToSafetyScore(violentRate, propertyRate) {
+  // Normalize into 0..1 “risk” (bigger rate => bigger risk)
+  const v = violentRate === null ? 0.5 : clamp(violentRate / 700, 0, 1);
+  const p = propertyRate === null ? 0.5 : clamp(propertyRate / 5000, 0, 1);
+
+  // Weighted: violent matters more
+  const risk = (v * 0.6) + (p * 0.4);
+
+  // Safety = inverse risk
+  return Math.round(100 - (risk * 100));
 }
 
 // ---------------------------
 // Map
 // ---------------------------
-function mapPulse() {
-  if (!mapContainer) return;
-  mapContainer.classList.remove("map-pulse");
-  void mapContainer.offsetWidth; // force reflow
-  mapContainer.classList.add("map-pulse");
-  setTimeout(() => mapContainer.classList.remove("map-pulse"), 650);
-}
-
 function initMap() {
-  if (map) return;
+  const mapEl = document.getElementById("mapContainer");
+  if (!mapEl) return;
 
   if (typeof L === "undefined") {
-    console.error("Leaflet not loaded. Check Leaflet <script> tags in index.html.");
-    toast("Map library failed to load.");
+    console.warn("Leaflet not loaded. Check Leaflet <script> tags in index.html.");
     return;
   }
 
-  map = L.map("mapContainer", {
-    zoomControl: true,
-    scrollWheelZoom: false
-  }).setView(DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM);
+  map = L.map("mapContainer").setView([37.7749, -95.7129], 4);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors",
     maxZoom: 19,
-    attribution: "© OpenStreetMap contributors"
   }).addTo(map);
 
-  map.on("click", () => toast("Tip: Click a card or “View on map” to focus a ZIP."));
-
-  setTimeout(() => map.invalidateSize(), 150);
+  markersLayer = L.layerGroup().addTo(map);
 }
 
-function centerMap() {
-  initMap();
-  if (!map) return;
+function upsertZipMarker(zip, lat, lng, color, popupHtml) {
+  if (!map || !markersLayer) return;
 
-  map.flyTo(DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, {
-    animate: true,
-    duration: 0.85,
-    easeLinearity: 0.25
-  });
-  mapPulse();
-}
-
-function addOrFocusZipMarker(zip, lat, lon, popupHtml, colorHex = "#00b96b") {
-  if (!map) return;
-
-  if (zipMarkers.has(zip)) {
-    const mk = zipMarkers.get(zip);
-    map.flyTo([lat, lon], FOCUS_ZOOM, { animate: true, duration: 0.85, easeLinearity: 0.25 });
-    mk.openPopup();
-    mapPulse();
-    return;
+  // remove old marker
+  if (markerByZip[zip]) {
+    markersLayer.removeLayer(markerByZip[zip]);
   }
 
-  const marker = L.circleMarker([lat, lon], {
-    radius: 9,
-    weight: 2,
-    color: colorHex,
-    fillColor: colorHex,
-    fillOpacity: 0.7
-  }).addTo(map);
+  const marker = L.circleMarker([lat, lng], {
+    radius: 10,
+    color,
+    fillColor: color,
+    fillOpacity: 0.8,
+    weight: 2
+  }).addTo(markersLayer);
 
   marker.bindPopup(popupHtml);
-  zipMarkers.set(zip, marker);
-
-  map.flyTo([lat, lon], FOCUS_ZOOM, { animate: true, duration: 0.85, easeLinearity: 0.25 });
-  marker.openPopup();
-  mapPulse();
+  markerByZip[zip] = marker;
 }
 
-async function focusZipOnMap(zip, labelForPopup = null, scoreForColor = null) {
-  initMap();
+function focusZipOnMap(zip, lat, lng) {
   if (!map) return;
+  map.flyTo([lat, lng], 9, { duration: 0.8 });
 
-  const geo = await lookupZipGeo(zip);
-  if (!geo) {
-    toast("Couldn’t locate that ZIP to focus the map.");
-    return;
+  const marker = markerByZip[zip];
+  if (marker) {
+    setTimeout(() => marker.openPopup(), 250);
+  }
+}
+
+// ---------------------------
+// Card UI
+// ---------------------------
+function buildCardHTML(payload) {
+  const {
+    zip,
+    cityLine,
+    violentLevel,
+    propertyLevel,
+    safetyScore,
+    safetyColor,
+    sourceLine,
+    violentRate,
+    propertyRate,
+    year
+  } = payload;
+
+  return `
+    <div class="card-topline">
+      <h3>${cityLine}</h3>
+      <a href="#" class="view-on-map" data-zip="${zip}">📍 View on map</a>
+    </div>
+
+    <ul>
+      <li><strong>Violent Crime:</strong> ${crimeIcon(violentLevel)} ${violentLevel}
+        <span class="muted">(rate: ${formatNumber(violentRate)} /100k)</span>
+      </li>
+      <li><strong>Property Crime:</strong> ${crimeIcon(propertyLevel)} ${propertyLevel}
+        <span class="muted">(rate: ${formatNumber(propertyRate)} /100k)</span>
+      </li>
+      <li><strong>Safety Score:</strong> ${safetyScore}/100</li>
+    </ul>
+
+    <div class="safety-bar-container">
+      <div class="safety-bar" data-width="${safetyScore}" style="background-color:${safetyColor}"></div>
+    </div>
+
+    <div class="card-foot muted">
+      ${sourceLine} ${year ? `• ${year}` : ""}
+    </div>
+  `;
+}
+
+function attachCardInteractions(card, zip, lat, lng) {
+  // Clicking card focuses map
+  card.addEventListener("click", (e) => {
+    // Allow remove button / link to handle themselves
+    const t = e.target;
+    if (t && (t.classList.contains("remove-card-btn") || t.classList.contains("view-on-map"))) return;
+    focusZipOnMap(zip, lat, lng);
+  });
+
+  // "View on map" link
+  const viewLink = card.querySelector(".view-on-map");
+  if (viewLink) {
+    viewLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      focusZipOnMap(zip, lat, lng);
+    });
   }
 
-  const label = labelForPopup || `${geo.city}, ${geo.state}`;
-  const score = Number(scoreForColor);
-  const colorHex = Number.isFinite(score) ? safetyColor(score) : "#00b96b";
-
-  addOrFocusZipMarker(
-    zip,
-    geo.lat,
-    geo.lon,
-    `<strong>${label}</strong><br/>ZIP: ${zip}`,
-    colorHex
-  );
+  // Keyboard access
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-label", `View ${zip} on map`);
+  card.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      focusZipOnMap(zip, lat, lng);
+    }
+  });
 }
 
 // ---------------------------
 // Main Search
 // ---------------------------
 async function searchZip(forcedZip = null) {
-  const zip = (forcedZip || zipInput.value || "").trim();
+  const zip = forcedZip || document.getElementById("zipInput")?.value?.trim();
+  const resultDiv = document.getElementById("result");
+  if (!zip || !resultDiv) return;
 
+  // Validate ZIP
   if (zip.length !== 5 || isNaN(zip)) {
-    toast("Enter a valid 5-digit ZIP.");
+    alert("Please enter a valid 5-digit ZIP code.");
     return;
   }
 
-  saveToHistory(zip);
-
+  // Block duplicates only in normal mode
   if (!compareMode && searchedZips.includes(zip)) {
-    toast("That ZIP is already displayed.");
+    alert("ZIP code already displayed.");
     return;
   }
+
+  // Track displayed zip (once)
   if (!searchedZips.includes(zip)) searchedZips.push(zip);
 
-  const geo = await lookupZipGeo(zip);
-  if (!geo) {
-    toast("Couldn’t locate that ZIP (geo lookup failed).");
-    return;
-  }
+  // Clear cards in normal mode
+  if (!compareMode) resultDiv.innerHTML = "";
 
-  const data = crimeData[zip] || {
-    city: `${geo.city}, ${geo.state}`,
-    violentCrime: "—",
-    propertyCrime: "—",
-    safetyScore: 0
-  };
-
-  const scoreNum = Number(data.safetyScore || 0);
-  const barColor = safetyColor(scoreNum);
-
+  // Make a temporary loading card
   const card = document.createElement("div");
   card.className = "result-card";
-
-  card.innerHTML = `
-    <div class="card-top">
-      <h3>${data.city}</h3>
-      <div class="zip-badge">${zip}</div>
-    </div>
-
-    <ul>
-      <li><strong>Violent Crime:</strong> ${data.violentCrime === "—" ? "—" : `${crimeIcon(data.violentCrime)} ${data.violentCrime}`}</li>
-      <li><strong>Property Crime:</strong> ${data.propertyCrime === "—" ? "—" : `${crimeIcon(data.propertyCrime)} ${data.propertyCrime}`}</li>
-      <li><strong>Safety Score:</strong> ${data.safetyScore ? `${data.safetyScore}/100` : "—"}</li>
-      <li class="muted"><strong>Geo:</strong> ${geo.city}, ${geo.state}</li>
-    </ul>
-
-    <a href="#" class="view-map-link" title="Centers map on this ZIP" aria-label="Centers map on this ZIP">📍 View on map</a>
-
-    <div class="safety-bar-container">
-      <div class="safety-bar" data-width="${scoreNum}" style="background-color:${barColor}"></div>
-    </div>
-  `;
-
   if (compareMode) card.classList.add("compare-card");
-
-  card.tabIndex = 0;
-  card.setAttribute("role", "button");
-  card.setAttribute("aria-label", `View ${zip} on map`);
-  card.style.cursor = "pointer";
-
-  card.addEventListener("click", () => focusZipOnMap(zip, data.city, scoreNum));
-
-  card.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      focusZipOnMap(zip, data.city, scoreNum);
-    }
-  });
-
-  const viewLink = card.querySelector(".view-map-link");
-  viewLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    focusZipOnMap(zip, data.city, scoreNum);
-  });
-
-  if (compareMode) {
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.textContent = "x";
-    removeBtn.className = "remove-card-btn";
-    removeBtn.title = "Remove this card";
-    removeBtn.onclick = (e) => {
-      e.stopPropagation();
-      card.remove();
-      const idx = searchedZips.indexOf(zip);
-      if (idx > -1) searchedZips.splice(idx, 1);
-      highlightTopCardIfCompare();
-    };
-    card.appendChild(removeBtn);
-  }
-
-  if (!compareMode) resultDiv.innerHTML = "";
+  card.innerHTML = `<h3>Loading ${zip}…</h3><p class="muted">Fetching ZIP + FBI data…</p>`;
   resultDiv.appendChild(card);
+  setTimeout(() => card.classList.add("show"), 30);
 
-  const delay = compareMode ? (resultDiv.children.length - 1) * 70 : 0;
-  setTimeout(() => card.classList.add("show"), 30 + delay);
+  try {
+    // ZIP -> location
+    const zipInfo = await lookupZip(zip);
 
-  setTimeout(() => {
-    const bar = card.querySelector(".safety-bar");
-    if (bar) bar.style.width = (bar.dataset.width || "0") + "%";
-  }, 120 + delay);
+    // FBI state estimates
+    const est = await fetchFbiStateEstimates(zipInfo.state);
 
-  highlightTopCardIfCompare();
+    const violentLevel = rateToLevel(est.violentRate, "violent");
+    const propertyLevel = rateToLevel(est.propertyRate, "property");
+    const safetyScore = ratesToSafetyScore(est.violentRate, est.propertyRate);
+    const safetyColor = safetyColorFromScore(safetyScore);
 
-  initMap();
-  if (map) {
-    addOrFocusZipMarker(
+    const cityLine = `${zipInfo.city}, ${zipInfo.state} (${zip})`;
+    const sourceLine = `Source: FBI Crime Data API (state estimates)`;
+
+    // Fill card with real data
+    card.innerHTML = buildCardHTML({
       zip,
-      geo.lat,
-      geo.lon,
-      `<strong>${data.city}</strong><br/>ZIP: ${zip}<br/>Safety Score: ${data.safetyScore ? `${data.safetyScore}/100` : "—"}`,
-      barColor
-    );
+      cityLine,
+      violentLevel,
+      propertyLevel,
+      safetyScore,
+      safetyColor,
+      sourceLine,
+      violentRate: est.violentRate,
+      propertyRate: est.propertyRate,
+      year: est.year
+    });
+
+    // Remove button in compare mode
+    if (compareMode) {
+      const removeBtn = document.createElement("button");
+      removeBtn.textContent = "x";
+      removeBtn.className = "remove-card-btn";
+      removeBtn.title = "Remove card";
+      removeBtn.onclick = (e) => {
+        e.stopPropagation();
+        resultDiv.removeChild(card);
+        const idx = searchedZips.indexOf(zip);
+        if (idx > -1) searchedZips.splice(idx, 1);
+
+        // remove marker too
+        if (markerByZip[zip] && markersLayer) {
+          markersLayer.removeLayer(markerByZip[zip]);
+          delete markerByZip[zip];
+        }
+      };
+      card.appendChild(removeBtn);
+    }
+
+    // Animate safety bar
+    setTimeout(() => {
+      const bar = card.querySelector(".safety-bar");
+      if (bar) bar.style.width = bar.dataset.width + "%";
+    }, 80);
+
+    // Map marker + popup
+    const popupHtml = `
+      <strong>${zipInfo.city}, ${zipInfo.state} (${zip})</strong><br>
+      Safety Score: ${safetyScore}/100<br>
+      Violent rate: ${formatNumber(est.violentRate)} /100k<br>
+      Property rate: ${formatNumber(est.propertyRate)} /100k
+    `;
+
+    upsertZipMarker(zip, zipInfo.lat, zipInfo.lng, safetyColor, popupHtml);
+
+    // Make card clickable to focus map
+    attachCardInteractions(card, zip, zipInfo.lat, zipInfo.lng);
+
+    // Sort + highlight in compare mode
+    if (compareMode) {
+      const cards = Array.from(resultDiv.children);
+      cards.sort((a, b) => {
+        const aScore = parseInt(a.querySelector(".safety-bar")?.dataset?.width || "0", 10);
+        const bScore = parseInt(b.querySelector(".safety-bar")?.dataset?.width || "0", 10);
+        return bScore - aScore;
+      });
+
+      cards.forEach(c => c.classList.remove("highlight-card"));
+      if (cards.length > 0) cards[0].classList.add("highlight-card");
+
+      cards.forEach(c => resultDiv.appendChild(c));
+    }
+
+    // Save history
+    saveToHistory(zip);
+
+  } catch (err) {
+    console.error(err);
+    card.innerHTML = `
+      <h3>${zip} — Couldn’t load</h3>
+      <p class="muted">Try again, or check console for details.</p>
+    `;
+  } finally {
+    const input = document.getElementById("zipInput");
+    if (input) input.value = "";
   }
-
-  zipInput.value = "";
 }
 
 // ---------------------------
-// Fullscreen toggle
-// ---------------------------
-function toggleFullscreen() {
-  mapContainer.classList.toggle("is-fullscreen");
-  const isFs = mapContainer.classList.contains("is-fullscreen");
-  fullscreenMapBtn.textContent = isFs ? "Exit Fullscreen" : "Fullscreen";
-  setTimeout(() => { if (map) map.invalidateSize(); }, 150);
-}
-
-// ---------------------------
-// Setup
+// Page Load Setup
 // ---------------------------
 document.addEventListener("DOMContentLoaded", () => {
-  zipInput = document.getElementById("zipInput");
-  resultDiv = document.getElementById("result");
-  historyDiv = document.getElementById("history");
-  clearBtn = document.getElementById("clearBtn");
-  clearHistoryBtn = document.getElementById("clearHistoryBtn");
-  compareCheckbox = document.getElementById("compareModeCheckbox");
-  searchBtn = document.getElementById("searchBtn");
-
-  mapContainer = document.getElementById("mapContainer");
-  centerMapBtn = document.getElementById("centerMapBtn");
-  toggleLegendBtn = document.getElementById("toggleLegendBtn");
-  fullscreenMapBtn = document.getElementById("fullscreenMapBtn");
-  mapLegend = document.getElementById("mapLegend");
-
   renderHistory();
   initMap();
 
-  searchBtn.addEventListener("click", () => searchZip());
+  const clearBtn = document.getElementById("clearBtn");
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      document.getElementById("result").innerHTML = "";
+      searchedZips.length = 0;
 
-  zipInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") searchZip();
-  });
+      // clear markers
+      if (markersLayer) markersLayer.clearLayers();
+      for (const k of Object.keys(markerByZip)) delete markerByZip[k];
+    });
+  }
 
-  clearBtn.addEventListener("click", () => {
-    clearAllCards();
-    toast("Cleared cards.");
-  });
+  const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+  if (clearHistoryBtn) {
+    clearHistoryBtn.addEventListener("click", () => {
+      localStorage.removeItem("zipHistory");
+      renderHistory();
+    });
+  }
 
-  clearHistoryBtn.addEventListener("click", () => {
-    localStorage.removeItem("zipHistory");
-    renderHistory();
-    toast("Cleared history.");
-  });
-
-  compareCheckbox.addEventListener("change", (e) => {
-    compareMode = e.target.checked;
-    resultDiv.classList.toggle("compare-layout", compareMode);
-
-    if (!compareMode) {
-      const cards = Array.from(resultDiv.querySelectorAll(".result-card"));
-      if (cards.length > 1) {
-        cards.slice(0, -1).forEach(c => c.remove());
-        searchedZips.splice(0, searchedZips.length - 1);
-      }
-    } else {
-      highlightTopCardIfCompare();
-    }
-    toast(compareMode ? "Compare Mode ON" : "Compare Mode OFF");
-  });
-
-  mapContainer.addEventListener("mouseenter", () => mapContainer.classList.add("map-hover"));
-  mapContainer.addEventListener("mouseleave", () => mapContainer.classList.remove("map-hover"));
-
-  centerMapBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    centerMap();
-  });
-
-  toggleLegendBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    mapLegend.classList.toggle("collapsed");
-    toast(mapLegend.classList.contains("collapsed") ? "Legend hidden" : "Legend shown");
-  });
-
-  fullscreenMapBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleFullscreen();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && mapContainer.classList.contains("is-fullscreen")) {
-      mapContainer.classList.remove("is-fullscreen");
-      fullscreenMapBtn.textContent = "Fullscreen";
-      setTimeout(() => { if (map) map.invalidateSize(); }, 150);
-    }
-  });
+  const compareCheckbox = document.getElementById("compareModeCheckbox");
+  if (compareCheckbox) {
+    compareCheckbox.addEventListener("change", (e) => {
+      compareMode = e.target.checked;
+      document.getElementById("result").classList.toggle("compare-layout", compareMode);
+    });
+  }
 });
