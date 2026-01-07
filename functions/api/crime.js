@@ -17,7 +17,6 @@ export async function onRequest(context) {
       );
     }
 
-    // TEMP TEST RESPONSE (to confirm routing works)
     return new Response(
       JSON.stringify({
         ok: true,
