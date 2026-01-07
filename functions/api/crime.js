@@ -3,5 +3,5 @@ index.html
 script.js
 styles.css
 functions/
-   api/
-      crime.js
+    api/
+       crime.js   
