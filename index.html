@@ -10,11 +10,14 @@
   <!-- Leaflet CSS (no integrity to avoid blocking) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 
-  <link rel="stylesheet" href="styles.css">
+  <!-- ✅ FIX: absolute path (prevents /api/styles.css) -->
+  <link rel="stylesheet" href="/styles.css">
+
   <meta name="description" content="Search ZIP codes to view safety and crime statistics, compare areas, and explore crime data visually.">
-<meta name="keywords" content="crime data, safety score, ZIP code crime, neighborhood safety">
-<meta name="author" content="Safety & Crime">
+  <meta name="keywords" content="crime data, safety score, ZIP code crime, neighborhood safety">
+  <meta name="author" content="Safety & Crime">
 </head>
+
 <body>
   <div class="container">
     <h1>Safety & Crime Lookup</h1>
@@ -51,14 +54,12 @@
 
     <!-- Map -->
     <div id="mapContainer" class="map-container" aria-label="Map area">
-      <!-- Top-right control bar for custom buttons -->
       <div class="map-controls" aria-label="Map controls">
         <button id="toggleLegendBtn" class="map-btn" type="button" title="Toggle legend">Legend</button>
         <button id="fullscreenMapBtn" class="map-btn" type="button" title="Fullscreen map">Fullscreen</button>
         <button id="centerMapBtn" class="map-btn" type="button" title="Center map on the US">Center</button>
       </div>
 
-      <!-- Legend (top-left, offset from Leaflet zoom) -->
       <div id="mapLegend" class="map-legend" aria-label="Safety color legend">
         <span class="leg-item"><span class="dot dot-green"></span> Safer</span>
         <span class="leg-item"><span class="dot dot-yellow"></span> Medium</span>
@@ -67,13 +68,12 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" aria-live="polite"></div>
 
-  <!-- Leaflet JS (no integrity to avoid blocking) -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" defer></script>
 
-  <!-- App JS -->
-  <script src="script.js"></script>
+  <!-- ✅ FIX: absolute path prevents /api/script.js -->
+  <script src="/script.js" defer></script>
 </body>
 </html>

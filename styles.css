@@ -235,6 +235,7 @@ button:hover {
   font-size: 14px;
 }
 
+/* Your original card header style */
 .card-top {
   display: flex;
   align-items: flex-start;
@@ -258,7 +259,7 @@ button:hover {
   font-weight: 700;
 }
 
-/* View on map link */
+/* View on map link (original) */
 .view-map-link {
   display: inline-block;
   margin-top: 10px;
@@ -451,7 +452,6 @@ button:hover {
 
   .map-container { height: 320px; }
 
-  /* smaller map buttons so they don't crowd zoom */
   .map-controls{
     top: 10px;
     right: 10px;
@@ -473,3 +473,33 @@ button:hover {
     flex-wrap: wrap;
   }
 }
+
+/* -----------------------
+   ✅ Compatibility fixes for your JS-generated classes
+   Your JS uses .card-topline + .view-on-map
+----------------------- */
+.card-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.card-topline h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+/* Your JS uses: <a class="view-on-map"> */
+.view-on-map {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.view-on-map:hover { text-decoration: underline; }
