@@ -1,10 +1,9 @@
-export async function onRequest() {
+export function onRequest() {
   return new Response("PING OK", {
     status: 200,
     headers: {
-      "Content-Type": "text/plain",
-      "Cache-Control": "no-store",
-      "X-PAGES-FUNCTION": "yes"
+      "content-type": "text/plain; charset=utf-8",
+      "cache-control": "no-store"
     }
   });
 }
