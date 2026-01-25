@@ -106,7 +106,7 @@ async function lookupZip(zip) {
 // ---------------------------
 async function fetchCrimeFromBackend(zip) {
   // ✅ absolute path prevents /crime/api/... issues
-  const url = `/api/crime?zip=${encodeURIComponent(zip)}&t=${Date.now()}`;
+  const url = `/_api/crime?zip=${encodeURIComponent(zip)}&t=${Date.now()}`;
 
   const res = await fetch(url, {
     method: "GET",
