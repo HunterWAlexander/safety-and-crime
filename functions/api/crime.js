@@ -1,10 +1,10 @@
 export async function onRequest() {
-  return new Response("FUNCTION HIT v3", {
+  return new Response(JSON.stringify({ ok: true, source: "FUNCTION" }), {
     status: 200,
     headers: {
-      "Content-Type": "text/plain",
+      "Content-Type": "application/json",
       "Cache-Control": "no-store",
-      "X-Debug": "pages-function-v3"
+      "X-FUNCTION-HIT": "yes"
     }
   });
 }
