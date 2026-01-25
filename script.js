@@ -2,6 +2,7 @@
 // Config
 // ---------------------------
 const MAX_HISTORY = 10;
+const WORKER_API_BASE = "https://safety-and-crime-api.hwa95.workers.dev";
 
 // ---------------------------
 // Globals
@@ -20,7 +21,8 @@ function crimeIcon(level) {
   const v = String(level || "").toLowerCase();
   if (v === "low") return "🟢";
   if (v === "medium") return "🟡";
-  return "🔴";
+  if (v === "high") return "🔴";
+  return "⚪";
 }
 
 function clamp(n, min, max) {
@@ -38,19 +40,20 @@ function formatNumber(n) {
   return Number(n).toLocaleString();
 }
 
-function isValidZip(zip) {
-  return /^\d{5}$/.test(zip);
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => t.classList.remove("show"), 2200);
 }
 
 // ---------------------------
 // History (localStorage)
 // ---------------------------
 function getHistory() {
-  try {
-    return JSON.parse(localStorage.getItem("zipHistory")) || [];
-  } catch {
-    return [];
-  }
+  return JSON.parse(localStorage.getItem("zipHistory")) || [];
 }
 
 function saveToHistory(zip) {
@@ -102,35 +105,34 @@ async function lookupZip(zip) {
 }
 
 // ---------------------------
-// Backend API (Cloudflare Pages Function)
+// Worker API: State Estimates (via your Worker)
+// Returns: { year, violentRate, propertyRate }
 // ---------------------------
-async function fetchCrimeFromBackend(zip) {
-  // ✅ absolute path prevents /crime/api/... issues
-  const url = `/_api/crime?zip=${encodeURIComponent(zip)}&t=${Date.now()}`;
+async function fetchFbiStateEstimates(stateAbbr, zip) {
+  const url = `${WORKER_API_BASE}/api/crime?zip=${encodeURIComponent(zip)}&state=${encodeURIComponent(stateAbbr)}`;
 
   const res = await fetch(url, {
-    method: "GET",
-    headers: { "Accept": "application/json" }
+    headers: { "accept": "application/json" }
   });
 
-  const contentType = res.headers.get("content-type") || "";
-  const text = await res.text();
+  const ct = res.headers.get("content-type") || "";
 
-  // If routing breaks, you’ll often get HTML here — show it clearly
   if (!res.ok) {
-    try {
-      const j = JSON.parse(text);
-      throw new Error(j.error || `API error (${res.status})`);
-    } catch {
-      throw new Error(`API error (${res.status}): ${text.slice(0, 120)}`);
-    }
+    const text = await res.text().catch(() => "");
+    throw new Error(`API error ${res.status}: ${text}`);
   }
 
-  if (!contentType.includes("application/json")) {
-    throw new Error("API returned non-JSON (likely HTML). Check routing and _routes.json.");
+  if (!ct.includes("application/json")) {
+    const text = await res.text().catch(() => "");
+    throw new Error("API returned non-JSON (likely HTML). Got: " + text.slice(0, 160));
   }
 
-  return JSON.parse(text);
+  const json = await res.json();
+  return {
+    year: json.year ?? null,
+    violentRate: json.violentRate ?? null,
+    propertyRate: json.propertyRate ?? null
+  };
 }
 
 // Convert rates -> friendly Low/Medium/High (simple MVP thresholds)
@@ -149,9 +151,14 @@ function rateToLevel(rate, type) {
 
 // Convert violent/property rates -> 0..100 safety score (heuristic MVP)
 function ratesToSafetyScore(violentRate, propertyRate) {
+  // Normalize into 0..1 “risk” (bigger rate => bigger risk)
   const v = violentRate === null ? 0.5 : clamp(violentRate / 700, 0, 1);
   const p = propertyRate === null ? 0.5 : clamp(propertyRate / 5000, 0, 1);
+
+  // Weighted: violent matters more
   const risk = (v * 0.6) + (p * 0.4);
+
+  // Safety = inverse risk
   return Math.round(100 - (risk * 100));
 }
 
@@ -163,7 +170,7 @@ function initMap() {
   if (!mapEl) return;
 
   if (typeof L === "undefined") {
-    console.warn("Leaflet not loaded. Check Leaflet <script> tags in index.html.");
+    console.warn("Leaflet not loaded. Check Leaflet <script> tag in index.html.");
     return;
   }
 
@@ -180,6 +187,7 @@ function initMap() {
 function upsertZipMarker(zip, lat, lng, color, popupHtml) {
   if (!map || !markersLayer) return;
 
+  // remove old marker
   if (markerByZip[zip]) {
     markersLayer.removeLayer(markerByZip[zip]);
   }
@@ -201,9 +209,29 @@ function focusZipOnMap(zip, lat, lng) {
   map.flyTo([lat, lng], 9, { duration: 0.8 });
 
   const marker = markerByZip[zip];
-  if (marker) {
-    setTimeout(() => marker.openPopup(), 250);
-  }
+  if (marker) setTimeout(() => marker.openPopup(), 250);
+}
+
+function centerMapUS() {
+  if (!map) return;
+  map.flyTo([37.7749, -95.7129], 4, { duration: 0.8 });
+}
+
+function toggleLegend() {
+  const legend = document.getElementById("mapLegend");
+  if (!legend) return;
+  legend.classList.toggle("collapsed");
+}
+
+function toggleFullscreen() {
+  const container = document.getElementById("mapContainer");
+  if (!container) return;
+
+  container.classList.toggle("is-fullscreen");
+  // Leaflet needs a size invalidation after container changes
+  setTimeout(() => {
+    if (map) map.invalidateSize(true);
+  }, 150);
 }
 
 // ---------------------------
@@ -224,10 +252,14 @@ function buildCardHTML(payload) {
   } = payload;
 
   return `
-    <div class="card-topline">
-      <h3>${cityLine}</h3>
-      <a href="#" class="view-on-map" data-zip="${zip}">📍 View on map</a>
+    <div class="card-top">
+      <div>
+        <h3>${cityLine}</h3>
+        <div class="zip-badge">${zip}</div>
+      </div>
     </div>
+
+    <a href="#" class="view-map-link" data-zip="${zip}">📍 View on map</a>
 
     <ul>
       <li><strong>Violent Crime:</strong> ${crimeIcon(violentLevel)} ${violentLevel}
@@ -243,20 +275,22 @@ function buildCardHTML(payload) {
       <div class="safety-bar" data-width="${safetyScore}" style="background-color:${safetyColor}"></div>
     </div>
 
-    <div class="card-foot muted">
+    <div class="muted" style="margin-top:10px;">
       ${sourceLine} ${year ? `• ${year}` : ""}
     </div>
   `;
 }
 
 function attachCardInteractions(card, zip, lat, lng) {
+  // Clicking card focuses map (except link/button)
   card.addEventListener("click", (e) => {
     const t = e.target;
-    if (t && (t.classList.contains("remove-card-btn") || t.classList.contains("view-on-map"))) return;
+    if (t && (t.classList.contains("remove-card-btn") || t.classList.contains("view-map-link"))) return;
     focusZipOnMap(zip, lat, lng);
   });
 
-  const viewLink = card.querySelector(".view-on-map");
+  // "View on map" link
+  const viewLink = card.querySelector(".view-map-link");
   if (viewLink) {
     viewLink.addEventListener("click", (e) => {
       e.preventDefault();
@@ -264,6 +298,7 @@ function attachCardInteractions(card, zip, lat, lng) {
     });
   }
 
+  // Keyboard access
   card.tabIndex = 0;
   card.setAttribute("role", "button");
   card.setAttribute("aria-label", `View ${zip} on map`);
@@ -283,20 +318,25 @@ async function searchZip(forcedZip = null) {
   const resultDiv = document.getElementById("result");
   if (!zip || !resultDiv) return;
 
-  if (!isValidZip(zip)) {
+  // Validate ZIP
+  if (zip.length !== 5 || isNaN(zip)) {
     alert("Please enter a valid 5-digit ZIP code.");
     return;
   }
 
+  // Block duplicates only in normal mode
   if (!compareMode && searchedZips.includes(zip)) {
     alert("ZIP code already displayed.");
     return;
   }
 
+  // Track displayed zip (once)
   if (!searchedZips.includes(zip)) searchedZips.push(zip);
 
+  // Clear cards in normal mode
   if (!compareMode) resultDiv.innerHTML = "";
 
+  // Loading card
   const card = document.createElement("div");
   card.className = "result-card";
   if (compareMode) card.classList.add("compare-card");
@@ -305,25 +345,21 @@ async function searchZip(forcedZip = null) {
   setTimeout(() => card.classList.add("show"), 30);
 
   try {
-    // ZIP -> location (client-side)
+    // ZIP -> location
     const zipInfo = await lookupZip(zip);
 
-    // Crime rates from backend (server-side should handle FBI key)
-    const api = await fetchCrimeFromBackend(zip);
+    // Worker estimates
+    const est = await fetchFbiStateEstimates(zipInfo.state, zip);
 
-    // We accept either {violentRate, propertyRate, year} or nested fields
-    const violentRate = api.violentRate ?? api.violent_rate ?? null;
-    const propertyRate = api.propertyRate ?? api.property_rate ?? null;
-    const year = api.year ?? null;
-
-    const violentLevel = rateToLevel(violentRate, "violent");
-    const propertyLevel = rateToLevel(propertyRate, "property");
-    const safetyScore = ratesToSafetyScore(violentRate, propertyRate);
+    const violentLevel = rateToLevel(est.violentRate, "violent");
+    const propertyLevel = rateToLevel(est.propertyRate, "property");
+    const safetyScore = ratesToSafetyScore(est.violentRate, est.propertyRate);
     const safetyColor = safetyColorFromScore(safetyScore);
 
     const cityLine = `${zipInfo.city}, ${zipInfo.state} (${zip})`;
-    const sourceLine = `Source: Safety & Crime API (state estimates)`;
+    const sourceLine = `Source: FBI Crime Data API (state estimates)`;
 
+    // Fill card
     card.innerHTML = buildCardHTML({
       zip,
       cityLine,
@@ -332,9 +368,9 @@ async function searchZip(forcedZip = null) {
       safetyScore,
       safetyColor,
       sourceLine,
-      violentRate,
-      propertyRate,
-      year
+      violentRate: est.violentRate,
+      propertyRate: est.propertyRate,
+      year: est.year
     });
 
     // Remove button in compare mode
@@ -350,6 +386,7 @@ async function searchZip(forcedZip = null) {
         const idx = searchedZips.indexOf(zip);
         if (idx > -1) searchedZips.splice(idx, 1);
 
+        // remove marker
         if (markerByZip[zip] && markersLayer) {
           markersLayer.removeLayer(markerByZip[zip]);
           delete markerByZip[zip];
@@ -368,11 +405,11 @@ async function searchZip(forcedZip = null) {
     const popupHtml = `
       <strong>${zipInfo.city}, ${zipInfo.state} (${zip})</strong><br>
       Safety Score: ${safetyScore}/100<br>
-      Violent rate: ${formatNumber(violentRate)} /100k<br>
-      Property rate: ${formatNumber(propertyRate)} /100k
+      Violent rate: ${formatNumber(est.violentRate)} /100k<br>
+      Property rate: ${formatNumber(est.propertyRate)} /100k
     `;
-
     upsertZipMarker(zip, zipInfo.lat, zipInfo.lng, safetyColor, popupHtml);
+
     attachCardInteractions(card, zip, zipInfo.lat, zipInfo.lng);
 
     // Sort + highlight in compare mode
@@ -390,55 +427,17 @@ async function searchZip(forcedZip = null) {
     }
 
     saveToHistory(zip);
+    showToast(`Loaded ${zip}`);
 
   } catch (err) {
     console.error(err);
     card.innerHTML = `
       <h3>${zip} — Couldn’t load</h3>
-      <p class="muted">${String(err?.message || err)}</p>
+      <p class="muted">${String(err?.message || "Try again, or check console for details.")}</p>
     `;
   } finally {
     const input = document.getElementById("zipInput");
     if (input) input.value = "";
-  }
-}
-
-// ---------------------------
-// Map Controls (Legend / Fullscreen / Center)
-// ---------------------------
-function wireMapControls() {
-  const legend = document.getElementById("mapLegend");
-  const toggleLegendBtn = document.getElementById("toggleLegendBtn");
-  if (toggleLegendBtn && legend) {
-    toggleLegendBtn.addEventListener("click", () => {
-      const isHidden = legend.style.display === "none";
-      legend.style.display = isHidden ? "" : "none";
-    });
-  }
-
-  const centerBtn = document.getElementById("centerMapBtn");
-  if (centerBtn) {
-    centerBtn.addEventListener("click", () => {
-      if (map) map.flyTo([37.7749, -95.7129], 4, { duration: 0.8 });
-    });
-  }
-
-  const fullscreenBtn = document.getElementById("fullscreenMapBtn");
-  const mapContainer = document.getElementById("mapContainer");
-  if (fullscreenBtn && mapContainer) {
-    fullscreenBtn.addEventListener("click", async () => {
-      try {
-        if (!document.fullscreenElement) {
-          await mapContainer.requestFullscreen();
-        } else {
-          await document.exitFullscreen();
-        }
-        // Leaflet needs this after resizing
-        setTimeout(() => map?.invalidateSize?.(), 200);
-      } catch (e) {
-        console.warn("Fullscreen not available:", e);
-      }
-    });
   }
 }
 
@@ -448,25 +447,22 @@ function wireMapControls() {
 document.addEventListener("DOMContentLoaded", () => {
   renderHistory();
   initMap();
-  wireMapControls();
 
-  // ✅ FIX: Search button actually triggers searchZip
+  // Search button
   const searchBtn = document.getElementById("searchBtn");
   if (searchBtn) {
     searchBtn.addEventListener("click", () => searchZip());
   }
 
-  // ✅ FIX: Enter key triggers search
+  // Enter key in ZIP input
   const zipInput = document.getElementById("zipInput");
   if (zipInput) {
     zipInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        searchZip();
-      }
+      if (e.key === "Enter") searchZip();
     });
   }
 
+  // Clear All
   const clearBtn = document.getElementById("clearBtn");
   if (clearBtn) {
     clearBtn.addEventListener("click", () => {
@@ -474,24 +470,42 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result) result.innerHTML = "";
       searchedZips.length = 0;
 
+      // clear markers
       if (markersLayer) markersLayer.clearLayers();
       for (const k of Object.keys(markerByZip)) delete markerByZip[k];
+
+      showToast("Cleared");
     });
   }
 
+  // Clear History
   const clearHistoryBtn = document.getElementById("clearHistoryBtn");
   if (clearHistoryBtn) {
     clearHistoryBtn.addEventListener("click", () => {
       localStorage.removeItem("zipHistory");
       renderHistory();
+      showToast("History cleared");
     });
   }
 
+  // Compare mode
   const compareCheckbox = document.getElementById("compareModeCheckbox");
   if (compareCheckbox) {
     compareCheckbox.addEventListener("change", (e) => {
-      compareMode = e.target.checked;
-      document.getElementById("result")?.classList.toggle("compare-layout", compareMode);
+      compareMode = !!e.target.checked;
+      const res = document.getElementById("result");
+      if (res) res.classList.toggle("compare-layout", compareMode);
+      showToast(compareMode ? "Compare mode on" : "Compare mode off");
     });
   }
+
+  // Map controls
+  const toggleLegendBtn = document.getElementById("toggleLegendBtn");
+  if (toggleLegendBtn) toggleLegendBtn.addEventListener("click", toggleLegend);
+
+  const fullscreenMapBtn = document.getElementById("fullscreenMapBtn");
+  if (fullscreenMapBtn) fullscreenMapBtn.addEventListener("click", toggleFullscreen);
+
+  const centerMapBtn = document.getElementById("centerMapBtn");
+  if (centerMapBtn) centerMapBtn.addEventListener("click", centerMapUS);
 });
