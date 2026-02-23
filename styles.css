@@ -13,6 +13,7 @@
   --shadow: 0 10px 25px rgba(0, 0, 0, 0.10);
   --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.08);
   --radius: 18px;
+  --border: rgba(15, 23, 42, 0.10);
 }
 
 * { box-sizing: border-box; }
@@ -34,18 +35,54 @@ body {
   padding: 22px;
 }
 
+/* Header row layout */
+.header{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 10px 0 12px;
+}
+
 h1 {
-  text-align: center;
-  margin: 16px 0 6px;
+  text-align: left;
+  margin: 6px 0 4px;
   color: var(--green);
   letter-spacing: 0.3px;
+  font-size: 34px;
+  line-height: 1.1;
 }
 
 .subtitle {
-  text-align: center;
+  text-align: left;
   color: #4a4a4a;
-  margin: 0 0 18px;
+  margin: 0;
   line-height: 1.4;
+}
+
+/* Status pill */
+.status-pill{
+  align-self: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,185,107,0.12);
+  color: #007844;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(0,185,107,0.18);
+  white-space: nowrap;
+}
+.status-pill.is-loading{
+  background: rgba(241,196,15,0.16);
+  border-color: rgba(241,196,15,0.22);
+  color: #6a5200;
+}
+.status-pill.is-error{
+  background: rgba(231,76,60,0.14);
+  border-color: rgba(231,76,60,0.22);
+  color: #8a1f16;
 }
 
 /* Disclaimer tooltip */
@@ -103,7 +140,7 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin: 14px 0 14px;
+  margin: 12px 0 10px;
 }
 
 .compare-toggle {
@@ -157,6 +194,42 @@ button:hover {
   background: #0b1220;
 }
 
+/* Actions row + sort controls */
+.actions-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 0 6px;
+  flex-wrap: wrap;
+}
+
+.results-controls{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+}
+
+.sort-select{
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  background: #fff;
+  color: #0f172a;
+  outline: none;
+}
+.sort-select:focus{
+  box-shadow: 0 0 0 4px rgba(0, 185, 107, 0.12);
+  border-color: rgba(0,185,107,0.45);
+}
+
 /* -----------------------
    History Pills
 ----------------------- */
@@ -204,6 +277,7 @@ button:hover {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   position: relative;
+  border: 1px solid rgba(15,23,42,0.06);
 
   opacity: 0;
   transform: translateY(14px);
@@ -234,41 +308,6 @@ button:hover {
   color: var(--muted);
   font-size: 14px;
 }
-
-/* Your original card header style */
-.card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.card-top h3 {
-  margin: 0;
-  color: #0f172a;
-  font-size: 18px;
-  line-height: 1.2;
-}
-
-.zip-badge {
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(0, 185, 107, 0.10);
-  color: var(--green-dark);
-  font-weight: 700;
-}
-
-/* View on map link (original) */
-.view-map-link {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--green);
-  text-decoration: none;
-}
-.view-map-link:hover { text-decoration: underline; }
 
 /* safety bar */
 .safety-bar-container {
@@ -316,6 +355,141 @@ button:hover {
 .remove-card-btn:hover {
   background: #dc2626;
   transform: scale(1.06);
+}
+
+/* -----------------------
+   Expandable Details
+----------------------- */
+.details-toggle{
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(17,24,39,0.06);
+  color: #0f172a;
+  border: 1px solid rgba(15,23,42,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: none;
+  transform: none;
+}
+
+.details-toggle:hover{
+  background: rgba(17,24,39,0.09);
+  transform: none;
+}
+
+.details-toggle:focus{
+  outline: 3px solid rgba(0, 185, 107, 0.25);
+  outline-offset: 2px;
+}
+
+.chev{
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.result-card.details-open .chev{
+  transform: rotate(180deg);
+}
+
+.details-panel{
+  margin-top: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,0.08);
+  background: rgba(255,255,255,0.85);
+  padding: 10px 12px;
+
+  overflow: hidden;
+  max-height: 0px;
+  transition: max-height 0.22s ease;
+}
+
+.details-grid{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.details-row{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.details-k{
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  flex: 0 0 auto;
+}
+
+.details-v{
+  color: #0f172a;
+  font-weight: 650;
+  font-size: 13px;
+  text-align: right;
+}
+
+/* -----------------------
+   Skeleton Loading Cards
+----------------------- */
+.result-card.skeleton{
+  opacity: 1;
+  transform: none;
+  pointer-events: none;
+  border: 1px solid rgba(15,23,42,0.08);
+}
+
+.skeleton-line,
+.skeleton-block{
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-line{
+  height: 12px;
+  margin: 10px 0;
+}
+
+.skeleton-block{
+  height: 58px;
+  margin: 14px 0;
+}
+
+.w-35{ width: 35%; }
+.w-55{ width: 55%; }
+.w-60{ width: 60%; }
+.w-80{ width: 80%; }
+
+.skeleton-line::after,
+.skeleton-block::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.55),
+    transparent
+  );
+  animation: shimmer 1.25s infinite;
+}
+
+@keyframes shimmer{
+  100% { transform: translateX(100%); }
 }
 
 /* -----------------------
@@ -435,10 +609,53 @@ button:hover {
 }
 
 /* -----------------------
+   ✅ Compatibility fixes for your JS-generated classes
+----------------------- */
+.card-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.card-topline h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+/* Your JS uses: <a class="view-on-map"> */
+.view-on-map {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.view-on-map:hover { text-decoration: underline; }
+
+/* -----------------------
    Responsive / Mobile
 ----------------------- */
 @media (max-width: 680px) {
   .container { padding: 16px; }
+
+  .header{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  h1{
+    font-size: 30px;
+  }
+
+  .subtitle{
+    text-align: left;
+  }
 
   input[type="text"] {
     width: 100%;
@@ -472,34 +689,13 @@ button:hover {
     max-width: calc(100% - 20px);
     flex-wrap: wrap;
   }
-}
 
-/* -----------------------
-   ✅ Compatibility fixes for your JS-generated classes
-   Your JS uses .card-topline + .view-on-map
------------------------ */
-.card-topline {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
+  .actions-row{
+    justify-content: center;
+  }
 
-.card-topline h3 {
-  margin: 0;
-  color: #0f172a;
-  font-size: 18px;
-  line-height: 1.2;
+  .results-controls{
+    width: 100%;
+    justify-content: space-between;
+  }
 }
-
-/* Your JS uses: <a class="view-on-map"> */
-.view-on-map {
-  display: inline-block;
-  margin-top: 2px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--green);
-  text-decoration: none;
-  white-space: nowrap;
-}
-.view-on-map:hover { text-decoration: underline; }

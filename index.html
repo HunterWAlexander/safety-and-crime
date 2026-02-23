@@ -20,15 +20,23 @@
 
 <body>
   <div class="container">
-    <h1>Safety & Crime Lookup</h1>
+    <header class="header">
+      <div>
+        <h1>Safety & Crime Lookup</h1>
+        <p class="subtitle">
+          Enter your ZIP code to view safety statistics.
+          <span class="info-tip" tabindex="0"
+            data-tip="Future data will be based on County-level FBI reporting (not exact ZIP-level).">
+            ⓘ
+          </span>
+        </p>
+      </div>
 
-    <p class="subtitle">
-      Enter your ZIP code to view safety statistics.
-      <span class="info-tip" tabindex="0"
-        data-tip="Future data will be based on County-level FBI reporting (not exact ZIP-level).">
-        ⓘ
-      </span>
-    </p>
+      <!-- NEW: status pill (mock mode / loading / error) -->
+      <div id="statusPill" class="status-pill" aria-live="polite">
+        Mock data mode
+      </div>
+    </header>
 
     <div class="search-bar">
       <label class="compare-toggle">
@@ -44,13 +52,38 @@
         id="zipInput"
         placeholder="Enter ZIP code"
         maxlength="5"
+        inputmode="numeric"
+        autocomplete="postal-code"
       />
       <button type="button" id="searchBtn">Search</button>
     </div>
 
-    <button id="clearBtn" class="clear-btn" type="button">Clear All</button>
+    <div class="actions-row">
+      <button id="clearBtn" class="clear-btn" type="button">Clear All</button>
+
+      <!-- NEW: results controls (optional for now) -->
+      <div class="results-controls" aria-label="Results controls">
+        <span id="resultsCount" class="muted">0 results</span>
+        <select id="sortSelect" class="sort-select" aria-label="Sort results">
+          <option value="score_desc" selected>Sort: Safety (high → low)</option>
+          <option value="score_asc">Sort: Safety (low → high)</option>
+          <option value="zip_asc">Sort: ZIP (A → Z)</option>
+        </select>
+      </div>
+    </div>
 
     <div id="result" class="result"></div>
+
+    <!-- Skeleton card template (hidden) -->
+    <template id="cardSkeletonTpl">
+      <div class="result-card skeleton">
+        <div class="skeleton-line w-60"></div>
+        <div class="skeleton-line w-35"></div>
+        <div class="skeleton-block"></div>
+        <div class="skeleton-line w-80"></div>
+        <div class="skeleton-line w-55"></div>
+      </div>
+    </template>
 
     <!-- Map -->
     <div id="mapContainer" class="map-container" aria-label="Map area">
