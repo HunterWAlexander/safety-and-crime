@@ -1,6 +1,5 @@
 // ---------------------------
-// Safety & Crime (UI/UX baseline + Leaflet map)
-// Mock data now; API later.
+// Safety & Crime (UI/UX baseline + Leaflet map + Fullscreen overlay controls)
 // ---------------------------
 
 const zipInput = document.getElementById("zipInput");
@@ -28,7 +27,14 @@ const legendBtn = document.getElementById("legendBtn");
 const centerBtn = document.getElementById("centerBtn");
 const fullscreenBtn = document.getElementById("fullscreenBtn");
 const legendEl = document.getElementById("legend");
+
+const mapWrapEl = document.getElementById("mapWrap");
 const mapEl = document.getElementById("map");
+
+const fsControlsEl = document.getElementById("fsControls");
+const fsLegendBtn = document.getElementById("fsLegendBtn");
+const fsCenterBtn = document.getElementById("fsCenterBtn");
+const fsExitBtn = document.getElementById("fsExitBtn");
 
 const trendCanvas = document.getElementById("trendChart");
 const trendCtx = trendCanvas?.getContext?.("2d");
@@ -42,17 +48,17 @@ let savedZips = [];
 let results = [];
 let expanded = new Set();
 
-// Map state (Leaflet)
+// Leaflet state
 let map = null;
 let mapMarker = null;
 let mapCircle = null;
-let lastLatLng = null; // {lat,lng}
+let lastLatLng = null;
+
 const DEFAULT_CENTER = { lat: 29.7604, lng: -95.3698 }; // Houston
 
 // ---------------------------
 // Helpers
 // ---------------------------
-
 function setInlineError(msg) {
   if (!msg) {
     zipError.classList.add("hidden");
@@ -116,9 +122,8 @@ function escapeHtml(s) {
 }
 
 // ---------------------------
-// Mock Data (now includes mock lat/lng around Houston)
+// Mock Data (includes mock lat/lng so map moves per ZIP)
 // ---------------------------
-
 function mockZipData(zip) {
   const seed = Number(zip) % 997;
 
@@ -128,17 +133,14 @@ function mockZipData(zip) {
 
   const confidence = clamp(55 + (seed % 40), 0, 100);
 
-  // mock “trend”
   const t1 = clamp(safety - (seed % 8), 0, 100);
   const t2 = clamp(safety + ((seed % 11) - 5), 0, 100);
   const t3 = clamp(safety + ((seed % 9) - 4), 0, 100);
   const t4 = clamp(safety + ((seed % 13) - 6), 0, 100);
 
-  // mock coords: slight offsets around Houston so the map moves per ZIP
-  const latOffset = ((seed % 100) - 50) * 0.0012;  // ~±0.06
-  const lngOffset = (((seed * 3) % 100) - 50) * 0.0015; // ~±0.075
-  const lat = DEFAULT_CENTER.lat + latOffset;
-  const lng = DEFAULT_CENTER.lng + lngOffset;
+  // Slight offsets around Houston for demo
+  const latOffset = ((seed % 100) - 50) * 0.0012;
+  const lngOffset = (((seed * 3) % 100) - 50) * 0.0015;
 
   return {
     zip,
@@ -156,31 +158,30 @@ function mockZipData(zip) {
       "This is a UI/UX baseline so pages feel real before live data."
     ],
     trend: [t1, t2, t3, t4],
-    location: { lat, lng }
+    location: {
+      lat: DEFAULT_CENTER.lat + latOffset,
+      lng: DEFAULT_CENTER.lng + lngOffset
+    }
   };
 }
 
 // ---------------------------
-// Fetch Layer (Mock now, API later)
+// Fetch layer (mock now)
 // ---------------------------
-
 async function fetchZipData(zip) {
   if (useMockData) {
     await sleep(450);
     return mockZipData(zip);
   }
-  // Later: plug FBI/other API calls here.
   throw new Error("Live API mode not configured yet.");
 }
 
 // ---------------------------
 // Leaflet Map
 // ---------------------------
-
 function initLeafletMap() {
   if (map) return;
   if (!window.L) {
-    // Leaflet script is deferred; it should exist after load
     console.warn("Leaflet not loaded yet.");
     return;
   }
@@ -192,32 +193,30 @@ function initLeafletMap() {
     attribution: "&copy; OpenStreetMap contributors"
   }).addTo(map);
 
-  // default marker
   mapMarker = L.marker([DEFAULT_CENTER.lat, DEFAULT_CENTER.lng]).addTo(map)
     .bindPopup("Houston (default)");
 
-  // default circle (neutral)
   mapCircle = L.circle([DEFAULT_CENTER.lat, DEFAULT_CENTER.lng], {
     radius: 1800,
-    color: "rgba(154,166,178,.85)",
     weight: 2,
+    color: "rgba(154,166,178,.85)",
     fillColor: "rgba(154,166,178,.20)",
     fillOpacity: 0.25
   }).addTo(map);
 
   lastLatLng = { ...DEFAULT_CENTER };
 
-  // Fix tiles on resize
-  window.addEventListener("resize", () => {
-    try { map.invalidateSize(); } catch {}
-  });
-
+  // Resize fixes
+  window.addEventListener("resize", () => safeInvalidateMap());
   document.addEventListener("fullscreenchange", () => {
-    // Leaflet needs invalidateSize after fullscreen changes
-    setTimeout(() => {
-      try { map.invalidateSize(); } catch {}
-    }, 120);
+    updateFullscreenUI();
+    // Leaflet often needs invalidateSize when the container size changes (e.g., fullscreen)
+    setTimeout(() => safeInvalidateMap(), 120);
   });
+}
+
+function safeInvalidateMap() {
+  try { map?.invalidateSize(); } catch {}
 }
 
 function colorForBand(bandCls) {
@@ -237,20 +236,10 @@ function updateMapForResult(r) {
   const band = safetyBand(r.safetyScore);
   const colors = colorForBand(band.cls);
 
-  // update marker
-  if (!mapMarker) {
-    mapMarker = L.marker([lat, lng]).addTo(map);
-  } else {
-    mapMarker.setLatLng([lat, lng]);
-  }
+  mapMarker.setLatLng([lat, lng]);
   mapMarker.bindPopup(`${r.zip} • ${band.label} (${r.safetyScore})`).openPopup();
 
-  // update circle
-  if (!mapCircle) {
-    mapCircle = L.circle([lat, lng], { radius: 1800 }).addTo(map);
-  } else {
-    mapCircle.setLatLng([lat, lng]);
-  }
+  mapCircle.setLatLng([lat, lng]);
   mapCircle.setStyle({
     color: colors.stroke,
     fillColor: colors.fill,
@@ -258,17 +247,50 @@ function updateMapForResult(r) {
     weight: 2
   });
 
-  // recenter
   map.setView([lat, lng], Math.max(map.getZoom(), 11), { animate: true });
-  setTimeout(() => {
-    try { map.invalidateSize(); } catch {}
-  }, 60);
+  setTimeout(() => safeInvalidateMap(), 60);
+}
+
+function centerMap() {
+  initLeafletMap();
+  if (!map) return;
+  const c = lastLatLng || DEFAULT_CENTER;
+  map.setView([c.lat, c.lng], Math.max(map.getZoom(), 11), { animate: true });
+  setTimeout(() => safeInvalidateMap(), 60);
 }
 
 // ---------------------------
-// Rendering (Saved + Results)
+// Fullscreen overlay controls
 // ---------------------------
+function isMapFullscreen() {
+  return document.fullscreenElement === mapWrapEl;
+}
 
+function updateFullscreenUI() {
+  const show = isMapFullscreen();
+  fsControlsEl.classList.toggle("hidden", !show);
+}
+
+async function enterFullscreen() {
+  // Fullscreen API requires a user gesture (button click) — which you have. :contentReference[oaicite:3]{index=3}
+  try {
+    await mapWrapEl.requestFullscreen();
+  } catch (e) {
+    console.warn("Fullscreen blocked/not supported:", e);
+  }
+}
+
+async function exitFullscreen() {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+  } catch (e) {
+    console.warn("Exit fullscreen failed:", e);
+  }
+}
+
+// ---------------------------
+// Rendering
+// ---------------------------
 function renderSavedChips() {
   savedZipsEl.innerHTML = "";
 
@@ -324,20 +346,16 @@ function renderResults() {
 
   if (results.length === 0) {
     showEmptyState(true);
-
-    if (compareMode) {
-      setEmptyStateText("Compare Mode is ON. Search at least 2 ZIP codes to compare.");
-    } else {
-      setEmptyStateText("Enter a ZIP code to view results.");
-    }
-
+    setEmptyStateText(compareMode
+      ? "Compare Mode is ON. Search at least 2 ZIP codes to compare."
+      : "Enter a ZIP code to view results."
+    );
     showCompareSummary(false);
     return;
   }
 
   showEmptyState(false);
 
-  // Compare summary
   if (compareMode && results.length >= 2) {
     const avgSafety = Math.round(results.reduce((a, r) => a + r.safetyScore, 0) / results.length);
     const best = [...results].sort((a,b)=>b.safetyScore - a.safetyScore)[0];
@@ -368,27 +386,15 @@ function renderResults() {
       </div>
 
       <div class="metrics">
-        <div class="metric">
-          <div class="k">Safety</div>
-          <div class="v">${r.safetyScore}</div>
-        </div>
-        <div class="metric">
-          <div class="k">Violent</div>
-          <div class="v">${r.metrics.violentRate}</div>
-        </div>
-        <div class="metric">
-          <div class="k">Property</div>
-          <div class="v">${r.metrics.propertyRate}</div>
-        </div>
+        <div class="metric"><div class="k">Safety</div><div class="v">${r.safetyScore}</div></div>
+        <div class="metric"><div class="k">Violent</div><div class="v">${r.metrics.violentRate}</div></div>
+        <div class="metric"><div class="k">Property</div><div class="v">${r.metrics.propertyRate}</div></div>
       </div>
 
       ${isOpen ? `
         <div class="details">
           <b>Notes</b>
-          <ul>
-            ${r.notes.map(n => `<li>${escapeHtml(n)}</li>`).join("")}
-          </ul>
-          <div><b>Spec-style checks (example):</b> data validity, missing fields, out-of-range values, and inconsistent totals.</div>
+          <ul>${r.notes.map(n => `<li>${escapeHtml(n)}</li>`).join("")}</ul>
         </div>
       ` : ""}
 
@@ -414,7 +420,6 @@ function renderResults() {
 // ---------------------------
 // Sorting
 // ---------------------------
-
 function sortResults() {
   const mode = sortSelect.value;
   const copy = [...results];
@@ -429,9 +434,8 @@ function sortResults() {
 }
 
 // ---------------------------
-// Trend chart placeholder (Canvas)
+// Trend placeholder (Canvas)
 // ---------------------------
-
 function renderTrend() {
   if (!trendCtx) return;
 
@@ -449,7 +453,6 @@ function renderTrend() {
 
   trendCtx.clearRect(0,0,w,h);
 
-  trendCtx.globalAlpha = 1;
   trendCtx.lineWidth = 1 * devicePixelRatio;
   trendCtx.strokeStyle = "rgba(255,255,255,.08)";
   for (let i=1;i<=3;i++){
@@ -493,7 +496,6 @@ function renderTrend() {
 // ---------------------------
 // Core action: Search
 // ---------------------------
-
 async function runSearch(zipRaw) {
   const zip = String(zipRaw || "").trim();
   setInlineError("");
@@ -530,7 +532,6 @@ async function runSearch(zipRaw) {
     sortResults();
     renderTrend();
 
-    // Update map to show searched ZIP (mock coords now; real coords later)
     updateMapForResult(data);
 
   } catch (err) {
@@ -547,7 +548,6 @@ async function runSearch(zipRaw) {
 // ---------------------------
 // Clear actions
 // ---------------------------
-
 function clearHistory() {
   historyZips = [];
   setInlineError("");
@@ -566,41 +566,22 @@ function clearAll() {
 }
 
 // ---------------------------
-// Map controls
+// Button wiring
 // ---------------------------
+legendBtn.addEventListener("click", () => legendEl.classList.toggle("hidden"));
+centerBtn.addEventListener("click", () => centerMap());
+fullscreenBtn.addEventListener("click", () => enterFullscreen());
 
-legendBtn.addEventListener("click", () => {
-  legendEl.classList.toggle("hidden");
-});
+// Fullscreen overlay buttons
+fsLegendBtn.addEventListener("click", () => legendEl.classList.toggle("hidden"));
+fsCenterBtn.addEventListener("click", () => centerMap());
+fsExitBtn.addEventListener("click", () => exitFullscreen());
 
-centerBtn.addEventListener("click", () => {
-  initLeafletMap();
-  if (!map) return;
-
-  const c = lastLatLng || DEFAULT_CENTER;
-  map.setView([c.lat, c.lng], Math.max(map.getZoom(), 11), { animate: true });
-  setTimeout(() => { try { map.invalidateSize(); } catch {} }, 60);
-});
-
-fullscreenBtn.addEventListener("click", async () => {
-  try {
-    if (!document.fullscreenElement) {
-      await mapEl.requestFullscreen();
-    } else {
-      await document.exitFullscreen();
-    }
-  } catch (e) {
-    console.warn("Fullscreen not supported/blocked:", e);
-  }
-});
-
-// ---------------------------
-// Events
-// ---------------------------
-
+// Search events
 searchBtn.addEventListener("click", () => runSearch(zipInput.value));
 zipInput.addEventListener("keydown", (e) => { if (e.key === "Enter") runSearch(zipInput.value); });
 
+// Toggles
 mockToggle.addEventListener("change", () => {
   useMockData = mockToggle.checked;
   setInlineError("");
@@ -613,13 +594,13 @@ compareToggle.addEventListener("change", () => {
   if (!compareMode && results.length > 1) {
     results = [results[results.length - 1]];
     expanded.clear();
+    renderResults();
+    renderTrend();
+    if (results.length === 1) updateMapForResult(results[0]);
+  } else {
+    renderResults();
+    renderTrend();
   }
-
-  renderResults();
-  renderTrend();
-
-  // Optional: center on last result when compare toggles off
-  if (results.length === 1) updateMapForResult(results[0]);
 });
 
 sortSelect.addEventListener("change", () => {
@@ -640,9 +621,8 @@ clearAllBtn.addEventListener("click", () => {
 });
 
 // ---------------------------
-// Initial paint
+// Init
 // ---------------------------
-
 (function init(){
   useMockData = mockToggle.checked;
   compareMode = compareToggle.checked;
@@ -651,8 +631,8 @@ clearAllBtn.addEventListener("click", () => {
   renderResults();
   renderTrend();
 
-  // Init map once on load (Leaflet script is deferred)
   window.addEventListener("load", () => {
     initLeafletMap();
+    updateFullscreenUI();
   });
 })();

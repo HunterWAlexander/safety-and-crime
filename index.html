@@ -69,7 +69,6 @@
         </label>
       </div>
 
-      <!-- Safety Score tooltip / explainer -->
       <div class="safety-info">
         <span class="label">Safety Score</span>
         <span class="tooltip" aria-label="What is Safety Score?" tabindex="0">?
@@ -80,14 +79,12 @@
         </span>
       </div>
 
-      <!-- Saved ZIPs -->
       <div class="saved-row">
         <div class="muted small">Saved ZIPs</div>
         <div id="savedZips" class="saved-zips"></div>
       </div>
     </section>
 
-    <!-- Status / empty / compare guidance -->
     <section class="card status-card">
       <div id="emptyState" class="empty-state">
         Enter a ZIP code to view results.
@@ -102,7 +99,6 @@
       </div>
     </section>
 
-    <!-- Trend chart placeholder -->
     <section class="card">
       <div class="section-title">
         Trend (placeholder)
@@ -111,7 +107,6 @@
       <canvas id="trendChart" height="90"></canvas>
     </section>
 
-    <!-- Results + Map -->
     <section class="grid">
       <section class="card results-card">
         <div class="results-head">
@@ -136,8 +131,17 @@
           </div>
         </div>
 
-        <!-- IMPORTANT: Leaflet needs an empty div to render into -->
-        <div id="map" class="map"></div>
+        <!-- Leaflet renders into this -->
+        <div id="mapWrap" class="map-wrap">
+          <div id="map" class="map"></div>
+
+          <!-- Fullscreen overlay controls (shown ONLY when fullscreen is active) -->
+          <div id="fsControls" class="fs-controls hidden">
+            <button id="fsLegendBtn" class="fs-btn">Legend</button>
+            <button id="fsCenterBtn" class="fs-btn">Center</button>
+            <button id="fsExitBtn" class="fs-btn danger">Exit</button>
+          </div>
+        </div>
 
         <div id="legend" class="legend hidden">
           <div class="legend-row"><span class="dot safe"></span> Safer</div>
@@ -147,7 +151,6 @@
       </section>
     </section>
 
-    <!-- Data source footer -->
     <footer class="footer card">
       <div class="data-source">
         Data Sources: <b>Mock Data</b> (API integration coming soon). For demo only.
