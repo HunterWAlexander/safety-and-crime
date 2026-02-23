@@ -1,6 +1,8 @@
 // ---------------------------
-// Safety & Crime (UI/UX baseline + Leaflet map + Fullscreen overlay controls)
+// Safety & Crime (UI/UX + Leaflet + Focus Mode + Fullscreen controls)
 // ---------------------------
+
+const topbar = document.getElementById("topbar");
 
 const zipInput = document.getElementById("zipInput");
 const zipError = document.getElementById("zipError");
@@ -28,6 +30,10 @@ const centerBtn = document.getElementById("centerBtn");
 const fullscreenBtn = document.getElementById("fullscreenBtn");
 const legendEl = document.getElementById("legend");
 
+const focusBtnTop = document.getElementById("focusBtnTop");
+const focusBtnMap = document.getElementById("focusBtnMap");
+
+const mapCard = document.getElementById("mapCard");
 const mapWrapEl = document.getElementById("mapWrap");
 const mapEl = document.getElementById("map");
 
@@ -35,6 +41,10 @@ const fsControlsEl = document.getElementById("fsControls");
 const fsLegendBtn = document.getElementById("fsLegendBtn");
 const fsCenterBtn = document.getElementById("fsCenterBtn");
 const fsExitBtn = document.getElementById("fsExitBtn");
+const fsExitFocusBtn = document.getElementById("fsExitFocusBtn");
+
+const focusExitEl = document.getElementById("focusExit");
+const exitFocusBtn = document.getElementById("exitFocusBtn");
 
 const trendCanvas = document.getElementById("trendChart");
 const trendCtx = trendCanvas?.getContext?.("2d");
@@ -119,6 +129,11 @@ function escapeHtml(s) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function setTopbarHeightVar() {
+  const h = topbar?.offsetHeight || 68;
+  document.documentElement.style.setProperty("--topbar-h", `${h}px`);
 }
 
 // ---------------------------
@@ -206,12 +221,11 @@ function initLeafletMap() {
 
   lastLatLng = { ...DEFAULT_CENTER };
 
-  // Resize fixes
   window.addEventListener("resize", () => safeInvalidateMap());
   document.addEventListener("fullscreenchange", () => {
     updateFullscreenUI();
-    // Leaflet often needs invalidateSize when the container size changes (e.g., fullscreen)
-    setTimeout(() => safeInvalidateMap(), 120);
+    // Leaflet needs invalidateSize when container size changes (fullscreen toggle)
+    setTimeout(() => safeInvalidateMap(), 140);
   });
 }
 
@@ -260,19 +274,17 @@ function centerMap() {
 }
 
 // ---------------------------
-// Fullscreen overlay controls
+// Fullscreen + Focus Mode
 // ---------------------------
 function isMapFullscreen() {
   return document.fullscreenElement === mapWrapEl;
 }
 
 function updateFullscreenUI() {
-  const show = isMapFullscreen();
-  fsControlsEl.classList.toggle("hidden", !show);
+  fsControlsEl.classList.toggle("hidden", !isMapFullscreen());
 }
 
 async function enterFullscreen() {
-  // Fullscreen API requires a user gesture (button click) — which you have. :contentReference[oaicite:3]{index=3}
   try {
     await mapWrapEl.requestFullscreen();
   } catch (e) {
@@ -286,6 +298,19 @@ async function exitFullscreen() {
   } catch (e) {
     console.warn("Exit fullscreen failed:", e);
   }
+}
+
+function setFocusMode(on) {
+  document.body.classList.toggle("focus-mode", !!on);
+  focusExitEl.classList.toggle("hidden", !on);
+
+  // Give layout a moment, then tell Leaflet to recalc tiles
+  setTimeout(() => safeInvalidateMap(), 160);
+}
+
+function toggleFocusMode() {
+  const on = !document.body.classList.contains("focus-mode");
+  setFocusMode(on);
 }
 
 // ---------------------------
@@ -531,7 +556,6 @@ async function runSearch(zipRaw) {
 
     sortResults();
     renderTrend();
-
     updateMapForResult(data);
 
   } catch (err) {
@@ -566,22 +590,24 @@ function clearAll() {
 }
 
 // ---------------------------
-// Button wiring
+// Wiring
 // ---------------------------
 legendBtn.addEventListener("click", () => legendEl.classList.toggle("hidden"));
 centerBtn.addEventListener("click", () => centerMap());
 fullscreenBtn.addEventListener("click", () => enterFullscreen());
 
-// Fullscreen overlay buttons
+focusBtnTop.addEventListener("click", () => toggleFocusMode());
+focusBtnMap.addEventListener("click", () => toggleFocusMode());
+exitFocusBtn.addEventListener("click", () => setFocusMode(false));
+
 fsLegendBtn.addEventListener("click", () => legendEl.classList.toggle("hidden"));
 fsCenterBtn.addEventListener("click", () => centerMap());
 fsExitBtn.addEventListener("click", () => exitFullscreen());
+fsExitFocusBtn.addEventListener("click", () => setFocusMode(false));
 
-// Search events
 searchBtn.addEventListener("click", () => runSearch(zipInput.value));
 zipInput.addEventListener("keydown", (e) => { if (e.key === "Enter") runSearch(zipInput.value); });
 
-// Toggles
 mockToggle.addEventListener("change", () => {
   useMockData = mockToggle.checked;
   setInlineError("");
@@ -594,13 +620,12 @@ compareToggle.addEventListener("change", () => {
   if (!compareMode && results.length > 1) {
     results = [results[results.length - 1]];
     expanded.clear();
-    renderResults();
-    renderTrend();
-    if (results.length === 1) updateMapForResult(results[0]);
-  } else {
-    renderResults();
-    renderTrend();
   }
+
+  renderResults();
+  renderTrend();
+
+  if (results.length === 1) updateMapForResult(results[0]);
 });
 
 sortSelect.addEventListener("change", () => {
@@ -632,7 +657,10 @@ clearAllBtn.addEventListener("click", () => {
   renderTrend();
 
   window.addEventListener("load", () => {
+    setTopbarHeightVar();
     initLeafletMap();
     updateFullscreenUI();
   });
+
+  window.addEventListener("resize", () => setTopbarHeightVar());
 })();

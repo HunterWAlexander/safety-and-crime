@@ -14,7 +14,7 @@
 </head>
 
 <body>
-  <header class="topbar">
+  <header class="topbar" id="topbar">
     <div class="brand">
       <div class="brand-mark">S</div>
       <div class="brand-text">
@@ -37,128 +37,148 @@
   </header>
 
   <main class="container">
-    <section class="hero card">
-      <h1>Search ZIP Code Safety</h1>
-      <p class="muted">
-        Enter a 5-digit ZIP code to view safety info. You can save ZIPs and compare them.
-      </p>
+    <div class="app-layout" id="appLayout">
+      <!-- LEFT: Panel -->
+      <aside class="panel" id="panel">
+        <section class="card hero">
+          <div class="hero-head">
+            <div>
+              <h1>Search ZIP Code Safety</h1>
+              <p class="muted">
+                Enter a 5-digit ZIP code to view safety info. Save ZIPs and compare them.
+              </p>
+            </div>
 
-      <div class="search-row">
-        <div class="input-wrap">
-          <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="e.g., 77002" />
-          <div id="zipError" class="inline-error hidden"></div>
-        </div>
-
-        <button id="searchBtn" class="btn primary">Search</button>
-      </div>
-
-      <div class="toolbar">
-        <button id="clearHistoryBtn" class="btn ghost">Clear History</button>
-        <button id="clearAllBtn" class="btn ghost danger">Clear All</button>
-
-        <div class="spacer"></div>
-
-        <label class="select-wrap">
-          <span class="muted">Sort</span>
-          <select id="sortSelect">
-            <option value="safety_desc">Safety: High → Low</option>
-            <option value="safety_asc">Safety: Low → High</option>
-            <option value="zip_asc">ZIP: A → Z</option>
-            <option value="zip_desc">ZIP: Z → A</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="safety-info">
-        <span class="label">Safety Score</span>
-        <span class="tooltip" aria-label="What is Safety Score?" tabindex="0">?
-          <span class="tooltip-text">
-            Safety Score is a simple relative rating. Higher means safer compared to other ZIP codes.
-            This will become more accurate once live data sources are connected.
-          </span>
-        </span>
-      </div>
-
-      <div class="saved-row">
-        <div class="muted small">Saved ZIPs</div>
-        <div id="savedZips" class="saved-zips"></div>
-      </div>
-    </section>
-
-    <section class="card status-card">
-      <div id="emptyState" class="empty-state">
-        Enter a ZIP code to view results.
-      </div>
-
-      <div id="compareHint" class="compare-hint hidden">
-        Compare Mode is ON. Search at least <b>2 ZIP codes</b> to see a comparison summary.
-      </div>
-
-      <div id="loadingState" class="loading hidden">
-        Fetching data…
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="section-title">
-        Trend (placeholder)
-        <span class="muted small">— will show yearly trend once APIs are connected</span>
-      </div>
-      <canvas id="trendChart" height="90"></canvas>
-    </section>
-
-    <section class="grid">
-      <section class="card results-card">
-        <div class="results-head">
-          <div class="results-title">
-            Results
-            <span id="resultsCount" class="pill">0</span>
+            <button id="focusBtnTop" class="btn ghost focus-btn" title="Map Focus Mode">
+              Focus Mode
+            </button>
           </div>
 
-          <div id="compareSummary" class="compare-summary hidden"></div>
-        </div>
+          <div class="search-row">
+            <div class="input-wrap">
+              <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="e.g., 77002" />
+              <div id="zipError" class="inline-error hidden"></div>
+            </div>
 
-        <div id="results" class="results"></div>
+            <button id="searchBtn" class="btn primary">Search</button>
+          </div>
+
+          <div class="toolbar">
+            <button id="clearHistoryBtn" class="btn ghost">Clear History</button>
+            <button id="clearAllBtn" class="btn ghost danger">Clear All</button>
+
+            <div class="spacer"></div>
+
+            <label class="select-wrap">
+              <span class="muted">Sort</span>
+              <select id="sortSelect">
+                <option value="safety_desc">Safety: High → Low</option>
+                <option value="safety_asc">Safety: Low → High</option>
+                <option value="zip_asc">ZIP: A → Z</option>
+                <option value="zip_desc">ZIP: Z → A</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="safety-info">
+            <span class="label">Safety Score</span>
+            <span class="tooltip" aria-label="What is Safety Score?" tabindex="0">?
+              <span class="tooltip-text">
+                Safety Score is a simple relative rating. Higher means safer compared to other ZIP codes.
+                This will become more accurate once live data sources are connected.
+              </span>
+            </span>
+          </div>
+
+          <div class="saved-row">
+            <div class="muted small">Saved ZIPs</div>
+            <div id="savedZips" class="saved-zips"></div>
+          </div>
+        </section>
+
+        <section class="card status-card">
+          <div id="emptyState" class="empty-state">
+            Enter a ZIP code to view results.
+          </div>
+
+          <div id="compareHint" class="compare-hint hidden">
+            Compare Mode is ON. Search at least <b>2 ZIP codes</b> to see a comparison summary.
+          </div>
+
+          <div id="loadingState" class="loading hidden">
+            Fetching data…
+          </div>
+        </section>
+
+        <section class="card trend-card" id="trendCard">
+          <div class="section-title">
+            Trend (placeholder)
+            <span class="muted small">— will show yearly trend once APIs are connected</span>
+          </div>
+          <canvas id="trendChart" height="90"></canvas>
+        </section>
+
+        <section class="card results-card">
+          <div class="results-head">
+            <div class="results-title">
+              Results
+              <span id="resultsCount" class="pill">0</span>
+            </div>
+
+            <div id="compareSummary" class="compare-summary hidden"></div>
+          </div>
+
+          <div id="results" class="results"></div>
+        </section>
+
+        <footer class="footer card">
+          <div class="data-source">
+            Data Sources: <b>Mock Data</b> (API integration coming soon). For demo only.
+          </div>
+          <div class="muted small">
+            Tip: Once UI/UX feels good, we’ll plug in the FBI API and other datasets with solid loading/error states.
+          </div>
+        </footer>
+      </aside>
+
+      <!-- RIGHT: Map -->
+      <section class="map-col">
+        <section class="card map-card" id="mapCard">
+          <div class="map-head">
+            <div class="section-title">Map</div>
+            <div class="map-actions">
+              <button id="legendBtn" class="btn ghost">Legend</button>
+              <button id="centerBtn" class="btn ghost">Center</button>
+              <button id="focusBtnMap" class="btn ghost">Focus</button>
+              <button id="fullscreenBtn" class="btn ghost">Fullscreen</button>
+            </div>
+          </div>
+
+          <div id="mapWrap" class="map-wrap">
+            <div id="map" class="map"></div>
+
+            <!-- Overlay controls ONLY visible in fullscreen -->
+            <div id="fsControls" class="fs-controls hidden">
+              <button id="fsLegendBtn" class="fs-btn">Legend</button>
+              <button id="fsCenterBtn" class="fs-btn">Center</button>
+              <button id="fsExitBtn" class="fs-btn danger">Exit Fullscreen</button>
+              <button id="fsExitFocusBtn" class="fs-btn">Exit Focus</button>
+            </div>
+
+            <!-- Focus Mode exit (visible when focus mode active, not fullscreen) -->
+            <div id="focusExit" class="focus-exit hidden">
+              <button id="exitFocusBtn" class="fs-btn danger">Exit Focus</button>
+            </div>
+          </div>
+
+          <div id="legend" class="legend hidden">
+            <div class="legend-row"><span class="dot safe"></span> Safer</div>
+            <div class="legend-row"><span class="dot medium"></span> Medium</div>
+            <div class="legend-row"><span class="dot risk"></span> Higher risk</div>
+          </div>
+        </section>
       </section>
-
-      <section class="card map-card">
-        <div class="map-head">
-          <div class="section-title">Map</div>
-          <div class="map-actions">
-            <button id="legendBtn" class="btn ghost">Legend</button>
-            <button id="centerBtn" class="btn ghost">Center</button>
-            <button id="fullscreenBtn" class="btn ghost">Fullscreen</button>
-          </div>
-        </div>
-
-        <!-- Leaflet renders into this -->
-        <div id="mapWrap" class="map-wrap">
-          <div id="map" class="map"></div>
-
-          <!-- Fullscreen overlay controls (shown ONLY when fullscreen is active) -->
-          <div id="fsControls" class="fs-controls hidden">
-            <button id="fsLegendBtn" class="fs-btn">Legend</button>
-            <button id="fsCenterBtn" class="fs-btn">Center</button>
-            <button id="fsExitBtn" class="fs-btn danger">Exit</button>
-          </div>
-        </div>
-
-        <div id="legend" class="legend hidden">
-          <div class="legend-row"><span class="dot safe"></span> Safer</div>
-          <div class="legend-row"><span class="dot medium"></span> Medium</div>
-          <div class="legend-row"><span class="dot risk"></span> Higher risk</div>
-        </div>
-      </section>
-    </section>
-
-    <footer class="footer card">
-      <div class="data-source">
-        Data Sources: <b>Mock Data</b> (API integration coming soon). For demo only.
-      </div>
-      <div class="muted small">
-        Tip: Once UI/UX feels good, we’ll plug in the FBI API and any other datasets safely with loading/error states.
-      </div>
-    </footer>
+    </div>
   </main>
 
   <script src="script.js"></script>
