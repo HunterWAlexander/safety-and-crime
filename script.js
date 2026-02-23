@@ -1,606 +1,579 @@
 // ---------------------------
-// Config
+// Safety & Crime (UI/UX baseline)
+// Mock data now; API later.
 // ---------------------------
-const MAX_HISTORY = 10;
 
-// ---------------------------
-// Globals
-// ---------------------------
-const searchedZips = [];
+const zipInput = document.getElementById("zipInput");
+const zipError = document.getElementById("zipError");
+const searchBtn = document.getElementById("searchBtn");
+
+const mockToggle = document.getElementById("mockToggle");
+const compareToggle = document.getElementById("compareToggle");
+
+const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+const clearAllBtn = document.getElementById("clearAllBtn");
+const sortSelect = document.getElementById("sortSelect");
+
+const emptyState = document.getElementById("emptyState");
+const compareHint = document.getElementById("compareHint");
+const loadingState = document.getElementById("loadingState");
+
+const resultsEl = document.getElementById("results");
+const resultsCountEl = document.getElementById("resultsCount");
+const compareSummaryEl = document.getElementById("compareSummary");
+
+const savedZipsEl = document.getElementById("savedZips");
+
+const legendBtn = document.getElementById("legendBtn");
+const centerBtn = document.getElementById("centerBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+const legendEl = document.getElementById("legend");
+const mapEl = document.getElementById("map");
+
+const trendCanvas = document.getElementById("trendChart");
+const trendCtx = trendCanvas?.getContext?.("2d");
+
+// State
+let useMockData = true;
 let compareMode = false;
 
-let map;                 // Leaflet map instance
-let markersLayer;        // Layer group for markers
-const markerByZip = {};  // Track markers so we can focus them later
+let historyZips = [];     // Searches performed (displayed results)
+let savedZips = [];       // Saved chip list (clickable)
+let results = [];         // Result objects
+let expanded = new Set(); // expanded card ids
 
 // ---------------------------
 // Helpers
 // ---------------------------
-function crimeIcon(level) {
-  const v = String(level || "").toLowerCase();
-  if (v === "low") return "🟢";
-  if (v === "medium") return "🟡";
-  if (v === "high") return "🔴";
-  return "⚪";
-}
 
-function clamp(n, min, max) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function safetyColorFromScore(score) {
-  if (score >= 80) return "#00b96b";
-  if (score >= 60) return "#f1c40f";
-  return "#e74c3c";
-}
-
-function formatNumber(n) {
-  if (n === null || n === undefined || Number.isNaN(n)) return "—";
-  return Number(n).toLocaleString();
-}
-
-// Simple toast (optional)
-function toast(msg) {
-  const el = document.getElementById("toast");
-  if (!el) return;
-  el.textContent = msg;
-  el.classList.add("show");
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => el.classList.remove("show"), 2400);
-}
-
-// ---------------------------
-// Status / UI helpers
-// ---------------------------
-function setStatusPill(text, variant = "default") {
-  const el = document.getElementById("statusPill");
-  if (!el) return;
-
-  el.textContent = text;
-  el.classList.remove("is-loading", "is-error");
-  if (variant === "loading") el.classList.add("is-loading");
-  if (variant === "error") el.classList.add("is-error");
-}
-
-function updateResultsCount() {
-  const el = document.getElementById("resultsCount");
-  const resultDiv = document.getElementById("result");
-  if (!el || !resultDiv) return;
-
-  const cards = resultDiv.querySelectorAll(".result-card:not(.skeleton)");
-  const n = cards.length;
-  el.textContent = `${n} result${n === 1 ? "" : "s"}`;
-}
-
-function getCardScore(card) {
-  const w = card.querySelector(".safety-bar")?.dataset?.width;
-  const n = parseInt(w || "0", 10);
-  return Number.isFinite(n) ? n : 0;
-}
-
-function getCardZip(card) {
-  return card.querySelector(".view-on-map")?.getAttribute("data-zip") || "";
-}
-
-function sortCards(resultDiv, mode) {
-  if (!resultDiv) return;
-  const cards = Array.from(resultDiv.children).filter(
-    c => c.classList.contains("result-card") && !c.classList.contains("skeleton")
-  );
-
-  if (mode === "score_desc") cards.sort((a, b) => getCardScore(b) - getCardScore(a));
-  if (mode === "score_asc") cards.sort((a, b) => getCardScore(a) - getCardScore(b));
-  if (mode === "zip_asc") cards.sort((a, b) => getCardZip(a).localeCompare(getCardZip(b)));
-
-  cards.forEach(c => c.classList.remove("highlight-card"));
-  if (cards.length > 0 && mode === "score_desc") cards[0].classList.add("highlight-card");
-
-  cards.forEach(c => resultDiv.appendChild(c));
-}
-
-function renderSkeletons(resultDiv, count = 1) {
-  const tpl = document.getElementById("cardSkeletonTpl");
-  if (!resultDiv || !tpl) return [];
-  const nodes = [];
-  for (let i = 0; i < count; i++) {
-    const n = tpl.content.firstElementChild.cloneNode(true);
-    resultDiv.appendChild(n);
-    nodes.push(n);
+function setInlineError(msg) {
+  if (!msg) {
+    zipError.classList.add("hidden");
+    zipError.textContent = "";
+    return;
   }
-  return nodes;
+  zipError.textContent = msg;
+  zipError.classList.remove("hidden");
+}
+
+function isValidZip(zip) {
+  return /^\d{5}$/.test(zip);
+}
+
+function showLoading(show) {
+  loadingState.classList.toggle("hidden", !show);
+}
+
+function setEmptyStateText(text) {
+  emptyState.textContent = text;
+}
+
+function showEmptyState(show) {
+  emptyState.classList.toggle("hidden", !show);
+}
+
+function showCompareHint(show) {
+  compareHint.classList.toggle("hidden", !show);
+}
+
+function showCompareSummary(show, text = "") {
+  compareSummaryEl.classList.toggle("hidden", !show);
+  compareSummaryEl.innerHTML = text;
+}
+
+function updateCounts() {
+  resultsCountEl.textContent = String(results.length);
+}
+
+function safetyBand(score) {
+  if (score >= 70) return { label: "Safer", cls: "safe" };
+  if (score >= 45) return { label: "Medium", cls: "medium" };
+  return { label: "Higher risk", cls: "risk" };
+}
+
+function clamp(n, a, b) {
+  return Math.max(a, Math.min(b, n));
 }
 
 // ---------------------------
-// History (localStorage)
+// Mock Data
 // ---------------------------
-function getHistory() {
-  return JSON.parse(localStorage.getItem("zipHistory")) || [];
-}
 
-function saveToHistory(zip) {
-  let history = getHistory();
-  history = history.filter(z => z !== zip);
-  history.unshift(zip);
-  history = history.slice(0, MAX_HISTORY);
-  localStorage.setItem("zipHistory", JSON.stringify(history));
-  renderHistory();
-}
+function mockZipData(zip) {
+  // deterministic-ish values from zip string
+  const seed = Number(zip) % 997;
+  const safety = clamp(25 + (seed % 76), 0, 100);  // 25..100
+  const violent = clamp((seed % 90) / 10, 0, 10);  // 0..9.0
+  const property = clamp(((seed * 7) % 220) / 10, 0, 22); // 0..22.0
 
-function renderHistory() {
-  const historyDiv = document.getElementById("history");
-  if (!historyDiv) return;
+  // fake "confidence"
+  const confidence = clamp(55 + (seed % 40), 0, 100);
 
-  const history = getHistory();
-  historyDiv.innerHTML = "";
-
-  history.forEach(zip => {
-    const btn = document.createElement("button");
-    btn.textContent = zip;
-    btn.className = "history-pill";
-    btn.onclick = () => searchZip(zip);
-    historyDiv.appendChild(btn);
-  });
-}
-
-// ---------------------------
-// ZIP -> location (Zippopotam.us)
-// ---------------------------
-async function lookupZip(zip) {
-  const url = `https://api.zippopotam.us/us/${encodeURIComponent(zip)}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("ZIP lookup failed");
-
-  const data = await res.json();
-  const place = data.places?.[0];
-  if (!place) throw new Error("ZIP lookup returned no places");
+  // trend placeholder points
+  const t1 = clamp(safety - (seed % 8), 0, 100);
+  const t2 = clamp(safety + ((seed % 11) - 5), 0, 100);
+  const t3 = clamp(safety + ((seed % 9) - 4), 0, 100);
+  const t4 = clamp(safety + ((seed % 13) - 6), 0, 100);
 
   return {
     zip,
-    city: place["place name"],
-    state: place["state abbreviation"],
-    stateName: place["state"],
-    lat: Number(place["latitude"]),
-    lng: Number(place["longitude"]),
+    city: "Houston Area (Mock)",
+    state: "TX",
+    safetyScore: safety,
+    confidence,
+    metrics: {
+      violentRate: violent.toFixed(1),
+      propertyRate: property.toFixed(1),
+      overallIndex: (100 - safety).toFixed(0)
+    },
+    notes: [
+      "Mock dataset: replace with FBI/API values later.",
+      "This is a UI/UX baseline so pages feel real before live data."
+    ],
+    trend: [t1, t2, t3, t4]
   };
 }
 
 // ---------------------------
-// MOCK DATA ADAPTER (UI/UX first)
+// Fetch Layer (Mock now, API later)
 // ---------------------------
-function hashZip(zip) {
-  let h = 0;
-  for (let i = 0; i < zip.length; i++) h = (h * 31 + zip.charCodeAt(i)) >>> 0;
-  return h;
-}
 
-function mockCrimeRates(zip, stateAbbr) {
-  const seed = hashZip(`${zip}-${stateAbbr || ""}`);
-  const violentRate = clamp(50 + (seed % 900), 50, 900);
-  const propertyRate = clamp(600 + ((seed >>> 3) % 5200), 600, 5500);
-  const year = 2022;
-  return { violentRate, propertyRate, year };
-}
-
-async function fetchCrimeStats(zip, stateAbbr) {
-  await new Promise(r => setTimeout(r, 450));
-  const { violentRate, propertyRate, year } = mockCrimeRates(zip, stateAbbr);
-  return { ok: true, zip, state: stateAbbr, year, violentRate, propertyRate, mock: true };
-}
-
-// Convert rates -> friendly Low/Medium/High (simple MVP thresholds)
-function rateToLevel(rate, type) {
-  if (rate === null || Number.isNaN(rate)) return "Unknown";
-  if (type === "violent") {
-    if (rate < 250) return "Low";
-    if (rate < 450) return "Medium";
-    return "High";
+async function fetchZipData(zip) {
+  // Later: plug FBI/other API calls here.
+  // For now: mock.
+  if (useMockData) {
+    await sleep(500);
+    return mockZipData(zip);
   }
-  if (rate < 1800) return "Low";
-  if (rate < 3200) return "Medium";
-  return "High";
+
+  // Example placeholder to avoid silent failures
+  throw new Error("Live API mode not configured yet.");
 }
 
-// Convert violent/property rates -> 0..100 safety score (heuristic MVP)
-function ratesToSafetyScore(violentRate, propertyRate) {
-  const v = violentRate === null ? 0.5 : clamp(violentRate / 700, 0, 1);
-  const p = propertyRate === null ? 0.5 : clamp(propertyRate / 5000, 0, 1);
-  const risk = (v * 0.6) + (p * 0.4);
-  return Math.round(100 - (risk * 100));
+function sleep(ms) {
+  return new Promise(res => setTimeout(res, ms));
 }
 
 // ---------------------------
-// Map
+// Rendering
 // ---------------------------
-function initMap() {
-  const mapEl = document.getElementById("mapContainer");
-  if (!mapEl) return;
 
-  if (typeof L === "undefined") {
-    console.warn("Leaflet not loaded. Check Leaflet <script> tags in index.html.");
+function renderSavedChips() {
+  savedZipsEl.innerHTML = "";
+
+  if (savedZips.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "muted small";
+    empty.textContent = "None yet — search a ZIP to save it.";
+    savedZipsEl.appendChild(empty);
     return;
   }
 
-  map = L.map("mapContainer").setView([37.7749, -95.7129], 4);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "© OpenStreetMap contributors",
-    maxZoom: 19,
-  }).addTo(map);
-
-  markersLayer = L.layerGroup().addTo(map);
-  wireMapControls();
-}
-
-function wireMapControls() {
-  const legend = document.getElementById("mapLegend");
-  const toggleLegendBtn = document.getElementById("toggleLegendBtn");
-  if (toggleLegendBtn && legend) {
-    toggleLegendBtn.addEventListener("click", () => {
-      legend.classList.toggle("collapsed");
-    });
-  }
-
-  const mapEl = document.getElementById("mapContainer");
-  const fullscreenBtn = document.getElementById("fullscreenMapBtn");
-  if (fullscreenBtn && mapEl) {
-    fullscreenBtn.addEventListener("click", () => {
-      mapEl.classList.toggle("is-fullscreen");
-      setTimeout(() => {
-        if (map) map.invalidateSize(true);
-      }, 150);
-    });
-  }
-
-  const centerBtn = document.getElementById("centerMapBtn");
-  if (centerBtn) {
-    centerBtn.addEventListener("click", () => {
-      if (!map) return;
-      map.flyTo([37.7749, -95.7129], 4, { duration: 0.8 });
-    });
+  for (const zip of savedZips) {
+    const chip = document.createElement("div");
+    chip.className = "saved-chip";
+    chip.innerHTML = `<span>${zip}</span> <span class="muted small">↩</span>`;
+    chip.addEventListener("click", () => runSearch(zip));
+    savedZipsEl.appendChild(chip);
   }
 }
 
-function upsertZipMarker(zip, lat, lng, color, popupHtml) {
-  if (!map || !markersLayer) return;
-
-  if (markerByZip[zip]) {
-    markersLayer.removeLayer(markerByZip[zip]);
-  }
-
-  const marker = L.circleMarker([lat, lng], {
-    radius: 10,
-    color,
-    fillColor: color,
-    fillOpacity: 0.8,
-    weight: 2
-  }).addTo(markersLayer);
-
-  marker.bindPopup(popupHtml);
-  markerByZip[zip] = marker;
-}
-
-function focusZipOnMap(zip, lat, lng) {
-  if (!map) return;
-  map.flyTo([lat, lng], 9, { duration: 0.8 });
-
-  const marker = markerByZip[zip];
-  if (marker) setTimeout(() => marker.openPopup(), 250);
-}
-
-// ---------------------------
-// Card UI
-// ---------------------------
-function buildCardHTML(payload) {
-  const {
-    zip,
-    cityLine,
-    violentLevel,
-    propertyLevel,
-    safetyScore,
-    safetyColor,
-    sourceLine,
-    violentRate,
-    propertyRate,
-    year,
-    detailsHtml = ""
-  } = payload;
-
-  return `
-    <div class="card-topline">
-      <h3>${cityLine}</h3>
-      <a href="#" class="view-on-map" data-zip="${zip}">📍 View on map</a>
+function skeletonCard() {
+  const div = document.createElement("div");
+  div.className = "result-card skeleton";
+  div.innerHTML = `
+    <div class="result-top">
+      <div>
+        <div style="height:14px;width:90px;border-radius:8px;background:rgba(255,255,255,.06)"></div>
+        <div style="height:10px;width:140px;margin-top:8px;border-radius:8px;background:rgba(255,255,255,.05)"></div>
+      </div>
+      <div style="height:22px;width:82px;border-radius:999px;background:rgba(255,255,255,.06)"></div>
     </div>
-
-    <ul>
-      <li><strong>Violent Crime:</strong> ${crimeIcon(violentLevel)} ${violentLevel}
-        <span class="muted">(rate: ${formatNumber(violentRate)} /100k)</span>
-      </li>
-      <li><strong>Property Crime:</strong> ${crimeIcon(propertyLevel)} ${propertyLevel}
-        <span class="muted">(rate: ${formatNumber(propertyRate)} /100k)</span>
-      </li>
-      <li><strong>Safety Score:</strong> ${safetyScore}/100</li>
-    </ul>
-
-    <div class="safety-bar-container">
-      <div class="safety-bar" data-width="${safetyScore}" style="background-color:${safetyColor}"></div>
-    </div>
-
-    <button class="details-toggle" type="button" aria-expanded="false">
-      <span class="details-toggle-left">View details</span>
-      <span class="chev">▾</span>
-    </button>
-
-    <div class="details-panel" hidden>
-      ${detailsHtml}
-    </div>
-
-    <div class="card-foot muted">
-      ${sourceLine} ${year ? `• ${year}` : ""}
+    <div class="metrics">
+      <div class="metric">
+        <div style="height:10px;width:70px;border-radius:8px;background:rgba(255,255,255,.05)"></div>
+        <div style="height:14px;width:40px;margin-top:8px;border-radius:8px;background:rgba(255,255,255,.06)"></div>
+      </div>
+      <div class="metric">
+        <div style="height:10px;width:70px;border-radius:8px;background:rgba(255,255,255,.05)"></div>
+        <div style="height:14px;width:40px;margin-top:8px;border-radius:8px;background:rgba(255,255,255,.06)"></div>
+      </div>
+      <div class="metric">
+        <div style="height:10px;width:70px;border-radius:8px;background:rgba(255,255,255,.05)"></div>
+        <div style="height:14px;width:40px;margin-top:8px;border-radius:8px;background:rgba(255,255,255,.06)"></div>
+      </div>
     </div>
   `;
+  return div;
 }
 
-function attachCardInteractions(card, zip, lat, lng) {
-  // Toggle details without triggering map focus
-  const toggleBtn = card.querySelector(".details-toggle");
-  const panel = card.querySelector(".details-panel");
+function renderResults() {
+  resultsEl.innerHTML = "";
 
-  if (toggleBtn && panel) {
-    toggleBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+  updateCounts();
 
-      const isOpen = card.classList.toggle("details-open");
-      toggleBtn.setAttribute("aria-expanded", String(isOpen));
-
-      if (isOpen) {
-        panel.hidden = false;
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-        requestAnimationFrame(() => {
-          panel.style.maxHeight = "0px";
-        });
-        setTimeout(() => {
-          panel.hidden = true;
-        }, 220);
-      }
-    });
-  }
-
-  // Card click focuses map (ignore clicks on toggle/panel/link/remove)
-  card.addEventListener("click", (e) => {
-    const t = e.target;
-    if (!t) return;
-
-    if (
-      t.classList.contains("remove-card-btn") ||
-      t.classList.contains("view-on-map") ||
-      t.closest?.(".details-toggle") ||
-      t.closest?.(".details-panel")
-    ) return;
-
-    focusZipOnMap(zip, lat, lng);
-  });
-
-  const viewLink = card.querySelector(".view-on-map");
-  if (viewLink) {
-    viewLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      focusZipOnMap(zip, lat, lng);
-    });
-  }
-
-  card.tabIndex = 0;
-  card.setAttribute("role", "button");
-  card.setAttribute("aria-label", `View ${zip} on map`);
-  card.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      focusZipOnMap(zip, lat, lng);
-    }
-  });
-}
-
-// ---------------------------
-// Main Search
-// ---------------------------
-async function searchZip(forcedZip = null) {
-  const zip = forcedZip || document.getElementById("zipInput")?.value?.trim();
-  const resultDiv = document.getElementById("result");
-  if (!zip || !resultDiv) return;
-
-  if (zip.length !== 5 || isNaN(zip)) {
-    alert("Please enter a valid 5-digit ZIP code.");
-    return;
-  }
-
-  if (!compareMode && searchedZips.includes(zip)) {
-    alert("ZIP code already displayed.");
-    return;
-  }
-
-  if (!searchedZips.includes(zip)) searchedZips.push(zip);
-  if (!compareMode) resultDiv.innerHTML = "";
-
-  setStatusPill("Loading…", "loading");
-
-  const [skeleton] = renderSkeletons(resultDiv, 1);
-
-  try {
-    const zipInfo = await lookupZip(zip);
-    const api = await fetchCrimeStats(zip, zipInfo.state);
-
-    const violentLevel = rateToLevel(api.violentRate, "violent");
-    const propertyLevel = rateToLevel(api.propertyRate, "property");
-    const safetyScore = ratesToSafetyScore(api.violentRate, api.propertyRate);
-    const safetyColor = safetyColorFromScore(safetyScore);
-
-    const cityLine = `${zipInfo.city}, ${zipInfo.state} (${zip})`;
-    const sourceLine = api.mock ? `Source: Mock data (UI/UX mode)` : `Source: Live data`;
-
-    const detailsHtml = `
-      <div class="details-grid">
-        <div class="details-row">
-          <span class="details-k">State</span>
-          <span class="details-v">${zipInfo.stateName || zipInfo.state}</span>
-        </div>
-        <div class="details-row">
-          <span class="details-k">Coordinates</span>
-          <span class="details-v">${zipInfo.lat.toFixed(4)}, ${zipInfo.lng.toFixed(4)}</span>
-        </div>
-        <div class="details-row">
-          <span class="details-k">Data note</span>
-          <span class="details-v">Mock data for UI/UX (real FBI data later)</span>
-        </div>
-        <div class="details-row">
-          <span class="details-k">Roadmap</span>
-          <span class="details-v">Add: FBI + schools + income + housing + flood + more</span>
-        </div>
-      </div>
-    `;
-
-    const card = document.createElement("div");
-    card.className = "result-card";
-    if (compareMode) card.classList.add("compare-card");
-    card.innerHTML = buildCardHTML({
-      zip,
-      cityLine,
-      violentLevel,
-      propertyLevel,
-      safetyScore,
-      safetyColor,
-      sourceLine,
-      violentRate: api.violentRate,
-      propertyRate: api.propertyRate,
-      year: api.year,
-      detailsHtml
-    });
-
-    if (skeleton && skeleton.parentNode) skeleton.parentNode.replaceChild(card, skeleton);
-    else resultDiv.appendChild(card);
-
-    setTimeout(() => card.classList.add("show"), 30);
+  // Empty state logic
+  if (results.length === 0) {
+    showEmptyState(true);
 
     if (compareMode) {
-      const removeBtn = document.createElement("button");
-      removeBtn.textContent = "x";
-      removeBtn.className = "remove-card-btn";
-      removeBtn.title = "Remove card";
-      removeBtn.onclick = (e) => {
-        e.stopPropagation();
-        resultDiv.removeChild(card);
-        const idx = searchedZips.indexOf(zip);
-        if (idx > -1) searchedZips.splice(idx, 1);
-        if (markerByZip[zip] && markersLayer) {
-          markersLayer.removeLayer(markerByZip[zip]);
-          delete markerByZip[zip];
-        }
-        updateResultsCount();
-      };
-      card.appendChild(removeBtn);
+      setEmptyStateText("Compare Mode is ON. Search at least 2 ZIP codes to compare.");
+    } else {
+      setEmptyStateText("Enter a ZIP code to view results.");
     }
 
-    setTimeout(() => {
-      const bar = card.querySelector(".safety-bar");
-      if (bar) bar.style.width = bar.dataset.width + "%";
-    }, 80);
+    showCompareSummary(false);
+    return;
+  }
 
-    const popupHtml = `
-      <strong>${zipInfo.city}, ${zipInfo.state} (${zip})</strong><br>
-      Safety Score: ${safetyScore}/100<br>
-      Violent rate: ${formatNumber(api.violentRate)} /100k<br>
-      Property rate: ${formatNumber(api.propertyRate)} /100k
-    `;
+  showEmptyState(false);
 
-    upsertZipMarker(zip, zipInfo.lat, zipInfo.lng, safetyColor, popupHtml);
-    attachCardInteractions(card, zip, zipInfo.lat, zipInfo.lng);
+  // Compare summary
+  if (compareMode && results.length >= 2) {
+    const avgSafety = Math.round(results.reduce((a, r) => a + r.safetyScore, 0) / results.length);
+    const best = [...results].sort((a,b)=>b.safetyScore - a.safetyScore)[0];
+    const worst = [...results].sort((a,b)=>a.safetyScore - b.safetyScore)[0];
 
-    const sortSelect = document.getElementById("sortSelect");
-    const mode = sortSelect?.value || "score_desc";
-    sortCards(resultDiv, mode);
+    showCompareSummary(true, `
+      <b>Comparison:</b> Avg safety <b>${avgSafety}</b>. 
+      Best: <b>${best.zip}</b> (${best.safetyScore}). 
+      Highest risk: <b>${worst.zip}</b> (${worst.safetyScore}).
+    `);
+  } else {
+    showCompareSummary(false);
+  }
 
-    saveToHistory(zip);
-    updateResultsCount();
-
-    setStatusPill("Mock data mode", "default");
-    toast("Loaded (mock) ✅");
-  } catch (err) {
-    console.error(err);
-    if (skeleton && skeleton.parentNode) skeleton.remove();
+  // Render each result
+  for (const r of results) {
+    const band = safetyBand(r.safetyScore);
+    const isOpen = expanded.has(r.zip);
 
     const card = document.createElement("div");
     card.className = "result-card";
     card.innerHTML = `
-      <h3>${zip} — Couldn’t load</h3>
-      <p class="muted">${String(err.message || err)}</p>
-    `;
-    resultDiv.appendChild(card);
-    setTimeout(() => card.classList.add("show"), 30);
+      <div class="result-top">
+        <div>
+          <div class="result-zip">${r.zip}</div>
+          <div class="result-sub">${r.city}, ${r.state} • Confidence ${r.confidence}%</div>
+        </div>
+        <div class="badge ${band.cls}">${band.label}</div>
+      </div>
 
-    updateResultsCount();
-    setStatusPill("Error loading ZIP", "error");
-    toast("Couldn’t load. Check ZIP / network.");
+      <div class="metrics">
+        <div class="metric">
+          <div class="k">Safety</div>
+          <div class="v">${r.safetyScore}</div>
+        </div>
+        <div class="metric">
+          <div class="k">Violent</div>
+          <div class="v">${r.metrics.violentRate}</div>
+        </div>
+        <div class="metric">
+          <div class="k">Property</div>
+          <div class="v">${r.metrics.propertyRate}</div>
+        </div>
+      </div>
+
+      ${isOpen ? `
+        <div class="details">
+          <b>Notes</b>
+          <ul>
+            ${r.notes.map(n => `<li>${escapeHtml(n)}</li>`).join("")}
+          </ul>
+          <div><b>Spec-style checks (example):</b> data validity, missing fields, out-of-range values, and inconsistent totals.</div>
+        </div>
+      ` : ""}
+
+      <button class="btn ghost details-toggle" data-zip="${r.zip}">
+        ${isOpen ? "Hide details" : "Show details"}
+      </button>
+    `;
+
+    resultsEl.appendChild(card);
+  }
+
+  // Wire detail toggles
+  resultsEl.querySelectorAll(".details-toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const zip = btn.getAttribute("data-zip");
+      if (!zip) return;
+      if (expanded.has(zip)) expanded.delete(zip);
+      else expanded.add(zip);
+      renderResults();
+    });
+  });
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+// ---------------------------
+// Sorting
+// ---------------------------
+
+function sortResults() {
+  const mode = sortSelect.value;
+  const copy = [...results];
+
+  if (mode === "safety_desc") copy.sort((a,b)=> b.safetyScore - a.safetyScore);
+  if (mode === "safety_asc") copy.sort((a,b)=> a.safetyScore - b.safetyScore);
+  if (mode === "zip_asc") copy.sort((a,b)=> a.zip.localeCompare(b.zip));
+  if (mode === "zip_desc") copy.sort((a,b)=> b.zip.localeCompare(a.zip));
+
+  results = copy;
+  renderResults();
+}
+
+// ---------------------------
+// Trend chart placeholder (Canvas)
+// ---------------------------
+
+function renderTrend() {
+  if (!trendCtx) return;
+
+  // pick either last searched zip trend, or average trend
+  let series = [50,55,52,58];
+  if (results.length === 1) series = results[0].trend;
+  if (results.length >= 2) {
+    // average trends
+    const sum = [0,0,0,0];
+    for (const r of results) {
+      for (let i=0;i<4;i++) sum[i] += r.trend[i];
+    }
+    series = sum.map(v => Math.round(v / results.length));
+  }
+
+  const labels = ["2021","2022","2023","2024"];
+  const w = trendCanvas.width = trendCanvas.clientWidth * devicePixelRatio;
+  const h = trendCanvas.height = (trendCanvas.clientHeight || 90) * devicePixelRatio;
+
+  trendCtx.clearRect(0,0,w,h);
+
+  // background grid
+  trendCtx.globalAlpha = 1;
+  trendCtx.lineWidth = 1 * devicePixelRatio;
+  trendCtx.strokeStyle = "rgba(255,255,255,.08)";
+  for (let i=1;i<=3;i++){
+    const y = (h/4)*i;
+    trendCtx.beginPath();
+    trendCtx.moveTo(0,y);
+    trendCtx.lineTo(w,y);
+    trendCtx.stroke();
+  }
+
+  // compute points
+  const pad = 18 * devicePixelRatio;
+  const min = 0, max = 100;
+  const xStep = (w - pad*2) / (series.length - 1);
+  const toY = (v) => {
+    const t = (v - min) / (max - min);
+    return (h - pad) - t * (h - pad*2);
+  };
+
+  const pts = series.map((v,i)=>({
+    x: pad + i*xStep,
+    y: toY(v)
+  }));
+
+  // line
+  trendCtx.strokeStyle = "rgba(0,185,107,.85)";
+  trendCtx.lineWidth = 2.5 * devicePixelRatio;
+  trendCtx.beginPath();
+  trendCtx.moveTo(pts[0].x, pts[0].y);
+  for (let i=1;i<pts.length;i++){
+    trendCtx.lineTo(pts[i].x, pts[i].y);
+  }
+  trendCtx.stroke();
+
+  // dots
+  trendCtx.fillStyle = "rgba(0,185,107,1)";
+  for (const p of pts){
+    trendCtx.beginPath();
+    trendCtx.arc(p.x,p.y, 3.3*devicePixelRatio, 0, Math.PI*2);
+    trendCtx.fill();
+  }
+
+  // labels (light)
+  trendCtx.fillStyle = "rgba(154,166,178,.8)";
+  trendCtx.font = `${12*devicePixelRatio}px ui-sans-serif, system-ui`;
+  trendCtx.textAlign = "center";
+  labels.forEach((lab,i)=>{
+    trendCtx.fillText(lab, pts[i].x, h - 6*devicePixelRatio);
+  });
+}
+
+// ---------------------------
+// Core action: Search
+// ---------------------------
+
+async function runSearch(zipRaw) {
+  const zip = String(zipRaw || "").trim();
+
+  setInlineError("");
+
+  if (!isValidZip(zip)) {
+    setInlineError("Please enter a valid 5-digit ZIP code.");
+    return;
+  }
+
+  // Show hints
+  if (compareMode) showCompareHint(true);
+  else showCompareHint(false);
+
+  // loading + skeleton
+  showLoading(true);
+  resultsEl.innerHTML = "";
+  resultsEl.appendChild(skeletonCard());
+  resultsEl.appendChild(skeletonCard());
+
+  try {
+    const data = await fetchZipData(zip);
+
+    // add to history
+    historyZips.push(zip);
+
+    // save zip chip
+    if (!savedZips.includes(zip)) savedZips.push(zip);
+    renderSavedChips();
+
+    // update results list:
+    // If compare mode -> append (keep multiple)
+    // else -> replace results with just the one zip
+    if (compareMode) {
+      // avoid duplicates in results
+      const already = results.some(r => r.zip === zip);
+      if (!already) results.push(data);
+      else {
+        // refresh existing if searched again
+        results = results.map(r => r.zip === zip ? data : r);
+      }
+    } else {
+      results = [data];
+      expanded.clear();
+    }
+
+    sortResults();
+    renderTrend();
+  } catch (err) {
+    console.error(err);
+    results = [];
+    renderResults();
+    renderTrend();
+    setInlineError("Could not fetch data right now. Try again (or keep Mock Mode on).");
   } finally {
-    const input = document.getElementById("zipInput");
-    if (input) input.value = "";
+    showLoading(false);
   }
 }
 
 // ---------------------------
-// Page Load Setup
+// Clear actions
 // ---------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  renderHistory();
-  initMap();
 
-  setStatusPill("Mock data mode", "default");
-  updateResultsCount();
+function clearHistory() {
+  historyZips = [];
+  // history is conceptual here; saved chips remain unless Clear All
+  // This button can be repurposed later if you render history UI.
+  setInlineError("");
+}
 
-  const sortSelect = document.getElementById("sortSelect");
-  const resultDiv = document.getElementById("result");
-  if (sortSelect && resultDiv) {
-    sortSelect.addEventListener("change", () => {
-      sortCards(resultDiv, sortSelect.value);
-    });
-  }
+function clearAll() {
+  historyZips = [];
+  savedZips = [];
+  results = [];
+  expanded.clear();
 
-  const searchBtn = document.getElementById("searchBtn");
-  if (searchBtn) searchBtn.addEventListener("click", () => searchZip());
+  renderSavedChips();
+  renderResults();
+  renderTrend();
+  setInlineError("");
+}
 
-  const zipInput = document.getElementById("zipInput");
-  if (zipInput) {
-    zipInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") searchZip();
-    });
-  }
+// ---------------------------
+// Map controls (placeholder)
+// ---------------------------
 
-  const clearBtn = document.getElementById("clearBtn");
-  if (clearBtn) {
-    clearBtn.addEventListener("click", () => {
-      document.getElementById("result").innerHTML = "";
-      searchedZips.length = 0;
-      if (markersLayer) markersLayer.clearLayers();
-      for (const k of Object.keys(markerByZip)) delete markerByZip[k];
+legendBtn.addEventListener("click", () => {
+  legendEl.classList.toggle("hidden");
+});
 
-      updateResultsCount();
-      setStatusPill("Mock data mode", "default");
-    });
-  }
+centerBtn.addEventListener("click", () => {
+  // placeholder: later hook into map library
+  mapEl.scrollIntoView({ behavior: "smooth", block: "center" });
+});
 
-  const clearHistoryBtn = document.getElementById("clearHistoryBtn");
-  if (clearHistoryBtn) {
-    clearHistoryBtn.addEventListener("click", () => {
-      localStorage.removeItem("zipHistory");
-      renderHistory();
-    });
-  }
-
-  const compareCheckbox = document.getElementById("compareModeCheckbox");
-  if (compareCheckbox) {
-    compareCheckbox.addEventListener("change", (e) => {
-      compareMode = e.target.checked;
-      document.getElementById("result").classList.toggle("compare-layout", compareMode);
-    });
+fullscreenBtn.addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    mapEl.requestFullscreen?.();
+  } else {
+    document.exitFullscreen?.();
   }
 });
+
+// ---------------------------
+// Events
+// ---------------------------
+
+searchBtn.addEventListener("click", () => runSearch(zipInput.value));
+
+zipInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") runSearch(zipInput.value);
+});
+
+mockToggle.addEventListener("change", () => {
+  useMockData = mockToggle.checked;
+  // optional: when switching mock/live, clear inline errors
+  setInlineError("");
+});
+
+compareToggle.addEventListener("change", () => {
+  compareMode = compareToggle.checked;
+
+  // hint text visibility
+  showCompareHint(compareMode);
+
+  // If turning OFF compare, keep only the most recent result (or none)
+  if (!compareMode && results.length > 1) {
+    results = [results[results.length - 1]];
+    expanded.clear();
+  }
+
+  renderResults();
+  renderTrend();
+});
+
+sortSelect.addEventListener("change", () => {
+  sortResults();
+  renderTrend();
+});
+
+clearHistoryBtn.addEventListener("click", () => {
+  clearHistory();
+  // small UX feedback
+  setInlineError("History cleared (saved ZIPs remain).");
+  setTimeout(()=>setInlineError(""), 1200);
+});
+
+clearAllBtn.addEventListener("click", () => {
+  clearAll();
+  setEmptyStateText("Enter a ZIP code to view results.");
+  showEmptyState(true);
+});
+
+// ---------------------------
+// Initial paint
+// ---------------------------
+
+(function init(){
+  useMockData = mockToggle.checked;
+  compareMode = compareToggle.checked;
+
+  renderSavedChips();
+  renderResults();
+  renderTrend();
+})();

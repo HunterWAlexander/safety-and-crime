@@ -1,112 +1,162 @@
-<!-- index.html (FULL) -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" href="/favicon.ico">
-  <title>Safety & Crime</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Safety & Crime - ZIP Safety</title>
+  <meta name="description" content="Check safety and crime insights by ZIP code. Compare ZIP codes and explore safety levels with a clean modern UI." />
 
-  <!-- Leaflet CSS (no integrity to avoid blocking) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-
-  <!-- ✅ FIX: absolute path (prevents /api/styles.css) -->
-  <link rel="stylesheet" href="/styles.css">
-
-  <meta name="description" content="Search ZIP codes to view safety and crime statistics, compare areas, and explore crime data visually.">
-  <meta name="keywords" content="crime data, safety score, ZIP code crime, neighborhood safety">
-  <meta name="author" content="Safety & Crime">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <div class="container">
-    <header class="header">
-      <div>
-        <h1>Safety & Crime Lookup</h1>
-        <p class="subtitle">
-          Enter your ZIP code to view safety statistics.
-          <span class="info-tip" tabindex="0"
-            data-tip="Future data will be based on County-level FBI reporting (not exact ZIP-level).">
-            ⓘ
-          </span>
-        </p>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-text">
+        <div class="brand-title">Safety & Crime</div>
+        <div class="brand-subtitle">Modern ZIP safety insights</div>
       </div>
+    </div>
 
-      <!-- NEW: status pill (mock mode / loading / error) -->
-      <div id="statusPill" class="status-pill" aria-live="polite">
-        Mock data mode
-      </div>
-    </header>
-
-    <div class="search-bar">
-      <label class="compare-toggle">
-        <input type="checkbox" id="compareModeCheckbox">
-        Compare Mode
+    <div class="toggles">
+      <label class="toggle">
+        <input id="mockToggle" type="checkbox" checked />
+        <span>Mock Data Mode</span>
       </label>
 
-      <div id="history" class="history"></div>
-      <button id="clearHistoryBtn" class="clear-btn" type="button">Clear History</button>
-
-      <input
-        type="text"
-        id="zipInput"
-        placeholder="Enter ZIP code"
-        maxlength="5"
-        inputmode="numeric"
-        autocomplete="postal-code"
-      />
-      <button type="button" id="searchBtn">Search</button>
+      <label class="toggle">
+        <input id="compareToggle" type="checkbox" />
+        <span>Compare Mode</span>
+      </label>
     </div>
+  </header>
 
-    <div class="actions-row">
-      <button id="clearBtn" class="clear-btn" type="button">Clear All</button>
+  <main class="container">
+    <section class="hero card">
+      <h1>Search ZIP Code Safety</h1>
+      <p class="muted">
+        Enter a 5-digit ZIP code to view safety info. You can save ZIPs and compare them.
+      </p>
 
-      <!-- NEW: results controls (optional for now) -->
-      <div class="results-controls" aria-label="Results controls">
-        <span id="resultsCount" class="muted">0 results</span>
-        <select id="sortSelect" class="sort-select" aria-label="Sort results">
-          <option value="score_desc" selected>Sort: Safety (high → low)</option>
-          <option value="score_asc">Sort: Safety (low → high)</option>
-          <option value="zip_asc">Sort: ZIP (A → Z)</option>
-        </select>
-      </div>
-    </div>
+      <div class="search-row">
+        <div class="input-wrap">
+          <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="e.g., 77002" />
+          <div id="zipError" class="inline-error hidden"></div>
+        </div>
 
-    <div id="result" class="result"></div>
-
-    <!-- Skeleton card template (hidden) -->
-    <template id="cardSkeletonTpl">
-      <div class="result-card skeleton">
-        <div class="skeleton-line w-60"></div>
-        <div class="skeleton-line w-35"></div>
-        <div class="skeleton-block"></div>
-        <div class="skeleton-line w-80"></div>
-        <div class="skeleton-line w-55"></div>
-      </div>
-    </template>
-
-    <!-- Map -->
-    <div id="mapContainer" class="map-container" aria-label="Map area">
-      <div class="map-controls" aria-label="Map controls">
-        <button id="toggleLegendBtn" class="map-btn" type="button" title="Toggle legend">Legend</button>
-        <button id="fullscreenMapBtn" class="map-btn" type="button" title="Fullscreen map">Fullscreen</button>
-        <button id="centerMapBtn" class="map-btn" type="button" title="Center map on the US">Center</button>
+        <button id="searchBtn" class="btn primary">Search</button>
       </div>
 
-      <div id="mapLegend" class="map-legend" aria-label="Safety color legend">
-        <span class="leg-item"><span class="dot dot-green"></span> Safer</span>
-        <span class="leg-item"><span class="dot dot-yellow"></span> Medium</span>
-        <span class="leg-item"><span class="dot dot-red"></span> Higher risk</span>
+      <div class="toolbar">
+        <button id="clearHistoryBtn" class="btn ghost">Clear History</button>
+        <button id="clearAllBtn" class="btn ghost danger">Clear All</button>
+
+        <div class="spacer"></div>
+
+        <label class="select-wrap">
+          <span class="muted">Sort</span>
+          <select id="sortSelect">
+            <option value="safety_desc">Safety: High → Low</option>
+            <option value="safety_asc">Safety: Low → High</option>
+            <option value="zip_asc">ZIP: A → Z</option>
+            <option value="zip_desc">ZIP: Z → A</option>
+          </select>
+        </label>
       </div>
-    </div>
-  </div>
 
-  <div id="toast" aria-live="polite"></div>
+      <!-- Safety Score tooltip / explainer -->
+      <div class="safety-info">
+        <span class="label">Safety Score</span>
+        <span class="tooltip" aria-label="What is Safety Score?" tabindex="0">?
+          <span class="tooltip-text">
+            Safety Score is a simple relative rating. Higher means safer compared to other ZIP codes.
+            This will become more accurate once live data sources are connected.
+          </span>
+        </span>
+      </div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" defer></script>
+      <!-- Saved ZIPs -->
+      <div class="saved-row">
+        <div class="muted small">Saved ZIPs</div>
+        <div id="savedZips" class="saved-zips"></div>
+      </div>
+    </section>
 
-  <!-- ✅ FIX: absolute path prevents /api/script.js -->
-  <script src="/script.js" defer></script>
+    <!-- Status / empty / compare guidance -->
+    <section class="card status-card">
+      <div id="emptyState" class="empty-state">
+        Enter a ZIP code to view results.
+      </div>
+
+      <div id="compareHint" class="compare-hint hidden">
+        Compare Mode is ON. Search at least <b>2 ZIP codes</b> to see a comparison summary.
+      </div>
+
+      <div id="loadingState" class="loading hidden">
+        Fetching data…
+      </div>
+    </section>
+
+    <!-- Trend chart placeholder -->
+    <section class="card">
+      <div class="section-title">
+        Trend (placeholder)
+        <span class="muted small">— will show yearly trend once APIs are connected</span>
+      </div>
+      <canvas id="trendChart" height="90"></canvas>
+    </section>
+
+    <!-- Results + Map -->
+    <section class="grid">
+      <section class="card results-card">
+        <div class="results-head">
+          <div class="results-title">
+            Results
+            <span id="resultsCount" class="pill">0</span>
+          </div>
+
+          <div id="compareSummary" class="compare-summary hidden"></div>
+        </div>
+
+        <div id="results" class="results"></div>
+      </section>
+
+      <section class="card map-card">
+        <div class="map-head">
+          <div class="section-title">Map</div>
+          <div class="map-actions">
+            <button id="legendBtn" class="btn ghost">Legend</button>
+            <button id="centerBtn" class="btn ghost">Center</button>
+            <button id="fullscreenBtn" class="btn ghost">Fullscreen</button>
+          </div>
+        </div>
+
+        <div id="map" class="map">
+          <div class="map-placeholder">
+            Map placeholder (your map integration stays here)
+          </div>
+        </div>
+
+        <div id="legend" class="legend hidden">
+          <div class="legend-row"><span class="dot safe"></span> Safer</div>
+          <div class="legend-row"><span class="dot medium"></span> Medium</div>
+          <div class="legend-row"><span class="dot risk"></span> Higher risk</div>
+        </div>
+      </section>
+    </section>
+
+    <!-- Data source footer -->
+    <footer class="footer card">
+      <div class="data-source">
+        Data Sources: <b>Mock Data</b> (API integration coming soon). For demo only.
+      </div>
+      <div class="muted small">
+        Tip: Once UI/UX feels good, we’ll plug in the FBI API and any other datasets safely with loading/error states.
+      </div>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
