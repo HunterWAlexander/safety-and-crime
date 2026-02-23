@@ -577,3 +577,29 @@ clearAllBtn.addEventListener("click", () => {
   renderResults();
   renderTrend();
 })();
+// ---- Leaflet Map Init ----
+let map;
+let marker;
+
+function initLeafletMap() {
+  if (!window.L) {
+    console.warn("Leaflet not loaded yet.");
+    return;
+  }
+  if (map) return; // prevent double-init
+
+  // Default view (Houston-ish)
+  map = L.map("map", {
+    zoomControl: true
+  }).setView([29.7604, -95.3698], 10);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+
+  marker = L.marker([29.7604, -95.3698]).addTo(map).bindPopup("Houston (default)");
+}
+
+// Call it once on load
+window.addEventListener("load", initLeafletMap);
