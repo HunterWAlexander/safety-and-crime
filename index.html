@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Safety & Crime - ZIP Safety</title>
   <meta name="description" content="Check safety and crime insights by ZIP code. Compare ZIP codes and explore safety levels with a clean modern UI." />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Leaflet (Map) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -134,11 +136,8 @@
           </div>
         </div>
 
-        <div id="map" class="map">
-          <div class="map-placeholder">
-            Map placeholder (your map integration stays here)
-          </div>
-        </div>
+        <!-- IMPORTANT: Leaflet needs an empty div to render into -->
+        <div id="map" class="map"></div>
 
         <div id="legend" class="legend hidden">
           <div class="legend-row"><span class="dot safe"></span> Safer</div>

@@ -1,5 +1,5 @@
 // ---------------------------
-// Safety & Crime (UI/UX baseline)
+// Safety & Crime (UI/UX baseline + Leaflet map)
 // Mock data now; API later.
 // ---------------------------
 
@@ -37,10 +37,17 @@ const trendCtx = trendCanvas?.getContext?.("2d");
 let useMockData = true;
 let compareMode = false;
 
-let historyZips = [];     // Searches performed (displayed results)
-let savedZips = [];       // Saved chip list (clickable)
-let results = [];         // Result objects
-let expanded = new Set(); // expanded card ids
+let historyZips = [];
+let savedZips = [];
+let results = [];
+let expanded = new Set();
+
+// Map state (Leaflet)
+let map = null;
+let mapMarker = null;
+let mapCircle = null;
+let lastLatLng = null; // {lat,lng}
+const DEFAULT_CENTER = { lat: 29.7604, lng: -95.3698 }; // Houston
 
 // ---------------------------
 // Helpers
@@ -95,25 +102,43 @@ function clamp(n, a, b) {
   return Math.max(a, Math.min(b, n));
 }
 
+function sleep(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 // ---------------------------
-// Mock Data
+// Mock Data (now includes mock lat/lng around Houston)
 // ---------------------------
 
 function mockZipData(zip) {
-  // deterministic-ish values from zip string
   const seed = Number(zip) % 997;
-  const safety = clamp(25 + (seed % 76), 0, 100);  // 25..100
-  const violent = clamp((seed % 90) / 10, 0, 10);  // 0..9.0
-  const property = clamp(((seed * 7) % 220) / 10, 0, 22); // 0..22.0
 
-  // fake "confidence"
+  const safety = clamp(25 + (seed % 76), 0, 100);
+  const violent = clamp((seed % 90) / 10, 0, 10);
+  const property = clamp(((seed * 7) % 220) / 10, 0, 22);
+
   const confidence = clamp(55 + (seed % 40), 0, 100);
 
-  // trend placeholder points
+  // mock “trend”
   const t1 = clamp(safety - (seed % 8), 0, 100);
   const t2 = clamp(safety + ((seed % 11) - 5), 0, 100);
   const t3 = clamp(safety + ((seed % 9) - 4), 0, 100);
   const t4 = clamp(safety + ((seed % 13) - 6), 0, 100);
+
+  // mock coords: slight offsets around Houston so the map moves per ZIP
+  const latOffset = ((seed % 100) - 50) * 0.0012;  // ~±0.06
+  const lngOffset = (((seed * 3) % 100) - 50) * 0.0015; // ~±0.075
+  const lat = DEFAULT_CENTER.lat + latOffset;
+  const lng = DEFAULT_CENTER.lng + lngOffset;
 
   return {
     zip,
@@ -130,7 +155,8 @@ function mockZipData(zip) {
       "Mock dataset: replace with FBI/API values later.",
       "This is a UI/UX baseline so pages feel real before live data."
     ],
-    trend: [t1, t2, t3, t4]
+    trend: [t1, t2, t3, t4],
+    location: { lat, lng }
   };
 }
 
@@ -139,23 +165,108 @@ function mockZipData(zip) {
 // ---------------------------
 
 async function fetchZipData(zip) {
-  // Later: plug FBI/other API calls here.
-  // For now: mock.
   if (useMockData) {
-    await sleep(500);
+    await sleep(450);
     return mockZipData(zip);
   }
-
-  // Example placeholder to avoid silent failures
+  // Later: plug FBI/other API calls here.
   throw new Error("Live API mode not configured yet.");
 }
 
-function sleep(ms) {
-  return new Promise(res => setTimeout(res, ms));
+// ---------------------------
+// Leaflet Map
+// ---------------------------
+
+function initLeafletMap() {
+  if (map) return;
+  if (!window.L) {
+    // Leaflet script is deferred; it should exist after load
+    console.warn("Leaflet not loaded yet.");
+    return;
+  }
+
+  map = L.map("map", { zoomControl: true }).setView([DEFAULT_CENTER.lat, DEFAULT_CENTER.lng], 10);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+
+  // default marker
+  mapMarker = L.marker([DEFAULT_CENTER.lat, DEFAULT_CENTER.lng]).addTo(map)
+    .bindPopup("Houston (default)");
+
+  // default circle (neutral)
+  mapCircle = L.circle([DEFAULT_CENTER.lat, DEFAULT_CENTER.lng], {
+    radius: 1800,
+    color: "rgba(154,166,178,.85)",
+    weight: 2,
+    fillColor: "rgba(154,166,178,.20)",
+    fillOpacity: 0.25
+  }).addTo(map);
+
+  lastLatLng = { ...DEFAULT_CENTER };
+
+  // Fix tiles on resize
+  window.addEventListener("resize", () => {
+    try { map.invalidateSize(); } catch {}
+  });
+
+  document.addEventListener("fullscreenchange", () => {
+    // Leaflet needs invalidateSize after fullscreen changes
+    setTimeout(() => {
+      try { map.invalidateSize(); } catch {}
+    }, 120);
+  });
+}
+
+function colorForBand(bandCls) {
+  if (bandCls === "safe") return { stroke: "rgba(0,185,107,0.95)", fill: "rgba(0,185,107,0.20)" };
+  if (bandCls === "medium") return { stroke: "rgba(247,201,72,0.95)", fill: "rgba(247,201,72,0.18)" };
+  return { stroke: "rgba(255,77,77,0.95)", fill: "rgba(255,77,77,0.16)" };
+}
+
+function updateMapForResult(r) {
+  if (!r?.location) return;
+  initLeafletMap();
+  if (!map) return;
+
+  const { lat, lng } = r.location;
+  lastLatLng = { lat, lng };
+
+  const band = safetyBand(r.safetyScore);
+  const colors = colorForBand(band.cls);
+
+  // update marker
+  if (!mapMarker) {
+    mapMarker = L.marker([lat, lng]).addTo(map);
+  } else {
+    mapMarker.setLatLng([lat, lng]);
+  }
+  mapMarker.bindPopup(`${r.zip} • ${band.label} (${r.safetyScore})`).openPopup();
+
+  // update circle
+  if (!mapCircle) {
+    mapCircle = L.circle([lat, lng], { radius: 1800 }).addTo(map);
+  } else {
+    mapCircle.setLatLng([lat, lng]);
+  }
+  mapCircle.setStyle({
+    color: colors.stroke,
+    fillColor: colors.fill,
+    fillOpacity: 0.25,
+    weight: 2
+  });
+
+  // recenter
+  map.setView([lat, lng], Math.max(map.getZoom(), 11), { animate: true });
+  setTimeout(() => {
+    try { map.invalidateSize(); } catch {}
+  }, 60);
 }
 
 // ---------------------------
-// Rendering
+// Rendering (Saved + Results)
 // ---------------------------
 
 function renderSavedChips() {
@@ -209,10 +320,8 @@ function skeletonCard() {
 
 function renderResults() {
   resultsEl.innerHTML = "";
-
   updateCounts();
 
-  // Empty state logic
   if (results.length === 0) {
     showEmptyState(true);
 
@@ -235,15 +344,14 @@ function renderResults() {
     const worst = [...results].sort((a,b)=>a.safetyScore - b.safetyScore)[0];
 
     showCompareSummary(true, `
-      <b>Comparison:</b> Avg safety <b>${avgSafety}</b>. 
-      Best: <b>${best.zip}</b> (${best.safetyScore}). 
+      <b>Comparison:</b> Avg safety <b>${avgSafety}</b>.
+      Best: <b>${best.zip}</b> (${best.safetyScore}).
       Highest risk: <b>${worst.zip}</b> (${worst.safetyScore}).
     `);
   } else {
     showCompareSummary(false);
   }
 
-  // Render each result
   for (const r of results) {
     const band = safetyBand(r.safetyScore);
     const isOpen = expanded.has(r.zip);
@@ -292,7 +400,6 @@ function renderResults() {
     resultsEl.appendChild(card);
   }
 
-  // Wire detail toggles
   resultsEl.querySelectorAll(".details-toggle").forEach(btn => {
     btn.addEventListener("click", () => {
       const zip = btn.getAttribute("data-zip");
@@ -302,15 +409,6 @@ function renderResults() {
       renderResults();
     });
   });
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
 }
 
 // ---------------------------
@@ -337,15 +435,11 @@ function sortResults() {
 function renderTrend() {
   if (!trendCtx) return;
 
-  // pick either last searched zip trend, or average trend
   let series = [50,55,52,58];
   if (results.length === 1) series = results[0].trend;
   if (results.length >= 2) {
-    // average trends
     const sum = [0,0,0,0];
-    for (const r of results) {
-      for (let i=0;i<4;i++) sum[i] += r.trend[i];
-    }
+    for (const r of results) for (let i=0;i<4;i++) sum[i] += r.trend[i];
     series = sum.map(v => Math.round(v / results.length));
   }
 
@@ -355,7 +449,6 @@ function renderTrend() {
 
   trendCtx.clearRect(0,0,w,h);
 
-  // background grid
   trendCtx.globalAlpha = 1;
   trendCtx.lineWidth = 1 * devicePixelRatio;
   trendCtx.strokeStyle = "rgba(255,255,255,.08)";
@@ -367,7 +460,6 @@ function renderTrend() {
     trendCtx.stroke();
   }
 
-  // compute points
   const pad = 18 * devicePixelRatio;
   const min = 0, max = 100;
   const xStep = (w - pad*2) / (series.length - 1);
@@ -376,22 +468,15 @@ function renderTrend() {
     return (h - pad) - t * (h - pad*2);
   };
 
-  const pts = series.map((v,i)=>({
-    x: pad + i*xStep,
-    y: toY(v)
-  }));
+  const pts = series.map((v,i)=>({ x: pad + i*xStep, y: toY(v) }));
 
-  // line
   trendCtx.strokeStyle = "rgba(0,185,107,.85)";
   trendCtx.lineWidth = 2.5 * devicePixelRatio;
   trendCtx.beginPath();
   trendCtx.moveTo(pts[0].x, pts[0].y);
-  for (let i=1;i<pts.length;i++){
-    trendCtx.lineTo(pts[i].x, pts[i].y);
-  }
+  for (let i=1;i<pts.length;i++) trendCtx.lineTo(pts[i].x, pts[i].y);
   trendCtx.stroke();
 
-  // dots
   trendCtx.fillStyle = "rgba(0,185,107,1)";
   for (const p of pts){
     trendCtx.beginPath();
@@ -399,13 +484,10 @@ function renderTrend() {
     trendCtx.fill();
   }
 
-  // labels (light)
   trendCtx.fillStyle = "rgba(154,166,178,.8)";
   trendCtx.font = `${12*devicePixelRatio}px ui-sans-serif, system-ui`;
   trendCtx.textAlign = "center";
-  labels.forEach((lab,i)=>{
-    trendCtx.fillText(lab, pts[i].x, h - 6*devicePixelRatio);
-  });
+  labels.forEach((lab,i)=> trendCtx.fillText(lab, pts[i].x, h - 6*devicePixelRatio));
 }
 
 // ---------------------------
@@ -414,7 +496,6 @@ function renderTrend() {
 
 async function runSearch(zipRaw) {
   const zip = String(zipRaw || "").trim();
-
   setInlineError("");
 
   if (!isValidZip(zip)) {
@@ -422,11 +503,8 @@ async function runSearch(zipRaw) {
     return;
   }
 
-  // Show hints
-  if (compareMode) showCompareHint(true);
-  else showCompareHint(false);
+  showCompareHint(compareMode);
 
-  // loading + skeleton
   showLoading(true);
   resultsEl.innerHTML = "";
   resultsEl.appendChild(skeletonCard());
@@ -435,24 +513,15 @@ async function runSearch(zipRaw) {
   try {
     const data = await fetchZipData(zip);
 
-    // add to history
     historyZips.push(zip);
 
-    // save zip chip
     if (!savedZips.includes(zip)) savedZips.push(zip);
     renderSavedChips();
 
-    // update results list:
-    // If compare mode -> append (keep multiple)
-    // else -> replace results with just the one zip
     if (compareMode) {
-      // avoid duplicates in results
       const already = results.some(r => r.zip === zip);
       if (!already) results.push(data);
-      else {
-        // refresh existing if searched again
-        results = results.map(r => r.zip === zip ? data : r);
-      }
+      else results = results.map(r => r.zip === zip ? data : r);
     } else {
       results = [data];
       expanded.clear();
@@ -460,6 +529,10 @@ async function runSearch(zipRaw) {
 
     sortResults();
     renderTrend();
+
+    // Update map to show searched ZIP (mock coords now; real coords later)
+    updateMapForResult(data);
+
   } catch (err) {
     console.error(err);
     results = [];
@@ -477,8 +550,6 @@ async function runSearch(zipRaw) {
 
 function clearHistory() {
   historyZips = [];
-  // history is conceptual here; saved chips remain unless Clear All
-  // This button can be repurposed later if you render history UI.
   setInlineError("");
 }
 
@@ -495,7 +566,7 @@ function clearAll() {
 }
 
 // ---------------------------
-// Map controls (placeholder)
+// Map controls
 // ---------------------------
 
 legendBtn.addEventListener("click", () => {
@@ -503,15 +574,23 @@ legendBtn.addEventListener("click", () => {
 });
 
 centerBtn.addEventListener("click", () => {
-  // placeholder: later hook into map library
-  mapEl.scrollIntoView({ behavior: "smooth", block: "center" });
+  initLeafletMap();
+  if (!map) return;
+
+  const c = lastLatLng || DEFAULT_CENTER;
+  map.setView([c.lat, c.lng], Math.max(map.getZoom(), 11), { animate: true });
+  setTimeout(() => { try { map.invalidateSize(); } catch {} }, 60);
 });
 
-fullscreenBtn.addEventListener("click", () => {
-  if (!document.fullscreenElement) {
-    mapEl.requestFullscreen?.();
-  } else {
-    document.exitFullscreen?.();
+fullscreenBtn.addEventListener("click", async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await mapEl.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  } catch (e) {
+    console.warn("Fullscreen not supported/blocked:", e);
   }
 });
 
@@ -520,24 +599,17 @@ fullscreenBtn.addEventListener("click", () => {
 // ---------------------------
 
 searchBtn.addEventListener("click", () => runSearch(zipInput.value));
-
-zipInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") runSearch(zipInput.value);
-});
+zipInput.addEventListener("keydown", (e) => { if (e.key === "Enter") runSearch(zipInput.value); });
 
 mockToggle.addEventListener("change", () => {
   useMockData = mockToggle.checked;
-  // optional: when switching mock/live, clear inline errors
   setInlineError("");
 });
 
 compareToggle.addEventListener("change", () => {
   compareMode = compareToggle.checked;
-
-  // hint text visibility
   showCompareHint(compareMode);
 
-  // If turning OFF compare, keep only the most recent result (or none)
   if (!compareMode && results.length > 1) {
     results = [results[results.length - 1]];
     expanded.clear();
@@ -545,6 +617,9 @@ compareToggle.addEventListener("change", () => {
 
   renderResults();
   renderTrend();
+
+  // Optional: center on last result when compare toggles off
+  if (results.length === 1) updateMapForResult(results[0]);
 });
 
 sortSelect.addEventListener("change", () => {
@@ -554,7 +629,6 @@ sortSelect.addEventListener("change", () => {
 
 clearHistoryBtn.addEventListener("click", () => {
   clearHistory();
-  // small UX feedback
   setInlineError("History cleared (saved ZIPs remain).");
   setTimeout(()=>setInlineError(""), 1200);
 });
@@ -576,30 +650,9 @@ clearAllBtn.addEventListener("click", () => {
   renderSavedChips();
   renderResults();
   renderTrend();
+
+  // Init map once on load (Leaflet script is deferred)
+  window.addEventListener("load", () => {
+    initLeafletMap();
+  });
 })();
-// ---- Leaflet Map Init ----
-let map;
-let marker;
-
-function initLeafletMap() {
-  if (!window.L) {
-    console.warn("Leaflet not loaded yet.");
-    return;
-  }
-  if (map) return; // prevent double-init
-
-  // Default view (Houston-ish)
-  map = L.map("map", {
-    zoomControl: true
-  }).setView([29.7604, -95.3698], 10);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
-
-  marker = L.marker([29.7604, -95.3698]).addTo(map).bindPopup("Houston (default)");
-}
-
-// Call it once on load
-window.addEventListener("load", initLeafletMap);

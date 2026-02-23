@@ -427,6 +427,7 @@ select option{ background: #0b0f14; }
   100%{ left:120%; }
 }
 
+/* Map */
 .map-card .map-head{
   display:flex;
   justify-content:space-between;
@@ -442,19 +443,16 @@ select option{ background: #0b0f14; }
   gap:8px;
   flex-wrap:wrap;
 }
+
+/* IMPORTANT: Leaflet needs the container to have a size and NOT be display:grid */
 .map{
   height: 420px;
-  border: 1px dashed rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.10);
   border-radius: 16px;
-  display:grid;
-  place-items:center;
   background: rgba(255,255,255,.02);
+  overflow: hidden;
 }
-.map-placeholder{
-  color: var(--muted);
-  text-align:center;
-  padding: 10px;
-}
+
 .legend{
   margin-top: 10px;
   display:flex;
@@ -476,6 +474,15 @@ select option{ background: #0b0f14; }
 .dot.safe{ background: rgba(0,185,107,.9); }
 .dot.medium{ background: rgba(247,201,72,.95); }
 .dot.risk{ background: rgba(255,77,77,.9); }
+
+/* Make Leaflet controls fit dark UI a bit */
+.leaflet-control-zoom a,
+.leaflet-control-attribution{
+  filter: saturate(1.1);
+}
+.leaflet-container{
+  background: rgba(255,255,255,.02);
+}
 
 .footer .data-source{
   font-size: 12px;
