@@ -1,46 +1,46 @@
 // ---------------------------
 // Safety & Crime — script.js
-// Calls /functions/zip.js for real FBI + Census data
+// Calls /functions/zip for real FBI + Census data
 // ---------------------------
 
-const zipInput   = document.getElementById("zipInput");
-const zipError   = document.getElementById("zipError");
-const searchBtn  = document.getElementById("searchBtn");
-const resultsEl  = document.getElementById("results");
-const compareBtn = document.getElementById("compareBtn");
-const focusBtn   = document.getElementById("focusBtn");
+const zipInput    = document.getElementById("zipInput");
+const zipError    = document.getElementById("zipError");
+const searchBtn   = document.getElementById("searchBtn");
+const resultsEl   = document.getElementById("results");
 
-// Stat card elements
-const elScore       = document.getElementById("statScore");
-const elScoreSub    = document.getElementById("statScoreSub");
-const elViolent     = document.getElementById("statViolent");
-const elProperty    = document.getElementById("statProperty");
-const elYear        = document.getElementById("statYear");
-const elRisk        = document.getElementById("statRisk");
-const elRiskBadge   = document.getElementById("riskBadge");
-const elCity        = document.getElementById("resultCity");
+// Stat card elements — matched to index.html IDs
+const elSafety    = document.getElementById("statSafety");
+const elSafetySub = document.getElementById("statSafetySub");
+const elViolent   = document.getElementById("statViolent");
+const elProperty  = document.getElementById("statProperty");
+const elYear      = document.getElementById("statYear");
+const elRisk      = document.getElementById("statRisk");
+const statSection = document.getElementById("statSection");
 
 // Recent ZIPs
-const recentStrip   = document.getElementById("recentStrip");
-const recentList    = document.getElementById("recentList");
+const recentSection = document.getElementById("recentSection");
+const recentCards   = document.getElementById("recentCards");
 
-// Compare panel
-const comparePanel  = document.getElementById("comparePanel");
-const compareInputA = document.getElementById("compareZipA");
-const compareInputB = document.getElementById("compareZipB");
-const compareRunBtn = document.getElementById("compareRunBtn");
-const compareOutput = document.getElementById("compareOutput");
+// Status elements
+const emptyState   = document.getElementById("emptyState");
+const loadingState = document.getElementById("loadingState");
+const resultsCount = document.getElementById("resultsCount");
 
 // ── MAP SETUP ──────────────────────────────────────────────────────────
-let map = L.map("map").setView([39.5, -98.35], 4);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap contributors",
-}).addTo(map);
+// Wait for Leaflet to load (it's deferred)
+let map, currentMarker;
 
-let currentMarker = null;
+window.addEventListener("load", () => {
+  map = L.map("map").setView([39.5, -98.35], 4);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors",
+  }).addTo(map);
+});
 
 function placeMarker(lat, lng, label, riskLevel) {
+  if (!map) return;
   if (currentMarker) map.removeLayer(currentMarker);
+
   const color =
     riskLevel === "Low Risk"    ? "#16a34a" :
     riskLevel === "Medium Risk" ? "#d97706" : "#dc2626";
@@ -77,18 +77,19 @@ function saveRecent(data) {
 }
 
 function renderRecent() {
+  if (!recentSection || !recentCards) return;
   if (recentZips.length === 0) {
-    recentStrip.style.display = "none";
+    recentSection.style.display = "none";
     return;
   }
-  recentStrip.style.display = "block";
-  recentList.innerHTML = recentZips
+  recentSection.style.display = "block";
+  recentCards.innerHTML = recentZips
     .map((z) => {
       const cls =
         z.riskLevel === "Low Risk"    ? "low" :
         z.riskLevel === "Medium Risk" ? "medium" : "high";
       return `
-        <div class="recent-card ${cls}" onclick="searchZip('${z.zip}')">
+        <div class="recent-card ${cls}" onclick="searchZip('${z.zip}')" style="cursor:pointer;">
           <div class="recent-zip">${z.zip}</div>
           <div class="recent-city">${z.city}, ${z.state}</div>
           <div class="recent-score">Score ${z.safetyScore ?? "N/A"}</div>
@@ -107,7 +108,7 @@ async function fetchZipData(zip) {
   return res.json();
 }
 
-// ── MOCK FALLBACK (used if real data unavailable) ──────────────────────
+// ── MOCK FALLBACK ──────────────────────────────────────────────────────
 function mockData(zip) {
   const seed = zip.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const safetyScore = 20 + (seed % 61);
@@ -134,41 +135,33 @@ function renderResults(data) {
   const { zip, city, state, lat, lng, violentCrime, propertyCrime,
           dataYear, safetyScore, riskLevel, hasRealData } = data;
 
-  // Show the results section
-  resultsEl.style.display = "block";
-
-  // City header
-  if (elCity) elCity.textContent = `${city}, ${state} — ${zip}`;
+  // Hide empty state, show stat cards
+  if (emptyState)   emptyState.style.display   = "none";
+  if (loadingState) loadingState.style.display  = "none";
+  if (statSection)  statSection.style.display   = "block";
 
   // Safety score
-  if (elScore) elScore.textContent = safetyScore ?? "N/A";
-  if (elScoreSub) {
-    elScoreSub.textContent = safetyScore
-      ? `Safer than ${safetyScore}% of U.S.`
-      : "Score unavailable";
-  }
+  if (elSafety)    elSafety.textContent    = safetyScore ?? "N/A";
+  if (elSafetySub) elSafetySub.textContent = safetyScore
+    ? `Safer than ${safetyScore}% of U.S.`
+    : "Score unavailable";
 
   // Crime counts
-  if (elViolent)   elViolent.textContent   = violentCrime  != null ? violentCrime.toLocaleString()  : "N/A";
-  if (elProperty)  elProperty.textContent  = propertyCrime != null ? propertyCrime.toLocaleString() : "N/A";
-  if (elYear)      elYear.textContent      = dataYear ?? "N/A";
+  if (elViolent)  elViolent.textContent  = violentCrime  != null ? violentCrime.toLocaleString()  : "N/A";
+  if (elProperty) elProperty.textContent = propertyCrime != null ? propertyCrime.toLocaleString() : "N/A";
+  if (elYear)     elYear.textContent     = dataYear ?? "N/A";
+  if (elRisk)     elRisk.textContent     = riskLevel;
 
-  // Risk level badge
-  if (elRisk) elRisk.textContent = riskLevel;
-  if (elRiskBadge) {
-    elRiskBadge.className = "risk-badge " +
-      (riskLevel === "Low Risk" ? "low" :
-       riskLevel === "Medium Risk" ? "medium" : "high");
-    elRiskBadge.textContent = riskLevel;
-  }
+  // Results count
+  if (resultsCount) resultsCount.textContent = "1";
 
-  // Data source note
-  const noteEl = document.getElementById("dataNote");
-  if (noteEl) {
-    noteEl.textContent = hasRealData
-      ? `Real data from FBI UCR · ${dataYear}`
-      : "⚠️ Using estimated data — real FBI data unavailable for this area";
-    noteEl.style.color = hasRealData ? "#16a34a" : "#d97706";
+  // Data source footer note
+  const footer = document.querySelector(".footer");
+  if (footer) {
+    footer.innerHTML = hasRealData
+      ? `Data Sources: <b>FBI UCR (Real Data)</b> · ${dataYear}`
+      : `Data Sources: <b>Estimated</b> — FBI data unavailable for this area`;
+    footer.style.color = hasRealData ? "#16a34a" : "#d97706";
   }
 
   // Map marker
@@ -182,27 +175,34 @@ function renderResults(data) {
 async function searchZip(zip) {
   zip = zip || zipInput.value.trim();
   if (!/^\d{5}$/.test(zip)) {
-    if (zipError) zipError.textContent = "Please enter a valid 5-digit ZIP code.";
+    if (zipError) {
+      zipError.textContent = "Please enter a valid 5-digit ZIP code.";
+      zipError.classList.remove("hidden");
+    }
     return;
   }
-  if (zipError) zipError.textContent = "";
+  if (zipError) {
+    zipError.textContent = "";
+    zipError.classList.add("hidden");
+  }
 
-  // Show skeleton loading
-  resultsEl.style.display = "block";
-  document.querySelectorAll(".stat-value").forEach((el) => {
-    el.textContent = "—";
-  });
+  // Show loading
+  if (emptyState)   emptyState.style.display   = "none";
+  if (loadingState) {
+    loadingState.style.display = "block";
+    loadingState.classList.remove("hidden");
+  }
+  if (statSection) statSection.style.display = "none";
 
   let data;
   try {
     data = await fetchZipData(zip);
-    // If the function returned but has no real data, blend with mock for display
     if (!data.hasRealData) {
       const mock = mockData(zip);
       data = { ...mock, ...data, hasRealData: false };
     }
   } catch (err) {
-    console.warn("Cloudflare function error, using mock data:", err);
+    console.warn("Function error, using mock data:", err);
     data = mockData(zip);
   }
 
@@ -220,63 +220,64 @@ if (zipInput) {
   });
 }
 
-// ── COMPARE MODE ───────────────────────────────────────────────────────
-if (compareBtn) {
-  compareBtn.addEventListener("click", () => {
-    if (comparePanel) {
-      comparePanel.style.display =
-        comparePanel.style.display === "none" ? "block" : "none";
-    }
+// ── CLEAR HISTORY ──────────────────────────────────────────────────────
+const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+const clearAllBtn     = document.getElementById("clearAllBtn");
+
+function clearHistory() {
+  recentZips = [];
+  localStorage.removeItem("recentZips");
+  renderRecent();
+}
+
+if (clearHistoryBtn) clearHistoryBtn.addEventListener("click", clearHistory);
+if (clearAllBtn)     clearAllBtn.addEventListener("click", clearHistory);
+
+// ── FULLSCREEN / FOCUS ─────────────────────────────────────────────────
+const fullscreenBtn  = document.getElementById("fullscreenBtn");
+const centerBtn      = document.getElementById("centerBtn");
+const focusBtnMap    = document.getElementById("focusBtnMap");
+const fsExitBtn      = document.getElementById("fsExitBtn");
+const fsCenterBtn    = document.getElementById("fsCenterBtn");
+const fsControls     = document.getElementById("fsControls");
+const exitFocusBtn   = document.getElementById("exitFocusBtn");
+const focusExit      = document.getElementById("focusExit");
+const mapCard        = document.getElementById("mapCard");
+
+if (fullscreenBtn) {
+  fullscreenBtn.addEventListener("click", () => {
+    mapCard?.classList.toggle("fullscreen");
+    if (fsControls) fsControls.classList.toggle("hidden");
+    setTimeout(() => map?.invalidateSize(), 300);
   });
 }
 
-if (compareRunBtn) {
-  compareRunBtn.addEventListener("click", async () => {
-    const zipA = compareInputA?.value.trim();
-    const zipB = compareInputB?.value.trim();
-    if (!/^\d{5}$/.test(zipA) || !/^\d{5}$/.test(zipB)) {
-      if (compareOutput) compareOutput.innerHTML = "<p>Please enter two valid ZIP codes.</p>";
-      return;
-    }
-
-    if (compareOutput) compareOutput.innerHTML = "<p>Loading comparison…</p>";
-
-    try {
-      const [a, b] = await Promise.all([fetchZipData(zipA), fetchZipData(zipB)]);
-
-      const row = (label, va, vb) => `
-        <tr>
-          <td>${label}</td>
-          <td>${va ?? "N/A"}</td>
-          <td>${vb ?? "N/A"}</td>
-        </tr>`;
-
-      compareOutput.innerHTML = `
-        <table class="compare-table">
-          <thead>
-            <tr><th></th><th>${zipA}</th><th>${zipB}</th></tr>
-          </thead>
-          <tbody>
-            ${row("City", `${a.city}, ${a.state}`, `${b.city}, ${b.state}`)}
-            ${row("Safety Score", a.safetyScore, b.safetyScore)}
-            ${row("Risk Level", a.riskLevel, b.riskLevel)}
-            ${row("Violent Crime", a.violentCrime?.toLocaleString(), b.violentCrime?.toLocaleString())}
-            ${row("Property Crime", a.propertyCrime?.toLocaleString(), b.propertyCrime?.toLocaleString())}
-            ${row("Data Year", a.dataYear, b.dataYear)}
-          </tbody>
-        </table>`;
-    } catch (err) {
-      compareOutput.innerHTML = "<p>Could not load comparison data.</p>";
-    }
+if (fsExitBtn) {
+  fsExitBtn.addEventListener("click", () => {
+    mapCard?.classList.remove("fullscreen");
+    if (fsControls) fsControls.classList.add("hidden");
+    setTimeout(() => map?.invalidateSize(), 300);
   });
 }
 
-// ── FOCUS / FULLSCREEN ─────────────────────────────────────────────────
-if (focusBtn) {
-  focusBtn.addEventListener("click", () => {
+if (centerBtn || fsCenterBtn) {
+  const doCenter = () => map?.setView([39.5, -98.35], 4);
+  centerBtn?.addEventListener("click", doCenter);
+  fsCenterBtn?.addEventListener("click", doCenter);
+}
+
+if (focusBtnMap) {
+  focusBtnMap.addEventListener("click", () => {
     document.body.classList.toggle("focus-mode");
-    focusBtn.textContent = document.body.classList.contains("focus-mode")
-      ? "Exit Focus"
-      : "Focus Mode";
+    if (focusExit) focusExit.classList.toggle("hidden");
+    setTimeout(() => map?.invalidateSize(), 300);
+  });
+}
+
+if (exitFocusBtn) {
+  exitFocusBtn.addEventListener("click", () => {
+    document.body.classList.remove("focus-mode");
+    if (focusExit) focusExit.classList.add("hidden");
+    setTimeout(() => map?.invalidateSize(), 300);
   });
 }
