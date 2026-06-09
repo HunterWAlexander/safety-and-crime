@@ -6,29 +6,24 @@
   <title>Safety & Crime - ZIP Safety</title>
   <meta name="description" content="Check safety and crime insights by ZIP code. Compare ZIP codes and explore safety levels with a clean modern UI." />
 
-  <!-- Leaflet (Map) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
+  <!-- ── Topbar ── -->
   <header class="topbar" id="topbar">
     <div class="brand">
-      <div class="brand-mark">S</div>
-      <div class="brand-text">
-        <div class="brand-title">Safety & Crime</div>
-        <div class="brand-subtitle">Modern ZIP safety insights</div>
-      </div>
+      <div class="brand-mark">🛡️</div>
+      <div class="brand-title">Safety &amp; Crime</div>
     </div>
 
     <div class="toggles">
       <label class="toggle">
         <input id="mockToggle" type="checkbox" checked />
-        <span>Mock Data Mode</span>
+        <span>Mock data mode</span>
       </label>
-
       <label class="toggle">
         <input id="compareToggle" type="checkbox" />
         <span>Compare Mode</span>
@@ -38,126 +33,168 @@
 
   <main class="container">
     <div class="app-layout" id="appLayout">
-      <!-- LEFT: Panel -->
+
+      <!-- ── LEFT: Panel ── -->
       <aside class="panel" id="panel">
+
+        <!-- Search card -->
         <section class="card hero">
           <div class="hero-head">
             <div>
-              <h1>Search ZIP Code Safety</h1>
-              <p class="muted">
-                Enter a 5-digit ZIP code to view safety info. Save ZIPs and compare them.
-              </p>
+              <h1>Safety &amp; Crime Lookup</h1>
+              <p class="muted">Enter your ZIP code to view safety statistics. <span class="tooltip" tabindex="0">ℹ
+                <span class="tooltip-text">Safety Score is a simple relative rating. Higher means safer compared to other ZIP codes. Accuracy improves once live data is connected.</span>
+              </span></p>
             </div>
-
-            <button id="focusBtnTop" class="btn ghost focus-btn" title="Map Focus Mode">
-              Focus Mode
-            </button>
           </div>
 
           <div class="search-row">
             <div class="input-wrap">
-              <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="e.g., 77002" />
+              <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code" />
               <div id="zipError" class="inline-error hidden"></div>
             </div>
-
             <button id="searchBtn" class="btn primary">Search</button>
           </div>
 
           <div class="toolbar">
+            <label class="toggle" style="border-radius:10px;">
+              <input id="compareModeCheck" type="checkbox" />
+              <span>Compare Mode</span>
+            </label>
             <button id="clearHistoryBtn" class="btn ghost">Clear History</button>
-            <button id="clearAllBtn" class="btn ghost danger">Clear All</button>
-
             <div class="spacer"></div>
-
             <label class="select-wrap">
-              <span class="muted">Sort</span>
               <select id="sortSelect">
-                <option value="safety_desc">Safety: High → Low</option>
+                <option value="safety_desc">Sort: Safety (high → low)</option>
                 <option value="safety_asc">Safety: Low → High</option>
                 <option value="zip_asc">ZIP: A → Z</option>
                 <option value="zip_desc">ZIP: Z → A</option>
               </select>
             </label>
           </div>
+        </section>
 
-          <div class="safety-info">
-            <span class="label">Safety Score</span>
-            <span class="tooltip" aria-label="What is Safety Score?" tabindex="0">?
-              <span class="tooltip-text">
-                Safety Score is a simple relative rating. Higher means safer compared to other ZIP codes.
-                This will become more accurate once live data sources are connected.
-              </span>
-            </span>
+        <!-- Recent ZIPs -->
+        <section class="card recent-row" id="recentSection" style="display:none;">
+          <div class="recent-header">
+            <h3>Recent ZIP Codes</h3>
+            <button id="clearAllBtn" class="btn ghost danger" style="padding:6px 12px;font-size:12px;">Clear All</button>
+          </div>
+          <div class="recent-cards" id="recentCards"></div>
+        </section>
+
+        <!-- Stat cards (shown after search) -->
+        <section id="statSection" style="display:none;">
+          <div class="stat-cards" id="statCardsTop">
+            <div class="stat-card">
+              <div class="stat-icon green">🛡️</div>
+              <div>
+                <div class="stat-label">Safety Score</div>
+                <div class="stat-value green" id="statSafety">—</div>
+                <div class="stat-sub" id="statSafetySub">—</div>
+              </div>
+              <div class="stat-arrow">›</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon red">🚨</div>
+              <div>
+                <div class="stat-label">Violent Crime</div>
+                <div class="stat-value red" id="statViolent">—</div>
+                <div class="stat-sub">per 1,000 people</div>
+              </div>
+              <div class="stat-arrow">›</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon yellow">🏠</div>
+              <div>
+                <div class="stat-label">Property Crime</div>
+                <div class="stat-value yellow" id="statProperty">—</div>
+                <div class="stat-sub">per 1,000 people</div>
+              </div>
+              <div class="stat-arrow">›</div>
+            </div>
           </div>
 
-          <div class="saved-row">
-            <div class="muted small">Saved ZIPs</div>
-            <div id="savedZips" class="saved-zips"></div>
+          <div class="stat-cards-2" style="margin-top:10px;">
+            <div class="stat-card">
+              <div class="stat-icon blue">📅</div>
+              <div>
+                <div class="stat-label">Data Year</div>
+                <div class="stat-value" id="statYear">2023</div>
+                <div class="stat-sub">Latest available data</div>
+              </div>
+              <div class="stat-arrow">›</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon purple">📊</div>
+              <div>
+                <div class="stat-label">Risk Level</div>
+                <div class="stat-value" id="statRisk">—</div>
+                <div class="stat-sub">Compared to U.S. average</div>
+              </div>
+              <div class="stat-arrow">›</div>
+            </div>
           </div>
         </section>
 
-        <section class="card status-card">
-          <div id="emptyState" class="empty-state">
-            Enter a ZIP code to view results.
-          </div>
-
-          <div id="compareHint" class="compare-hint hidden">
-            Compare Mode is ON. Search at least <b>2 ZIP codes</b> to see a comparison summary.
-          </div>
-
-          <div id="loadingState" class="loading hidden">
-            Fetching data…
-          </div>
+        <!-- Status -->
+        <section class="card status-card" id="statusCard">
+          <div id="emptyState" class="empty-state">Enter a ZIP code to view results.</div>
+          <div id="compareHint" class="compare-hint hidden">Compare Mode is ON. Search at least <b>2 ZIP codes</b> to see a comparison summary.</div>
+          <div id="loadingState" class="loading hidden">Fetching data…</div>
         </section>
 
+        <!-- Trend -->
         <section class="card trend-card" id="trendCard">
-          <div class="section-title">
-            Trend (placeholder)
-            <span class="muted small">— will show yearly trend once APIs are connected</span>
-          </div>
+          <div class="section-title">Trend <span class="muted small">— yearly trend once APIs are connected</span></div>
           <canvas id="trendChart" height="90"></canvas>
         </section>
 
+        <!-- Results -->
         <section class="card results-card">
           <div class="results-head">
             <div class="results-title">
-              Results
-              <span id="resultsCount" class="pill">0</span>
+              Results <span id="resultsCount" class="pill">0</span>
             </div>
-
             <div id="compareSummary" class="compare-summary hidden"></div>
           </div>
-
           <div id="results" class="results"></div>
         </section>
 
+        <!-- Tip -->
+        <div class="tip-bar">
+          <span class="tip-icon">ℹ️</span>
+          <span><b>Tip:</b> Click on the map or search for a ZIP code to see detailed safety statistics.</span>
+        </div>
+
+        <!-- Footer -->
         <footer class="footer card">
-          <div class="data-source">
-            Data Sources: <b>Mock Data</b> (API integration coming soon). For demo only.
-          </div>
-          <div class="muted small">
-            Tip: Once UI/UX feels good, we’ll plug in the FBI API and other datasets with solid loading/error states.
-          </div>
+          <div>Data Sources: <b>Mock Data</b> (API integration coming soon). For demo only.</div>
         </footer>
+
       </aside>
 
-      <!-- RIGHT: Map -->
+      <!-- ── RIGHT: Map ── -->
       <section class="map-col">
         <section class="card map-card" id="mapCard">
           <div class="map-head">
             <div class="section-title">Map</div>
             <div class="map-actions">
-              <button id="legendBtn" class="btn ghost">Legend</button>
+              <div class="legend" style="margin:0;">
+                <div class="legend-row"><span class="dot safe"></span> Safer</div>
+                <div class="legend-row"><span class="dot medium"></span> Medium</div>
+                <div class="legend-row"><span class="dot risk"></span> Higher risk</div>
+              </div>
+              <button id="legendBtn" class="btn ghost" style="display:none;">Legend</button>
+              <button id="fullscreenBtn" class="btn ghost">Fullscreen</button>
               <button id="centerBtn" class="btn ghost">Center</button>
               <button id="focusBtnMap" class="btn ghost">Focus</button>
-              <button id="fullscreenBtn" class="btn ghost">Fullscreen</button>
             </div>
           </div>
 
           <div id="mapWrap" class="map-wrap">
             <div id="map" class="map"></div>
 
-            <!-- Overlay controls ONLY visible in fullscreen -->
             <div id="fsControls" class="fs-controls hidden">
               <button id="fsLegendBtn" class="fs-btn">Legend</button>
               <button id="fsCenterBtn" class="fs-btn">Center</button>
@@ -165,7 +202,6 @@
               <button id="fsExitFocusBtn" class="fs-btn">Exit Focus</button>
             </div>
 
-            <!-- Focus Mode exit (visible when focus mode active, not fullscreen) -->
             <div id="focusExit" class="focus-exit hidden">
               <button id="exitFocusBtn" class="fs-btn danger">Exit Focus</button>
             </div>
@@ -178,6 +214,7 @@
           </div>
         </section>
       </section>
+
     </div>
   </main>
 
