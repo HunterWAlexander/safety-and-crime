@@ -2,7 +2,6 @@
   "version": 1,
   "include": ["/functions/*"],
   "exclude": [
-    "/*.js",
     "/*.css",
     "/*.ico",
     "/*.png",
