@@ -5,20 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Safety & Crime - ZIP Safety</title>
   <meta name="description" content="Check safety and crime insights by ZIP code. Compare ZIP codes and explore safety levels with a clean modern UI." />
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
-  <!-- ── Topbar ── -->
+
+  <!-- Topbar -->
   <header class="topbar" id="topbar">
     <div class="brand">
       <div class="brand-mark">🛡️</div>
       <div class="brand-title">Safety &amp; Crime</div>
     </div>
-
     <div class="toggles">
       <label class="toggle">
         <input id="mockToggle" type="checkbox" checked />
@@ -34,17 +32,19 @@
   <main class="container">
     <div class="app-layout" id="appLayout">
 
-      <!-- ── LEFT: Panel ── -->
+      <!-- LEFT Panel -->
       <aside class="panel" id="panel">
 
-        <!-- Search card -->
+        <!-- Search -->
         <section class="card hero">
           <div class="hero-head">
             <div>
               <h1>Safety &amp; Crime Lookup</h1>
-              <p class="muted">Enter your ZIP code to view safety statistics. <span class="tooltip" tabindex="0">ℹ
-                <span class="tooltip-text">Safety Score is a simple relative rating. Higher means safer compared to other ZIP codes. Accuracy improves once live data is connected.</span>
-              </span></p>
+              <p class="muted">Enter your ZIP code to view safety statistics.
+                <span class="tooltip" tabindex="0">ℹ
+                  <span class="tooltip-text">Safety Score is a relative rating. Higher means safer. Accuracy improves once live data is connected.</span>
+                </span>
+              </p>
             </div>
           </div>
 
@@ -83,64 +83,81 @@
           <div class="recent-cards" id="recentCards"></div>
         </section>
 
-        <!-- Stat cards (shown after search) -->
+        <!-- Stat Cards (visible after search) -->
         <section id="statSection" style="display:none;">
-          <div class="stat-cards" id="statCardsTop">
+          <div class="stat-cards">
+
             <div class="stat-card">
-              <div class="stat-icon green">🛡️</div>
-              <div>
+              <div class="stat-card-top">
+                <div class="stat-icon green">🛡️</div>
+                <div class="stat-arrow">›</div>
+              </div>
+              <div class="stat-body">
                 <div class="stat-label">Safety Score</div>
                 <div class="stat-value green" id="statSafety">—</div>
                 <div class="stat-sub" id="statSafetySub">—</div>
               </div>
-              <div class="stat-arrow">›</div>
             </div>
+
             <div class="stat-card">
-              <div class="stat-icon red">🚨</div>
-              <div>
+              <div class="stat-card-top">
+                <div class="stat-icon red">🚨</div>
+                <div class="stat-arrow">›</div>
+              </div>
+              <div class="stat-body">
                 <div class="stat-label">Violent Crime</div>
                 <div class="stat-value red" id="statViolent">—</div>
                 <div class="stat-sub">per 1,000 people</div>
               </div>
-              <div class="stat-arrow">›</div>
             </div>
+
             <div class="stat-card">
-              <div class="stat-icon yellow">🏠</div>
-              <div>
+              <div class="stat-card-top">
+                <div class="stat-icon yellow">🏠</div>
+                <div class="stat-arrow">›</div>
+              </div>
+              <div class="stat-body">
                 <div class="stat-label">Property Crime</div>
                 <div class="stat-value yellow" id="statProperty">—</div>
                 <div class="stat-sub">per 1,000 people</div>
               </div>
-              <div class="stat-arrow">›</div>
             </div>
+
           </div>
 
           <div class="stat-cards-2" style="margin-top:10px;">
+
             <div class="stat-card">
-              <div class="stat-icon blue">📅</div>
-              <div>
+              <div class="stat-card-top">
+                <div class="stat-icon blue">📅</div>
+                <div class="stat-arrow">›</div>
+              </div>
+              <div class="stat-body">
                 <div class="stat-label">Data Year</div>
                 <div class="stat-value" id="statYear">2023</div>
                 <div class="stat-sub">Latest available data</div>
               </div>
-              <div class="stat-arrow">›</div>
             </div>
+
             <div class="stat-card">
-              <div class="stat-icon purple">📊</div>
-              <div>
+              <div class="stat-card-top">
+                <div class="stat-icon purple">📊</div>
+                <div class="stat-arrow">›</div>
+              </div>
+              <div class="stat-body">
                 <div class="stat-label">Risk Level</div>
                 <div class="stat-value" id="statRisk">—</div>
                 <div class="stat-sub">Compared to U.S. average</div>
               </div>
-              <div class="stat-arrow">›</div>
             </div>
+
           </div>
         </section>
 
         <!-- Status -->
         <section class="card status-card" id="statusCard">
           <div id="emptyState" class="empty-state">Enter a ZIP code to view results.</div>
-          <div id="compareHint" class="compare-hint hidden">Compare Mode is ON. Search at least <b>2 ZIP codes</b> to see a comparison summary.</div>
+          <div id="compareHint" class="compare-hint hidden">Compare Mode is ON. Search at least <b>2 ZIP codes</b> to compare.</div>
           <div id="loadingState" class="loading hidden">Fetching data…</div>
         </section>
 
@@ -153,9 +170,7 @@
         <!-- Results -->
         <section class="card results-card">
           <div class="results-head">
-            <div class="results-title">
-              Results <span id="resultsCount" class="pill">0</span>
-            </div>
+            <div class="results-title">Results <span id="resultsCount" class="pill">0</span></div>
             <div id="compareSummary" class="compare-summary hidden"></div>
           </div>
           <div id="results" class="results"></div>
@@ -174,7 +189,7 @@
 
       </aside>
 
-      <!-- ── RIGHT: Map ── -->
+      <!-- RIGHT: Map -->
       <section class="map-col">
         <section class="card map-card" id="mapCard">
           <div class="map-head">
@@ -185,7 +200,6 @@
                 <div class="legend-row"><span class="dot medium"></span> Medium</div>
                 <div class="legend-row"><span class="dot risk"></span> Higher risk</div>
               </div>
-              <button id="legendBtn" class="btn ghost" style="display:none;">Legend</button>
               <button id="fullscreenBtn" class="btn ghost">Fullscreen</button>
               <button id="centerBtn" class="btn ghost">Center</button>
               <button id="focusBtnMap" class="btn ghost">Focus</button>
