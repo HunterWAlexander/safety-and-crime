@@ -114,10 +114,10 @@ async function fetchZipData(zip) {
   if (!state) return mockData(zip, city, state, lat, lng);
 
   try {
-    const FBI_BASE = "https://api.usa.gov/crime/fbi/sapi";
+    const FBI_BASE = "https://api.usa.gov/crime/fbi/cde";
 
     // Get agencies in this state
-    const agencyRes = await fetch(`${FBI_BASE}/api/agencies/byStateAbbr/${state}?api_key=${FBI_KEY}`);
+    const agencyRes = await fetch(`${FBI_BASE}/agency/byStateAbbr/${state}?api_key=${FBI_KEY}`);
     if (!agencyRes.ok) throw new Error("Agency lookup failed");
     const agencyData = await agencyRes.json();
     const agencies = agencyData?.results ?? [];
@@ -134,8 +134,8 @@ async function fetchZipData(zip) {
 
     // Get violent + property crime counts
     const [vRes, pRes] = await Promise.all([
-      fetch(`${FBI_BASE}/api/summarized/agencies/${ori}/violent-crime?api_key=${FBI_KEY}`),
-      fetch(`${FBI_BASE}/api/summarized/agencies/${ori}/property-crime?api_key=${FBI_KEY}`),
+      fetch(`${FBI_BASE}/summarized/agencies/${ori}/violent-crime?api_key=${FBI_KEY}`),
+      fetch(`${FBI_BASE}/summarized/agencies/${ori}/property-crime?api_key=${FBI_KEY}`),
     ]);
 
     const vData = await vRes.json();
