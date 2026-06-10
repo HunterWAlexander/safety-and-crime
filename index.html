@@ -3,45 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- SEO Meta Tags -->
   <title>Safety & Crime — ZIP Code Safety Lookup</title>
   <meta name="description" content="Look up safety scores, violent crime rates, and property crime statistics for any U.S. ZIP code. Free, instant results with interactive map." />
   <meta name="keywords" content="zip code safety, crime by zip code, neighborhood safety score, is my neighborhood safe, crime statistics by zip code" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://safety-and-crime.pages.dev/" />
-
-  <!-- Open Graph (for social sharing) -->
+  <link rel="canonical" href="https://safetyandcrime.com/" />
   <meta property="og:title" content="Safety & Crime — ZIP Code Safety Lookup" />
   <meta property="og:description" content="Instant safety scores and crime statistics for any U.S. ZIP code. Free tool with interactive map." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://safety-and-crime.pages.dev/" />
-
-  <!-- Twitter Card -->
+  <meta property="og:url" content="https://safetyandcrime.com/" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Safety & Crime — ZIP Code Safety Lookup" />
   <meta name="twitter:description" content="Instant safety scores and crime statistics for any U.S. ZIP code." />
-
-  <!-- Structured Data for Google -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Safety & Crime ZIP Lookup",
     "description": "Look up safety scores and crime statistics for any U.S. ZIP code.",
-    "url": "https://safety-and-crime.pages.dev/",
+    "url": "https://safetyandcrime.com/",
     "applicationCategory": "UtilitiesApplication",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- Topbar -->
   <header class="topbar" id="topbar">
     <div class="brand">
       <div class="brand-mark">🛡️</div>
@@ -58,10 +48,8 @@
   <main class="container">
     <div class="app-layout" id="appLayout">
 
-      <!-- LEFT Panel -->
       <aside class="panel" id="panel">
 
-        <!-- Search -->
         <section class="card hero">
           <div class="hero-head">
             <div>
@@ -73,7 +61,6 @@
               </p>
             </div>
           </div>
-
           <div class="search-row">
             <div class="input-wrap">
               <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code e.g. 90210" />
@@ -81,7 +68,6 @@
             </div>
             <button id="searchBtn" class="btn primary">Search</button>
           </div>
-
           <div class="toolbar">
             <label class="toggle" style="border-radius:10px;">
               <input id="compareModeCheck" type="checkbox" />
@@ -100,7 +86,6 @@
           </div>
         </section>
 
-        <!-- Recent ZIPs -->
         <section class="card recent-row" id="recentSection" style="display:none;">
           <div class="recent-header">
             <h3>Recent ZIP Codes</h3>
@@ -113,39 +98,74 @@
         <section id="statSection" style="display:none;">
           <div class="stat-cards">
 
-            <div class="stat-card">
+            <!-- Safety Score -->
+            <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon green">🛡️</div>
-                <div class="stat-arrow">›</div>
+                <button class="expand-arrow" onclick="toggleCard('safety')" aria-label="Expand safety score details">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Safety Score</div>
                 <div class="stat-value green" id="statSafety">—</div>
                 <div class="stat-sub" id="statSafetySub">—</div>
               </div>
+              <div class="expand-body" id="expand-safety">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Risk level</span><span id="ex-safetyRisk">—</span></div>
+                  <div class="expand-row"><span>Safer than</span><span id="ex-safetyPct">—</span></div>
+                  <div class="expand-row"><span>Score range</span><span>0 – 100</span></div>
+                  <div class="expand-bar-wrap">
+                    <div class="expand-bar-label">Score position</div>
+                    <div class="expand-bar-bg">
+                      <div class="expand-bar-fill" id="ex-safetyBar" style="width:0%"></div>
+                    </div>
+                    <div class="expand-bar-ends"><span>Dangerous</span><span>Very safe</span></div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="stat-card">
+            <!-- Violent Crime -->
+            <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon red">🚨</div>
-                <div class="stat-arrow">›</div>
+                <button class="expand-arrow" onclick="toggleCard('violent')" aria-label="Expand violent crime details">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Violent Crime</div>
                 <div class="stat-value red" id="statViolent">—</div>
                 <div class="stat-sub">per 100,000 people</div>
               </div>
+              <div class="expand-body" id="expand-violent">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Aggravated assault</span><span>~45%</span></div>
+                  <div class="expand-row"><span>Robbery</span><span>~28%</span></div>
+                  <div class="expand-row"><span>Rape / sexual assault</span><span>~16%</span></div>
+                  <div class="expand-row"><span>Murder / manslaughter</span><span>~11%</span></div>
+                  <div class="expand-note">Breakdown based on national FBI UCR averages.</div>
+                </div>
+              </div>
             </div>
 
-            <div class="stat-card">
+            <!-- Property Crime -->
+            <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon yellow">🏠</div>
-                <div class="stat-arrow">›</div>
+                <button class="expand-arrow" onclick="toggleCard('property')" aria-label="Expand property crime details">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Property Crime</div>
                 <div class="stat-value yellow" id="statProperty">—</div>
                 <div class="stat-sub">per 100,000 people</div>
+              </div>
+              <div class="expand-body" id="expand-property">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Larceny / theft</span><span>~60%</span></div>
+                  <div class="expand-row"><span>Burglary</span><span>~22%</span></div>
+                  <div class="expand-row"><span>Vehicle theft</span><span>~14%</span></div>
+                  <div class="expand-row"><span>Arson</span><span>~4%</span></div>
+                  <div class="expand-note">Breakdown based on national FBI UCR averages.</div>
+                </div>
               </div>
             </div>
 
@@ -153,41 +173,57 @@
 
           <div class="stat-cards-2" style="margin-top:10px;">
 
-            <div class="stat-card">
+            <!-- Data Year -->
+            <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon blue">📅</div>
-                <div class="stat-arrow">›</div>
+                <button class="expand-arrow" onclick="toggleCard('year')" aria-label="Expand data year details">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Data Year</div>
                 <div class="stat-value" id="statYear">2023</div>
                 <div class="stat-sub">Latest available data</div>
               </div>
+              <div class="expand-body" id="expand-year">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Source</span><span>FBI UCR Program</span></div>
+                  <div class="expand-row"><span>Coverage</span><span>~18,000 agencies</span></div>
+                  <div class="expand-row"><span>Method</span><span>Regional index</span></div>
+                  <div class="expand-note">Scores are based on regional historical averages from FBI Uniform Crime Reporting data.</div>
+                </div>
+              </div>
             </div>
 
-            <div class="stat-card">
+            <!-- Risk Level -->
+            <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon purple">📊</div>
-                <div class="stat-arrow">›</div>
+                <button class="expand-arrow" onclick="toggleCard('risk')" aria-label="Expand risk level details">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Risk Level</div>
                 <div class="stat-value" id="statRisk">—</div>
                 <div class="stat-sub">Compared to U.S. average</div>
               </div>
+              <div class="expand-body" id="expand-risk">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Low Risk</span><span>Score 70 – 100</span></div>
+                  <div class="expand-row"><span>Medium Risk</span><span>Score 40 – 69</span></div>
+                  <div class="expand-row"><span>High Risk</span><span>Score 0 – 39</span></div>
+                  <div class="expand-note">Risk level is determined by the safety score relative to all U.S. ZIP codes.</div>
+                </div>
+              </div>
             </div>
 
           </div>
         </section>
 
-        <!-- Status -->
         <section class="card status-card" id="statusCard">
           <div id="emptyState" class="empty-state">Enter a ZIP code above to view safety statistics.</div>
           <div id="compareHint" class="compare-hint hidden">Compare Mode is ON. Search at least <b>2 ZIP codes</b> to compare.</div>
           <div id="loadingState" class="loading hidden">Looking up ZIP code…</div>
         </section>
 
-        <!-- Results -->
         <section class="card results-card">
           <div class="results-head">
             <div class="results-title">Results <span id="resultsCount" class="pill">0</span></div>
@@ -196,20 +232,17 @@
           <div id="results" class="results"></div>
         </section>
 
-        <!-- Tip -->
         <div class="tip-bar">
           <span class="tip-icon">💡</span>
-          <span>Search any U.S. ZIP code to instantly see its safety score, crime rates, and risk level on the map.</span>
+          <span>Search any U.S. ZIP code to instantly see its safety score, crime rates, and risk level. Tap › on any card for details.</span>
         </div>
 
-        <!-- Footer -->
         <footer class="footer card">
-          <div>Data: <b>Regional Crime Index</b> · Based on FBI UCR historical averages by region · For informational purposes only.</div>
+          <div>Data: <b>Regional Crime Index</b> · Based on FBI UCR historical averages · For informational purposes only.</div>
         </footer>
 
       </aside>
 
-      <!-- RIGHT: Map -->
       <section class="map-col">
         <section class="card map-card" id="mapCard">
           <div class="map-head">
@@ -225,16 +258,12 @@
               <button id="focusBtnMap" class="btn ghost">Focus</button>
             </div>
           </div>
-
           <div id="mapWrap" class="map-wrap">
             <div id="map" class="map"></div>
-
             <div id="fsControls" class="fs-controls hidden">
-              <button id="fsLegendBtn" class="fs-btn">Legend</button>
               <button id="fsCenterBtn" class="fs-btn">Center</button>
               <button id="fsExitBtn" class="fs-btn danger">Exit Fullscreen</button>
             </div>
-
             <div id="focusExit" class="focus-exit hidden">
               <button id="exitFocusBtn" class="fs-btn danger">Exit Focus</button>
             </div>

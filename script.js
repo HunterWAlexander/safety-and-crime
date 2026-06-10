@@ -287,6 +287,7 @@ function renderResults(zip, location, scores) {
   if (elYear)      elYear.textContent      = dataYear;
   if (elRisk)      elRisk.textContent      = riskLevel;
   if (resultsCount) resultsCount.textContent = "1";
+  updateExpandDetails(safetyScore, riskLevel);
 
   // Update footer
   const footer = document.querySelector(".footer div");
@@ -365,3 +366,28 @@ exitFocusBtn?.addEventListener("click", () => {
   focusExit?.classList.add("hidden");
   setTimeout(() => map?.invalidateSize(), 300);
 });
+
+// ── EXPANDABLE CARDS ───────────────────────────────────────────────────
+function toggleCard(id) {
+  const body = document.getElementById('expand-' + id);
+  const btn  = body?.previousElementSibling?.querySelector('.expand-arrow') ||
+               body?.closest('.stat-card')?.querySelector('.expand-arrow');
+  if (!body) return;
+  body.classList.toggle('open');
+  if (btn) btn.classList.toggle('open');
+}
+
+function updateExpandDetails(safetyScore, riskLevel) {
+  const pct = document.getElementById('ex-safetyPct');
+  const risk = document.getElementById('ex-safetyRisk');
+  const bar  = document.getElementById('ex-safetyBar');
+  if (pct)  pct.textContent  = safetyScore + '% of U.S. ZIP codes';
+  if (risk) risk.textContent = riskLevel;
+  if (bar)  bar.style.width  = safetyScore + '%';
+  // Color bar based on risk
+  if (bar) {
+    bar.style.background =
+      riskLevel === 'Low Risk'    ? '#16a34a' :
+      riskLevel === 'Medium Risk' ? '#d97706' : '#dc2626';
+  }
+}
