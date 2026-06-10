@@ -34,6 +34,16 @@ html,body{ height:100%; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 
 /* ── LAYOUT ── */
 .container{ padding-top:var(--topbar-h); height:100vh; overflow:hidden; }
+
+@media(max-width:768px){
+  html,body{ height:auto !important; overflow-y:auto !important; }
+  .container{ height:auto !important; overflow:visible !important; }
+  .app-layout{ flex-direction:column; height:auto !important; overflow:visible !important; }
+  .panel{ width:100% !important; height:auto !important; overflow:visible !important; padding:12px; gap:10px; min-width:unset; }
+  .map-col{ height:320px !important; min-height:320px; padding:0 12px 16px; flex-shrink:0; }
+  .map-wrap{ height:260px !important; }
+  .map{ height:260px !important; }
+}
 .app-layout{ display:flex; height:100%; gap:0; }
 
 /* ── LEFT PANEL ── */
