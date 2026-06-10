@@ -286,6 +286,7 @@ body.focus-mode .map-col{ padding:0; }
 /* ── VIEW ON MAP BUTTON (mobile only) ── */
 .view-map-btn {
   display: none;
+  display: none;
   width: 100%;
   padding: 12px 16px;
   background: #f0fdf4;
@@ -300,7 +301,8 @@ body.focus-mode .map-col{ padding:0; }
 }
 .view-map-btn:hover { background: #dcfce7; }
 @media(max-width:768px){
-  .view-map-btn { display: block; }
+  .view-map-btn {
+  display: none; display: block; }
   .view-map-btn.hidden { display: none !important; }
 }
 
