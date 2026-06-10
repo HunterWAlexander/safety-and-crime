@@ -679,6 +679,15 @@ function clearCompare() {
   if (compareTable) compareTable.innerHTML = "";
 }
 
+function removeFromCompare(zip) {
+  compareZips = compareZips.filter(z => z.zip !== zip);
+  if (compareZips.length === 0) {
+    clearCompare();
+  } else {
+    renderCompareTable();
+  }
+}
+
 function addToCompare(zip, city, state, scores) {
   // Remove if already exists, then add
   compareZips = compareZips.filter(z => z.zip !== zip);
@@ -706,7 +715,8 @@ function renderCompareTable() {
   ];
 
   const headers = compareZips.map(z =>
-    `<th style="font-size:13px;font-weight:600;padding:8px;text-align:center;border-bottom:2px solid #e5e7eb;">
+    `<th style="font-size:13px;font-weight:600;padding:8px;text-align:center;border-bottom:2px solid #e5e7eb;position:relative;">
+      <button onclick="removeFromCompare('${z.zip}')" style="position:absolute;top:4px;right:4px;background:none;border:none;cursor:pointer;font-size:14px;color:#9ca3af;line-height:1;padding:2px;" title="Remove ${z.zip}">×</button>
       ${z.zip}<br><span style="font-size:11px;color:#6b7280;font-weight:400;">${z.city}, ${z.state}</span>
     </th>`
   ).join("");
