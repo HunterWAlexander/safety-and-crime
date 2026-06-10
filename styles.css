@@ -10,7 +10,7 @@
   --blue: #2563eb;
   --purple: #7c3aed;
   --topbar-h: 64px;
-  --panel-w: 440px;
+  --panel-w: 520px;
 }
 *{ box-sizing:border-box; margin:0; padding:0; }
 html,body{ height:100%; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#f3f4f6; color:var(--text); font-size:15px; }
@@ -127,7 +127,7 @@ h1{ font-size:20px; font-weight:700; color:var(--green); margin-bottom:4px; }
 .recent-card.high .recent-risk{ color:var(--red); }
 
 /* ── STAT CARDS ── */
-.stat-cards{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+.stat-cards{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .stat-cards-2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .stat-card{
   background:#fff; border-radius:12px;
