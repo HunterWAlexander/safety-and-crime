@@ -481,6 +481,27 @@ function clearHistory() { recentZips=[]; localStorage.removeItem("recentZips"); 
 clearHistoryBtn?.addEventListener("click", clearHistory);
 clearAllBtn?.addEventListener("click", clearHistory);
 
+
+// ── SORT RECENT ZIPS ───────────────────────────────────────────────────
+const sortSelect = document.getElementById("sortSelect");
+
+if (sortSelect) {
+  sortSelect.addEventListener("change", () => {
+    const val = sortSelect.value;
+    if (recentZips.length === 0) return;
+
+    recentZips.sort((a, b) => {
+      if (val === "safety_desc") return (b.safetyScore ?? 0) - (a.safetyScore ?? 0);
+      if (val === "safety_asc")  return (a.safetyScore ?? 0) - (b.safetyScore ?? 0);
+      if (val === "zip_asc")     return a.zip.localeCompare(b.zip);
+      if (val === "zip_desc")    return b.zip.localeCompare(a.zip);
+      return 0;
+    });
+
+    renderRecent();
+  });
+}
+
 // ── FULLSCREEN / FOCUS ─────────────────────────────────────────────────
 const fullscreenBtn = document.getElementById("fullscreenBtn");
 const centerBtn     = document.getElementById("centerBtn");
