@@ -374,6 +374,7 @@ function renderResults(zip, location, scores) {
   // Map
   if (lat && lng) placeMarker(lat, lng, `${zip} — ${riskLevel} (${city}, ${state})`, riskLevel);
   saveRecent({ zip, city, state, safetyScore, riskLevel });
+  showMapButton(zip, city, state);
 }
 
 // ── MAIN SEARCH ────────────────────────────────────────────────────────
@@ -440,3 +441,16 @@ exitFocusBtn?.addEventListener("click", () => {
   focusExit?.classList.add("hidden");
   setTimeout(() => map?.invalidateSize(), 300);
 });
+
+// ── VIEW ON MAP BUTTON ─────────────────────────────────────────────────
+function scrollToMap() {
+  const mapEl = document.getElementById("mapCard");
+  if (mapEl) mapEl.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showMapButton(zip, city, state) {
+  const btn = document.getElementById("viewMapBtn");
+  if (!btn) return;
+  btn.textContent = `📍 View ${zip} (${city}, ${state}) on map ↓`;
+  btn.classList.remove("hidden");
+}
