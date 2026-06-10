@@ -347,3 +347,19 @@ body.focus-mode .map-col{ padding:0; }
 .nearby-card.low .nearby-risk  { color: #16a34a; }
 .nearby-card.medium .nearby-risk { color: #d97706; }
 .nearby-card.high .nearby-risk { color: #dc2626; }
+
+/* ── SHARE BUTTON ── */
+.share-btn {
+  font-size: 13px;
+  padding: 7px 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all .15s;
+}
+.share-btn:hover { background: #f0fdf4 !important; color: #16a34a !important; border-color: #16a34a !important; }
+
+/* ── COMPARE TABLE ── */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.compare-table th, .compare-table td { padding: 8px 10px; border-bottom: 1px solid #f3f4f6; }
+.compare-table th { font-weight: 600; border-bottom: 2px solid #e5e7eb; }
