@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Philadelphia, PA ZIP Code Safety Scores — Safety &amp; Crime</title>
+  <meta name="description" content="Philadelphia is the sixth largest city in the U.S. Look up safety scores and crime statistics for any Philadelphia ZIP code." />
+  <meta name="keywords" content="philadelphia zip code safety, safest neighborhoods philadelphia, philadelphia crime statistics, philadelphia neighborhood safety scores" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/philadelphia" />
+  <meta property="og:title" content="Philadelphia ZIP Code Safety Scores" />
+  <meta property="og:description" content="Philadelphia is the sixth largest city in the U.S. Look up safety scores and crime statistics for any Philadelphia ZIP code." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <style>
+    .city-wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+    .city-wrap h1 { font-size: 26px; color: var(--green); margin-bottom: 6px; }
+    .city-wrap .sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+    .zip-table { display: flex; flex-direction: column; gap: 8px; margin: 20px 0; }
+    .zip-row {
+      display: grid; grid-template-columns: 90px 1fr 100px 120px;
+      align-items: center; gap: 12px;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .zip-row:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .zip-row.low  { border-left: 3px solid #16a34a; }
+    .zip-row.medium { border-left: 3px solid #d97706; }
+    .zip-row.high { border-left: 3px solid #dc2626; }
+    .zip-num  { font-size: 16px; font-weight: 700; }
+    .zip-hood { font-size: 13px; color: #555; }
+    .zip-score { font-size: 16px; font-weight: 700; }
+    .zip-grade { font-size: 13px; font-weight: 600; }
+    .zip-risk { font-size: 12px; font-weight: 600; text-align: right; }
+    .low-text { color: #16a34a; }
+    .medium-text { color: #d97706; }
+    .high-text { color: #dc2626; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--green); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { text-decoration: underline; }
+    .search-cta { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin: 24px 0; text-align: center; }
+    .search-cta p { font-size: 14px; color: #15803d; margin-bottom: 12px; }
+    .search-cta a { background: var(--green); color: #fff; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; }
+    .city-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+    .city-link { background: #f3f4f6; border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; font-size: 13px; color: var(--text); text-decoration: none; }
+    .city-link:hover { background: #e5e7eb; }
+    .city-link.active { background: var(--green); color: #fff; border-color: var(--green); }
+    @media(max-width:600px){
+      .zip-row { grid-template-columns: 80px 1fr; gap: 6px; }
+      .zip-score, .zip-risk { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body style="background:#f3f4f6;">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">🛡️</div>
+      <div class="brand-title">Safety &amp; Crime</div>
+    </div>
+  </header>
+
+  <div style="padding-top:var(--topbar-h);">
+    <div class="city-wrap">
+      <a href="/" class="back-link">← Search any ZIP code</a>
+      <h1>Philadelphia, PA — ZIP Code Safety Scores</h1>
+      <p class="sub">Philadelphia is the sixth largest city in the U.S. Look up safety scores and crime statistics for any Philadelphia ZIP code. Click any ZIP code to see the full safety report including violent crime, property crime, home values, and more.</p>
+
+      <div class="city-links">
+        <a href="/houston" class="city-link">Houston</a>
+        <a href="/new-york" class="city-link">New York</a>
+        <a href="/los-angeles" class="city-link">Los Angeles</a>
+        <a href="/chicago" class="city-link">Chicago</a>
+        <a href="/phoenix" class="city-link">Phoenix</a>
+        <a href="/philadelphia" class="city-linkactive">Philadelphia</a>
+        <a href="/san-antonio" class="city-link">San Antonio</a>
+        <a href="/san-diego" class="city-link">San Diego</a>
+        <a href="/dallas" class="city-link">Dallas</a>
+        <a href="/san-jose" class="city-link">San Jose</a>
+      </div>
+
+      <div class="zip-table">
+        
+        <div class="zip-row high" onclick="window.location='/?zip=19102'" style="cursor:pointer;">
+          <div class="zip-num">19102</div>
+          <div class="zip-hood">Center City</div>
+          <div class="zip-score" style="color:#dc2626;">36 <span class="zip-grade">D</span></div>
+          <div class="zip-risk high-text">High Risk</div>
+        </div>
+        <div class="zip-row medium" onclick="window.location='/?zip=19103'" style="cursor:pointer;">
+          <div class="zip-num">19103</div>
+          <div class="zip-hood">Rittenhouse Square</div>
+          <div class="zip-score" style="color:#d97706;">41 <span class="zip-grade">C</span></div>
+          <div class="zip-risk medium-text">Medium Risk</div>
+        </div>
+        <div class="zip-row high" onclick="window.location='/?zip=19106'" style="cursor:pointer;">
+          <div class="zip-num">19106</div>
+          <div class="zip-hood">Old City</div>
+          <div class="zip-score" style="color:#dc2626;">39 <span class="zip-grade">D</span></div>
+          <div class="zip-risk high-text">High Risk</div>
+        </div>
+        <div class="zip-row medium" onclick="window.location='/?zip=19107'" style="cursor:pointer;">
+          <div class="zip-num">19107</div>
+          <div class="zip-hood">Washington Square</div>
+          <div class="zip-score" style="color:#d97706;">44 <span class="zip-grade">C</span></div>
+          <div class="zip-risk medium-text">Medium Risk</div>
+        </div>
+        <div class="zip-row high" onclick="window.location='/?zip=19118'" style="cursor:pointer;">
+          <div class="zip-num">19118</div>
+          <div class="zip-hood">Chestnut Hill</div>
+          <div class="zip-score" style="color:#dc2626;">36 <span class="zip-grade">D</span></div>
+          <div class="zip-risk high-text">High Risk</div>
+        </div>
+        <div class="zip-row medium" onclick="window.location='/?zip=19119'" style="cursor:pointer;">
+          <div class="zip-num">19119</div>
+          <div class="zip-hood">Mount Airy</div>
+          <div class="zip-score" style="color:#d97706;">41 <span class="zip-grade">C</span></div>
+          <div class="zip-risk medium-text">Medium Risk</div>
+        </div>
+        <div class="zip-row high" onclick="window.location='/?zip=19123'" style="cursor:pointer;">
+          <div class="zip-num">19123</div>
+          <div class="zip-hood">Northern Liberties</div>
+          <div class="zip-score" style="color:#dc2626;">32 <span class="zip-grade">D</span></div>
+          <div class="zip-risk high-text">High Risk</div>
+        </div>
+        <div class="zip-row medium" onclick="window.location='/?zip=19125'" style="cursor:pointer;">
+          <div class="zip-num">19125</div>
+          <div class="zip-hood">Fishtown</div>
+          <div class="zip-score" style="color:#d97706;">42 <span class="zip-grade">C</span></div>
+          <div class="zip-risk medium-text">Medium Risk</div>
+        </div>
+        <div class="zip-row medium" onclick="window.location='/?zip=19128'" style="cursor:pointer;">
+          <div class="zip-num">19128</div>
+          <div class="zip-hood">Roxborough</div>
+          <div class="zip-score" style="color:#d97706;">40 <span class="zip-grade">C</span></div>
+          <div class="zip-risk medium-text">Medium Risk</div>
+        </div>
+        <div class="zip-row medium" onclick="window.location='/?zip=19147'" style="cursor:pointer;">
+          <div class="zip-num">19147</div>
+          <div class="zip-hood">South Philly</div>
+          <div class="zip-score" style="color:#d97706;">43 <span class="zip-grade">C</span></div>
+          <div class="zip-risk medium-text">Medium Risk</div>
+        </div>
+      </div>
+
+      <div class="search-cta">
+        <p>Don't see your ZIP code? Search any U.S. ZIP code for a full safety report.</p>
+        <a href="/">Search any ZIP code →</a>
+      </div>
+
+      <footer style="margin-top:32px;font-size:12px;color:var(--muted);text-align:center;">
+        Data: <b>Regional Crime Index</b> · Based on FBI UCR historical averages · For informational purposes only.<br>
+        <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+        <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+        <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
