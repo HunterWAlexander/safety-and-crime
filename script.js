@@ -742,3 +742,20 @@ function renderCompareTable() {
       </table>
     </div>`;
 }
+
+
+// ── FAQ TOGGLE ─────────────────────────────────────────────────────────
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const arrow  = btn.querySelector(".faq-arrow");
+  const isOpen = answer.classList.contains("open");
+  // Close all others first
+  document.querySelectorAll(".faq-a.open").forEach(a => {
+    a.classList.remove("open");
+    a.previousElementSibling?.querySelector(".faq-arrow")?.classList.remove("open");
+  });
+  if (!isOpen) {
+    answer.classList.add("open");
+    arrow?.classList.add("open");
+  }
+}

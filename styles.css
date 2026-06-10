@@ -380,3 +380,21 @@ body.focus-mode .map-col{ padding:0; }
 .share-btn:hover {
   background: #dcfce7 !important;
 }
+
+/* ── FAQ SECTION ── */
+.faq-item { border-bottom: 1px solid #f3f4f6; }
+.faq-q {
+  width: 100%; text-align: left; background: none; border: none;
+  cursor: pointer; padding: 12px 4px; font-size: 14px; font-weight: 500;
+  color: var(--text); display: flex; justify-content: space-between;
+  align-items: center; gap: 8px;
+}
+.faq-q:hover { color: var(--green); }
+.faq-arrow { font-size: 18px; color: var(--green); transition: transform .25s; flex-shrink: 0; }
+.faq-arrow.open { transform: rotate(90deg); }
+.faq-a {
+  font-size: 13px; color: #555; line-height: 1.7;
+  max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s;
+  padding: 0 4px;
+}
+.faq-a.open { max-height: 200px; padding: 0 4px 12px; }

@@ -328,6 +328,65 @@
           <div id="results" class="results"></div>
         </section>
 
+
+        <!-- FAQ Section -->
+        <section class="card" id="faqSection">
+          <h3 style="font-size:15px;font-weight:600;margin-bottom:16px;">Frequently Asked Questions</h3>
+
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">How is the Safety Score calculated? <span class="faq-arrow">›</span></button>
+            <div class="faq-a">The Safety Score (0–100) is a regional index based on FBI Uniform Crime Reporting (UCR) historical averages for each ZIP code region. Higher scores indicate safer areas relative to the national average.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">How current is the data? <span class="faq-arrow">›</span></button>
+            <div class="faq-a">Our Regional Crime Index reflects the most recent FBI UCR data available. The current data year is 2026, based on regional historical averages and crime trend patterns.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">What does Risk Level mean? <span class="faq-arrow">›</span></button>
+            <div class="faq-a">Risk Level classifies ZIP codes into three categories: Low Risk (score 70–100) is safer than most U.S. ZIP codes. Medium Risk (40–69) is around the national average. High Risk (0–39) indicates higher crime rates than average.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">Can I compare multiple ZIP codes? <span class="faq-arrow">›</span></button>
+            <div class="faq-a">Yes! Enable Compare Mode using the checkbox under the search bar, then search up to 3 ZIP codes. A side-by-side comparison table will appear showing all key stats.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">Is this tool free to use? <span class="faq-arrow">›</span></button>
+            <div class="faq-a">Yes, SafetyAndCrime.com is completely free. Search any U.S. ZIP code, compare areas, and view full safety reports at no cost.</div>
+          </div>
+          <div class="faq-item" style="border-bottom:none;">
+            <button class="faq-q" onclick="toggleFaq(this)">How do I share a ZIP code report? <span class="faq-arrow">›</span></button>
+            <div class="faq-a">After searching a ZIP code, click the green Share button in the top right. It copies a direct link to that ZIP code's report to your clipboard.</div>
+          </div>
+        </section>
+
+
+        <!-- Explore More -->
+        <section class="card" style="margin-top:4px;">
+          <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;">Explore by City</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+            <a href="/houston" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Houston</a>
+            <a href="/new-york" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">New York</a>
+            <a href="/los-angeles" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Los Angeles</a>
+            <a href="/chicago" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Chicago</a>
+            <a href="/dallas" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Dallas</a>
+            <a href="/phoenix" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Phoenix</a>
+            <a href="/san-diego" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">San Diego</a>
+            <a href="/san-antonio" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">San Antonio</a>
+          </div>
+          <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;">Explore by State</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+            <a href="/texas" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Texas</a>
+            <a href="/california" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">California</a>
+            <a href="/florida" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Florida</a>
+            <a href="/illinois" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Illinois</a>
+            <a href="/georgia" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Georgia</a>
+            <a href="/north-carolina" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">North Carolina</a>
+            <a href="/ohio" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Ohio</a>
+            <a href="/michigan" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Michigan</a>
+          </div>
+          <a href="/safest-cities" style="color:var(--green);font-size:13px;font-weight:500;text-decoration:none;">🏆 View 10 Safest Cities in the U.S. →</a>
+        </section>
+
       </aside>
 
       <section class="map-col">
