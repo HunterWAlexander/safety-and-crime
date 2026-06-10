@@ -282,3 +282,45 @@ body.focus-mode .map-col{ padding:0; }
   .btn.primary{ padding:9px 14px; font-size:14px; }
   .recent-card{ min-width:110px; padding:10px; }
 }
+
+/* ── VIEW ON MAP BUTTON (mobile only) ── */
+.view-map-btn {
+  display: none;
+  width: 100%;
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1.5px solid #16a34a;
+  border-radius: 10px;
+  color: #15803d;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: background .15s;
+}
+.view-map-btn:hover { background: #dcfce7; }
+@media(max-width:768px){
+  .view-map-btn { display: block; }
+  .view-map-btn.hidden { display: none !important; }
+}
+
+/* ── MAP FOOTER (tip + footer below map) ── */
+.map-footer {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+@media(min-width:769px){
+  .map-footer { padding: 0 16px 20px 0; }
+}
+
+/* ── MAP HEIGHT FIX ── */
+.map-wrap{ height:100%; min-height:500px; }
+.map{ width:100%; height:100%; min-height:500px; }
+@media(max-width:768px){
+  .map-col{ height:auto !important; padding:0 12px; }
+  .map-card{ height:auto !important; }
+  .map-wrap{ height:320px !important; min-height:320px !important; }
+  .map{ height:320px !important; min-height:320px !important; }
+}
