@@ -47,7 +47,6 @@
 
   <main class="container">
     <div class="app-layout" id="appLayout">
-
       <aside class="panel" id="panel">
 
         <section class="card hero">
@@ -102,7 +101,7 @@
             <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon green">🛡️</div>
-                <button class="expand-arrow" onclick="toggleCard('safety')" aria-label="Expand safety score details">›</button>
+                <button class="expand-arrow" onclick="toggleCard('safety')" aria-label="Expand safety score">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Safety Score</div>
@@ -116,9 +115,7 @@
                   <div class="expand-row"><span>Score range</span><span>0 – 100</span></div>
                   <div class="expand-bar-wrap">
                     <div class="expand-bar-label">Score position</div>
-                    <div class="expand-bar-bg">
-                      <div class="expand-bar-fill" id="ex-safetyBar" style="width:0%"></div>
-                    </div>
+                    <div class="expand-bar-bg"><div class="expand-bar-fill" id="ex-safetyBar" style="width:0%"></div></div>
                     <div class="expand-bar-ends"><span>Dangerous</span><span>Very safe</span></div>
                   </div>
                 </div>
@@ -129,7 +126,7 @@
             <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon red">🚨</div>
-                <button class="expand-arrow" onclick="toggleCard('violent')" aria-label="Expand violent crime details">›</button>
+                <button class="expand-arrow" onclick="toggleCard('violent')" aria-label="Expand violent crime">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Violent Crime</div>
@@ -151,7 +148,7 @@
             <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon yellow">🏠</div>
-                <button class="expand-arrow" onclick="toggleCard('property')" aria-label="Expand property crime details">›</button>
+                <button class="expand-arrow" onclick="toggleCard('property')" aria-label="Expand property crime">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Property Crime</div>
@@ -169,15 +166,78 @@
               </div>
             </div>
 
+            <!-- Crime Trend -->
+            <div class="stat-card expandable">
+              <div class="stat-card-top">
+                <div class="stat-icon" id="trendIcon">📈</div>
+                <button class="expand-arrow" onclick="toggleCard('trend')" aria-label="Expand crime trend">›</button>
+              </div>
+              <div class="stat-body">
+                <div class="stat-label">Crime Trend</div>
+                <div class="stat-value" id="statTrend">—</div>
+                <div class="stat-sub" id="statTrendSub">vs. prior year</div>
+              </div>
+              <div class="expand-body" id="expand-trend">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Direction</span><span id="ex-trendDir">—</span></div>
+                  <div class="expand-row"><span>Est. change</span><span id="ex-trendChg">—</span></div>
+                  <div class="expand-row"><span>Based on</span><span>Regional data</span></div>
+                  <div class="expand-note">Trend is estimated based on regional crime patterns and historical FBI UCR data.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Population -->
+            <div class="stat-card expandable">
+              <div class="stat-card-top">
+                <div class="stat-icon blue">👥</div>
+                <button class="expand-arrow" onclick="toggleCard('pop')" aria-label="Expand population">›</button>
+              </div>
+              <div class="stat-body">
+                <div class="stat-label">Population</div>
+                <div class="stat-value" id="statPop">—</div>
+                <div class="stat-sub" id="statPopSub">—</div>
+              </div>
+              <div class="expand-body" id="expand-pop">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Area type</span><span id="ex-popType">—</span></div>
+                  <div class="expand-row"><span>Density</span><span id="ex-popDensity">—</span></div>
+                  <div class="expand-row"><span>Est. households</span><span id="ex-popHH">—</span></div>
+                  <div class="expand-note">Population estimates based on U.S. Census regional averages by ZIP prefix.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Median Home Value -->
+            <div class="stat-card expandable">
+              <div class="stat-card-top">
+                <div class="stat-icon green">🏡</div>
+                <button class="expand-arrow" onclick="toggleCard('home')" aria-label="Expand home value">›</button>
+              </div>
+              <div class="stat-body">
+                <div class="stat-label">Median Home Value</div>
+                <div class="stat-value green" id="statHome">—</div>
+                <div class="stat-sub" id="statHomeSub">—</div>
+              </div>
+              <div class="expand-body" id="expand-home">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Price range</span><span id="ex-homeRange">—</span></div>
+                  <div class="expand-row"><span>Market</span><span id="ex-homeMarket">—</span></div>
+                  <div class="expand-row"><span>vs. U.S. median</span><span id="ex-homeVsUS">—</span></div>
+                  <div class="expand-note">Estimates based on regional Census and Zillow historical averages by ZIP prefix.</div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
+          <!-- Bottom row: Data Year + Risk Level -->
           <div class="stat-cards-2" style="margin-top:10px;">
 
-            <!-- Data Year -->
             <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon blue">📅</div>
-                <button class="expand-arrow" onclick="toggleCard('year')" aria-label="Expand data year details">›</button>
+                <button class="expand-arrow" onclick="toggleCard('year')" aria-label="Expand data year">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Data Year</div>
@@ -189,16 +249,15 @@
                   <div class="expand-row"><span>Source</span><span>FBI UCR Program</span></div>
                   <div class="expand-row"><span>Coverage</span><span>~18,000 agencies</span></div>
                   <div class="expand-row"><span>Method</span><span>Regional index</span></div>
-                  <div class="expand-note">Scores are based on regional historical averages from FBI Uniform Crime Reporting data.</div>
+                  <div class="expand-note">Scores based on regional historical averages from FBI Uniform Crime Reporting data.</div>
                 </div>
               </div>
             </div>
 
-            <!-- Risk Level -->
             <div class="stat-card expandable">
               <div class="stat-card-top">
                 <div class="stat-icon purple">📊</div>
-                <button class="expand-arrow" onclick="toggleCard('risk')" aria-label="Expand risk level details">›</button>
+                <button class="expand-arrow" onclick="toggleCard('risk')" aria-label="Expand risk level">›</button>
               </div>
               <div class="stat-body">
                 <div class="stat-label">Risk Level</div>
@@ -234,11 +293,11 @@
 
         <div class="tip-bar">
           <span class="tip-icon">💡</span>
-          <span>Search any U.S. ZIP code to instantly see its safety score, crime rates, and risk level. Tap › on any card for details.</span>
+          <span>Search any U.S. ZIP code for safety scores, crime rates, home values, and more. Tap › on any card for details.</span>
         </div>
 
         <footer class="footer card">
-          <div>Data: <b>Regional Crime Index</b> · Based on FBI UCR historical averages · For informational purposes only.</div>
+          <div>Data: <b>Regional Crime Index</b> · Based on FBI UCR &amp; Census historical averages · For informational purposes only.</div>
         </footer>
 
       </aside>
