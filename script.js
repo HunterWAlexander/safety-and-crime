@@ -196,6 +196,63 @@ function calcScore(zip) {
   return { safetyScore, violentCrime, propertyCrime, population, homeValue, riskLevel, trend, trendColor, trendIcon, trendChange, dataYear:2023 };
 }
 
+
+// ── SAFETY GRADE ───────────────────────────────────────────────────────
+function getGrade(score) {
+  if (score >= 90) return { letter: "A", label: "Excellent" };
+  if (score >= 80) return { letter: "A-", label: "Very Good" };
+  if (score >= 70) return { letter: "B+", label: "Good" };
+  if (score >= 60) return { letter: "B", label: "Above Average" };
+  if (score >= 50) return { letter: "C+", label: "Average" };
+  if (score >= 40) return { letter: "C", label: "Below Average" };
+  if (score >= 30) return { letter: "D", label: "Poor" };
+  return { letter: "F", label: "Very Poor" };
+}
+
+// ── NEARBY ZIPS ────────────────────────────────────────────────────────
+function getNearbyZips(zip) {
+  const num = parseInt(zip);
+  const nearby = [];
+  const offsets = [-3, -2, -1, 1, 2, 3];
+  for (const offset of offsets) {
+    const n = num + offset;
+    if (n >= 10000 && n <= 99999) {
+      const z = n.toString().padStart(5, "0");
+      const scores = calcScore(z);
+      nearby.push({ zip: z, ...scores });
+    }
+    if (nearby.length >= 4) break;
+  }
+  return nearby;
+}
+
+async function renderNearbyZips(zip) {
+  const section = document.getElementById("nearbySection");
+  const list    = document.getElementById("nearbyList");
+  if (!section || !list) return;
+
+  const nearby = getNearbyZips(zip);
+  if (nearby.length === 0) { section.style.display = "none"; return; }
+
+  // Fetch city names for nearby ZIPs in parallel
+  const locations = await Promise.all(
+    nearby.map(n => fetchZipInfo(n.zip).catch(() => ({ city: "—", state: "" })))
+  );
+
+  section.style.display = "block";
+  list.innerHTML = nearby.map((n, i) => {
+    const loc = locations[i];
+    const cls = n.riskLevel === "Low Risk" ? "low" : n.riskLevel === "Medium Risk" ? "medium" : "high";
+    const grade = getGrade(n.safetyScore);
+    return `<div class="nearby-card ${cls}" onclick="searchZip('${n.zip}')" style="cursor:pointer;">
+      <div class="nearby-zip">${n.zip}</div>
+      <div class="nearby-city">${loc.city}, ${loc.state}</div>
+      <div class="nearby-score">Score ${n.safetyScore} · <span class="nearby-grade">${grade.letter}</span></div>
+      <div class="nearby-risk">${n.riskLevel}</div>
+    </div>`;
+  }).join("");
+}
+
 // ── DOM ELEMENTS ───────────────────────────────────────────────────────
 const zipInput      = document.getElementById("zipInput");
 const zipError      = document.getElementById("zipError");
@@ -317,8 +374,17 @@ function renderResults(zip, location, scores) {
   if (statSection)  statSection.style.display  = "block";
 
   // Main stats
+  // Safety score + grade
+  const grade = getGrade(safetyScore);
   if (elSafety)    elSafety.textContent    = safetyScore;
   if (elSafetySub) elSafetySub.textContent = `Safer than ${safetyScore}% of U.S. ZIP codes`;
+  const gradeEl = document.getElementById("statGrade");
+  const gradeLabelEl = document.getElementById("statGradeLabel");
+  if (gradeEl) gradeEl.textContent = grade.letter;
+  if (gradeLabelEl) gradeLabelEl.textContent = grade.label;
+  if (gradeEl) {
+    gradeEl.style.color = safetyScore >= 70 ? "#16a34a" : safetyScore >= 40 ? "#d97706" : "#dc2626";
+  }
   if (elViolent)   elViolent.textContent   = violentCrime.toLocaleString();
   if (elProperty)  elProperty.textContent  = propertyCrime.toLocaleString();
   if (elYear)      elYear.textContent      = dataYear;
@@ -375,6 +441,7 @@ function renderResults(zip, location, scores) {
   if (lat && lng) placeMarker(lat, lng, `${zip} — ${riskLevel} (${city}, ${state})`, riskLevel);
   saveRecent({ zip, city, state, safetyScore, riskLevel });
   showMapButton(zip, city, state);
+  renderNearbyZips(zip);
 }
 
 // ── MAIN SEARCH ────────────────────────────────────────────────────────
