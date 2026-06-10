@@ -85,6 +85,9 @@
           </div>
         </section>
 
+        <!-- View on Map button (mobile only) -->
+        <button id="viewMapBtn" class="view-map-btn hidden" onclick="scrollToMap()">📍 View on map ↓</button>
+
         <section class="card recent-row" id="recentSection" style="display:none;">
           <div class="recent-header">
             <h3>Recent ZIP Codes</h3>
@@ -290,11 +293,6 @@
           </div>
           <div id="results" class="results"></div>
         </section>
-
-        <!-- View on Map button (mobile only, shows after search) -->
-        <button id="viewMapBtn" class="view-map-btn hidden" onclick="scrollToMap()">
-          📍 View on map ↓
-        </button>
 
         <div class="tip-bar">
           <span class="tip-icon">💡</span>
