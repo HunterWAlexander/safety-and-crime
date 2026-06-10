@@ -3,8 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Safety & Crime - ZIP Safety</title>
-  <meta name="description" content="Check safety and crime insights by ZIP code. Compare ZIP codes and explore safety levels with a clean modern UI." />
+
+  <!-- SEO Meta Tags -->
+  <title>Safety & Crime — ZIP Code Safety Lookup</title>
+  <meta name="description" content="Look up safety scores, violent crime rates, and property crime statistics for any U.S. ZIP code. Free, instant results with interactive map." />
+  <meta name="keywords" content="zip code safety, crime by zip code, neighborhood safety score, is my neighborhood safe, crime statistics by zip code" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safety-and-crime.pages.dev/" />
+
+  <!-- Open Graph (for social sharing) -->
+  <meta property="og:title" content="Safety & Crime — ZIP Code Safety Lookup" />
+  <meta property="og:description" content="Instant safety scores and crime statistics for any U.S. ZIP code. Free tool with interactive map." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safety-and-crime.pages.dev/" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Safety & Crime — ZIP Code Safety Lookup" />
+  <meta name="twitter:description" content="Instant safety scores and crime statistics for any U.S. ZIP code." />
+
+  <!-- Structured Data for Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Safety & Crime ZIP Lookup",
+    "description": "Look up safety scores and crime statistics for any U.S. ZIP code.",
+    "url": "https://safety-and-crime.pages.dev/",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="styles.css" />
@@ -18,10 +48,6 @@
       <div class="brand-title">Safety &amp; Crime</div>
     </div>
     <div class="toggles">
-      <label class="toggle">
-        <input id="mockToggle" type="checkbox" checked />
-        <span>Mock data mode</span>
-      </label>
       <label class="toggle">
         <input id="compareToggle" type="checkbox" />
         <span>Compare Mode</span>
@@ -40,9 +66,9 @@
           <div class="hero-head">
             <div>
               <h1>Safety &amp; Crime Lookup</h1>
-              <p class="muted">Enter your ZIP code to view safety statistics.
+              <p class="muted">Enter any U.S. ZIP code to view safety statistics and crime rates.
                 <span class="tooltip" tabindex="0">ℹ
-                  <span class="tooltip-text">Safety Score is a relative rating. Higher means safer. Accuracy improves once live data is connected.</span>
+                  <span class="tooltip-text">Safety Score is a regional index (0–100). Higher means safer relative to other U.S. ZIP codes. Based on FBI UCR historical averages by region.</span>
                 </span>
               </p>
             </div>
@@ -50,7 +76,7 @@
 
           <div class="search-row">
             <div class="input-wrap">
-              <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code" />
+              <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code e.g. 90210" />
               <div id="zipError" class="inline-error hidden"></div>
             </div>
             <button id="searchBtn" class="btn primary">Search</button>
@@ -83,7 +109,7 @@
           <div class="recent-cards" id="recentCards"></div>
         </section>
 
-        <!-- Stat Cards (visible after search) -->
+        <!-- Stat Cards -->
         <section id="statSection" style="display:none;">
           <div class="stat-cards">
 
@@ -107,7 +133,7 @@
               <div class="stat-body">
                 <div class="stat-label">Violent Crime</div>
                 <div class="stat-value red" id="statViolent">—</div>
-                <div class="stat-sub">per 1,000 people</div>
+                <div class="stat-sub">per 100,000 people</div>
               </div>
             </div>
 
@@ -119,7 +145,7 @@
               <div class="stat-body">
                 <div class="stat-label">Property Crime</div>
                 <div class="stat-value yellow" id="statProperty">—</div>
-                <div class="stat-sub">per 1,000 people</div>
+                <div class="stat-sub">per 100,000 people</div>
               </div>
             </div>
 
@@ -156,15 +182,9 @@
 
         <!-- Status -->
         <section class="card status-card" id="statusCard">
-          <div id="emptyState" class="empty-state">Enter a ZIP code to view results.</div>
+          <div id="emptyState" class="empty-state">Enter a ZIP code above to view safety statistics.</div>
           <div id="compareHint" class="compare-hint hidden">Compare Mode is ON. Search at least <b>2 ZIP codes</b> to compare.</div>
-          <div id="loadingState" class="loading hidden">Fetching data…</div>
-        </section>
-
-        <!-- Trend -->
-        <section class="card trend-card" id="trendCard">
-          <div class="section-title">Trend <span class="muted small">— yearly trend once APIs are connected</span></div>
-          <canvas id="trendChart" height="90"></canvas>
+          <div id="loadingState" class="loading hidden">Looking up ZIP code…</div>
         </section>
 
         <!-- Results -->
@@ -178,13 +198,13 @@
 
         <!-- Tip -->
         <div class="tip-bar">
-          <span class="tip-icon">ℹ️</span>
-          <span><b>Tip:</b> Click on the map or search for a ZIP code to see detailed safety statistics.</span>
+          <span class="tip-icon">💡</span>
+          <span>Search any U.S. ZIP code to instantly see its safety score, crime rates, and risk level on the map.</span>
         </div>
 
         <!-- Footer -->
         <footer class="footer card">
-          <div>Data Sources: <b>Mock Data</b> (API integration coming soon). For demo only.</div>
+          <div>Data: <b>Regional Crime Index</b> · Based on FBI UCR historical averages by region · For informational purposes only.</div>
         </footer>
 
       </aside>
@@ -213,18 +233,11 @@
               <button id="fsLegendBtn" class="fs-btn">Legend</button>
               <button id="fsCenterBtn" class="fs-btn">Center</button>
               <button id="fsExitBtn" class="fs-btn danger">Exit Fullscreen</button>
-              <button id="fsExitFocusBtn" class="fs-btn">Exit Focus</button>
             </div>
 
             <div id="focusExit" class="focus-exit hidden">
               <button id="exitFocusBtn" class="fs-btn danger">Exit Focus</button>
             </div>
-          </div>
-
-          <div id="legend" class="legend hidden">
-            <div class="legend-row"><span class="dot safe"></span> Safer</div>
-            <div class="legend-row"><span class="dot medium"></span> Medium</div>
-            <div class="legend-row"><span class="dot risk"></span> Higher risk</div>
           </div>
         </section>
       </section>
