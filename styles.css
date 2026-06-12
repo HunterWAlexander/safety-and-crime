@@ -398,3 +398,41 @@ body.focus-mode .map-col{ padding:0; }
   padding: 0 4px;
 }
 .faq-a.open { max-height: 200px; padding: 0 4px 12px; }
+
+/* ── RESIZABLE SPLIT PANE (desktop only) ── */
+.resize-handle {
+  width: 8px;
+  flex-shrink: 0;
+  background: #f3f4f6;
+  cursor: col-resize;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-left: 0.5px solid #e5e7eb;
+  border-right: 0.5px solid #e5e7eb;
+  transition: background .15s;
+  z-index: 10;
+}
+.resize-handle:hover,
+.resize-handle.dragging {
+  background: #dcfce7;
+}
+.resize-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+.resize-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #d1d5db;
+}
+.resize-handle:hover .resize-dot,
+.resize-handle.dragging .resize-dot {
+  background: #16a34a;
+}
+@media(min-width:769px){
+  .resize-handle { display: flex; }
+}

@@ -759,3 +759,69 @@ function toggleFaq(btn) {
     arrow?.classList.add("open");
   }
 }
+
+// ── RESIZABLE SPLIT PANE (desktop only) ───────────────────────────────
+(function() {
+  const handle  = document.getElementById("resizeHandle");
+  const panel   = document.getElementById("panel");
+  const layout  = document.getElementById("appLayout");
+  if (!handle || !panel || !layout) return;
+
+  const DEFAULT_WIDTH = 580;
+  const MIN_WIDTH     = 320;
+  const MAX_RATIO     = 0.75;
+
+  let dragging  = false;
+  let startX    = 0;
+  let startWidth= 0;
+
+  // Only activate on desktop
+  function isDesktop() { return window.innerWidth > 768; }
+
+  handle.addEventListener("mousedown", e => {
+    if (!isDesktop()) return;
+    dragging   = true;
+    startX     = e.clientX;
+    startWidth = panel.offsetWidth;
+    handle.classList.add("dragging");
+    document.body.style.cursor     = "col-resize";
+    document.body.style.userSelect = "none";
+    e.preventDefault();
+  });
+
+  document.addEventListener("mousemove", e => {
+    if (!dragging) return;
+    const delta    = e.clientX - startX;
+    const maxWidth = layout.offsetWidth * MAX_RATIO;
+    const newWidth = Math.max(MIN_WIDTH, Math.min(startWidth + delta, maxWidth));
+    panel.style.width    = newWidth + "px";
+    panel.style.minWidth = "unset";
+    panel.style.maxWidth = "unset";
+    // Invalidate map size after resize
+    if (map) map.invalidateSize();
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove("dragging");
+    document.body.style.cursor     = "";
+    document.body.style.userSelect = "";
+    if (map) map.invalidateSize();
+  });
+
+  // Double-click resets to default width
+  handle.addEventListener("dblclick", () => {
+    panel.style.width    = DEFAULT_WIDTH + "px";
+    panel.style.minWidth = "";
+    panel.style.maxWidth = "";
+    if (map) map.invalidateSize();
+  });
+
+  // Reset on window resize to avoid broken layouts
+  window.addEventListener("resize", () => {
+    if (!isDesktop()) {
+      panel.style.width = "";
+    }
+  });
+})();
