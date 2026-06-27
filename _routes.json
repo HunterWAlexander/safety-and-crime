@@ -1,12 +1,5 @@
 {
   "version": 1,
-  "include": ["/functions/*"],
-  "exclude": [
-    "/*.css",
-    "/*.ico",
-    "/*.png",
-    "/*.jpg",
-    "/*.svg",
-    "/assets/*"
-  ]
+  "include": ["/zip"],
+  "exclude": []
 }
