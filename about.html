@@ -7,7 +7,8 @@
   <meta name="description" content="About SafetyAndCrime.com — a free tool to look up safety scores and crime statistics for any U.S. ZIP code." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://safetyandcrime.com/about.html" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css" /><link rel="stylesheet" href="/hub-nav.css" /><link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
   <style>
     .about-wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
     .about-wrap h1 { font-size: 28px; color: var(--green); margin-bottom: 8px; }
@@ -26,19 +27,14 @@
     .data-source strong { color: #15803d; }
     @media(max-width:600px){ .stat-highlight{ grid-template-columns: 1fr 1fr; } }
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">🛡️</div>
-      <div class="brand-title">Safety &amp; Crime</div>
-    </div>
-  </header>
+  <div id="hub-header"></div>
 
   <div style="padding-top:var(--topbar-h);">
     <div class="about-wrap">
-      <a href="/" class="back-link">← Back to Safety &amp; Crime Lookup</a>
+      <a href="/crime.html" class="back-link">← Back to Safety &amp; Crime Lookup</a>
       <h1>About Safety &amp; Crime</h1>
       <p class="tagline">Instant safety insights for any U.S. ZIP code — free, fast, and easy to understand.</p>
 
@@ -106,5 +102,6 @@
     </div>
   </div>
 
+<script src="/hub-nav.js"></script>
 </body>
 </html>

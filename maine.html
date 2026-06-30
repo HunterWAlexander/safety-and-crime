@@ -28,62 +28,60 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Maine — ZIP Code Safety Scores</h1>
       <p class="sub">Maine is a Northeastern state known for its coastline and seafood. Look up safety scores and crime statistics for ZIP codes across Maine.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Portland</div><div class="zip-row medium" onclick="window.location='/?zip=04101'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Portland</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04101'">
           <div class="zip-num">04101</div>
           <div class="zip-hood">Downtown Portland</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=04102'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04102'">
           <div class="zip-num">04102</div>
           <div class="zip-hood">West End</div>
           <div class="zip-score" style="color:#d97706;">64 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=04103'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04103'">
           <div class="zip-num">04103</div>
           <div class="zip-hood">Deering</div>
           <div class="zip-score" style="color:#d97706;">69 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=04104'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04104'">
           <div class="zip-num">04104</div>
           <div class="zip-hood">East Deering</div>
           <div class="zip-score" style="color:#d97706;">57 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=04106'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04106'">
           <div class="zip-num">04106</div>
           <div class="zip-hood">South Portland</div>
           <div class="zip-score" style="color:#d97706;">67 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Bangor</div><div class="zip-row medium" onclick="window.location='/?zip=04401'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Bangor</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04401'">
           <div class="zip-num">04401</div>
           <div class="zip-hood">Downtown Bangor</div>
           <div class="zip-score" style="color:#d97706;">68 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=04402'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04402'">
           <div class="zip-num">04402</div>
           <div class="zip-hood">West Bangor</div>
           <div class="zip-score" style="color:#d97706;">56 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=04412'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04412'">
           <div class="zip-num">04412</div>
           <div class="zip-hood">Brewer</div>
           <div class="zip-score" style="color:#d97706;">60 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=04414'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=04414'">
           <div class="zip-num">04414</div>
           <div class="zip-hood">Brownville</div>
           <div class="zip-score" style="color:#16a34a;">70 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=04429'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=04429'">
           <div class="zip-num">04429</div>
           <div class="zip-hood">Hampden</div>
           <div class="zip-score" style="color:#d97706;">65 <span class="zip-grade">B</span></div>
@@ -93,7 +91,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Maine</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Maine's safety landscape is shaped by Portland, its largest city, along with a predominantly rural and coastal geography across the rest of the state. Portland has seen significant growth in its food and tourism economy in recent years, generally correlating with stable to improving safety trends in its core neighborhoods.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Maine's overall low population density and strong sense of close-knit coastal and rural communities contribute to it generally showing favorable statewide safety statistics compared to more urbanized New England states.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -116,5 +114,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

@@ -28,62 +28,60 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Kansas — ZIP Code Safety Scores</h1>
       <p class="sub">Kansas is a Great Plains state known for its wide open spaces. Look up safety scores and crime statistics for ZIP codes across Kansas.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Wichita</div><div class="zip-row medium" onclick="window.location='/?zip=67201'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Wichita</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=67201'">
           <div class="zip-num">67201</div>
           <div class="zip-hood">Downtown Wichita</div>
           <div class="zip-score" style="color:#d97706;">47 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=67203'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=67203'">
           <div class="zip-num">67203</div>
           <div class="zip-hood">Old Town</div>
           <div class="zip-score" style="color:#d97706;">57 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=67206'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=67206'">
           <div class="zip-num">67206</div>
           <div class="zip-hood">East Wichita</div>
           <div class="zip-score" style="color:#d97706;">55 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=67208'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=67208'">
           <div class="zip-num">67208</div>
           <div class="zip-hood">Northeast Wichita</div>
           <div class="zip-score" style="color:#d97706;">48 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=67212'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=67212'">
           <div class="zip-num">67212</div>
           <div class="zip-hood">West Wichita</div>
           <div class="zip-score" style="color:#d97706;">56 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Overland Park</div><div class="zip-row medium" onclick="window.location='/?zip=66202'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Overland Park</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=66202'">
           <div class="zip-num">66202</div>
           <div class="zip-hood">Downtown OP</div>
           <div class="zip-score" style="color:#d97706;">50 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=66204'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=66204'">
           <div class="zip-num">66204</div>
           <div class="zip-hood">Westwood</div>
           <div class="zip-score" style="color:#d97706;">60 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=66207'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=66207'">
           <div class="zip-num">66207</div>
           <div class="zip-hood">East OP</div>
           <div class="zip-score" style="color:#d97706;">58 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=66210'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=66210'">
           <div class="zip-num">66210</div>
           <div class="zip-hood">South OP</div>
           <div class="zip-score" style="color:#d97706;">44 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=66213'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=66213'">
           <div class="zip-num">66213</div>
           <div class="zip-hood">Blue Valley</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
@@ -93,7 +91,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Kansas</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Kansas's safety statistics are concentrated around Wichita, the state's largest city, and the Kansas City metro area that straddles the Kansas-Missouri border. The Overland Park area in particular has emerged as one of the more affluent and rapidly growing suburban communities in the broader Kansas City metro.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Wichita's economy, historically tied to aviation manufacturing, has shaped a safety profile typical of many mid-sized Midwestern industrial cities. Rural Kansas, which makes up the vast majority of the state's geography, shows markedly different crime patterns than its urban centers.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -116,5 +114,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

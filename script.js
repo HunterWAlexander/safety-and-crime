@@ -1,6 +1,8 @@
 // ---------------------------
 // Safety & Crime — script.js
 // Smart regional scoring + all stat cards
+// Population + Median Home Value now use real Census data (census-api.js)
+// with automatic fallback to regional estimates if Census has no record.
 // ---------------------------
 
 // ── REGIONAL DATA ─────────────────────────────────────────────────────
@@ -193,7 +195,7 @@ function calcScore(zip) {
   const trendIcon  = trendSeed <= 2 ? "📉" : trendSeed <= 5 ? "📊" : "📈";
   const trendChange= trendSeed <= 2 ? `-${1 + (seed%4)}% vs last year` : trendSeed <= 5 ? "< 1% change" : `+${1 + (seed%5)}% vs last year`;
 
-  return { safetyScore, violentCrime, propertyCrime, population, homeValue, riskLevel, trend, trendColor, trendIcon, trendChange, dataYear: new Date().getFullYear() };
+  return { safetyScore, violentCrime, propertyCrime, population, homeValue, riskLevel, trend, trendColor, trendIcon, trendChange, dataYear: new Date().getFullYear(), dataSource: "regional-estimate" };
 }
 
 
@@ -367,7 +369,7 @@ function updateExpandDetails(safetyScore, riskLevel) {
 function renderResults(zip, location, scores) {
   const { city, state, lat, lng } = location;
   const { safetyScore, violentCrime, propertyCrime, population, homeValue,
-          riskLevel, trend, trendColor, trendIcon, trendChange, dataYear } = scores;
+          riskLevel, trend, trendColor, trendIcon, trendChange, dataYear, dataSource } = scores;
 
   if (emptyState)   emptyState.style.display  = "none";
   if (loadingState) { loadingState.style.display="none"; loadingState.classList.add("hidden"); }
@@ -406,13 +408,15 @@ function renderResults(zip, location, scores) {
   const popFormatted = population >= 1000 ? (population/1000).toFixed(1) + "K" : population.toString();
   const neighborhoodType = getNeighborhoodType(population);
   if (elPop)    elPop.textContent    = popFormatted;
-  if (elPopSub) elPopSub.textContent = neighborhoodType;
+  if (elPopSub) elPopSub.textContent = neighborhoodType + (dataSource === "census" ? " · Census" : " · Est.");
   const exPopType    = document.getElementById("ex-popType");
   const exPopDensity = document.getElementById("ex-popDensity");
   const exPopHH      = document.getElementById("ex-popHH");
+  const exPopSource  = document.getElementById("ex-popSource");
   if (exPopType)    exPopType.textContent    = neighborhoodType;
   if (exPopDensity) exPopDensity.textContent = getDensity(population);
   if (exPopHH)      exPopHH.textContent      = Math.round(population * 0.38).toLocaleString();
+  if (exPopSource)  exPopSource.textContent  = dataSource === "census" ? "U.S. Census Bureau (ACS 5-Year)" : "Regional estimate";
 
   // Home value
   const homeFormatted = formatHome(homeValue);
@@ -422,17 +426,19 @@ function renderResults(zip, location, scores) {
     ? `${Math.round((homeValue/usMedian - 1)*100)}% above U.S. median`
     : `${Math.round((1 - homeValue/usMedian)*100)}% below U.S. median`;
   if (elHome)    elHome.textContent    = homeFormatted;
-  if (elHomeSub) elHomeSub.textContent = market + " market";
+  if (elHomeSub) elHomeSub.textContent = market + " market" + (dataSource === "census" ? " · Census" : " · Est.");
   const exHomeRange  = document.getElementById("ex-homeRange");
   const exHomeMarket = document.getElementById("ex-homeMarket");
   const exHomeVsUS   = document.getElementById("ex-homeVsUS");
+  const exHomeSource = document.getElementById("ex-homeSource");
   if (exHomeRange)  exHomeRange.textContent  = formatHome(homeValue*0.85) + " – " + formatHome(homeValue*1.15);
   if (exHomeMarket) exHomeMarket.textContent = market;
   if (exHomeVsUS)   exHomeVsUS.textContent   = vsUS;
+  if (exHomeSource) exHomeSource.textContent = dataSource === "census" ? "U.S. Census Bureau (ACS 5-Year)" : "Regional estimate";
 
   // Footer
   const footer = document.querySelector(".footer div");
-  if (footer) footer.innerHTML = `Data: <b>Regional Crime Index</b> · Based on FBI UCR &amp; Census historical averages · For informational purposes only.`;
+  if (footer) footer.innerHTML = `Data: <b>Regional Crime Index</b> &amp; <b>U.S. Census</b> (population, home value) · For informational purposes only.`;
 
   // Update expand details
   updateExpandDetails(safetyScore, riskLevel);
@@ -466,9 +472,25 @@ async function searchZip(zip) {
 
   const [location, scores] = await Promise.all([
     fetchZipInfo(zip),
-    Promise.resolve(calcScore(zip)),
+    calcScore(zip), // synchronous, but kept in Promise.all shape for minimal diff
   ]);
-  renderResults(zip, location, scores);
+
+  // Try to enrich with real Census data (population + home value).
+  // enrichWithCensusData() is defined in census-api.js and fails gracefully
+  // (leaves the regional-estimate values untouched) if Census has no record
+  // for this ZCTA, the key is missing, or the request fails.
+  let finalScores = scores;
+  if (typeof enrichWithCensusData === "function") {
+    try {
+      finalScores = await enrichWithCensusData(zip, scores);
+    } catch (_) {
+      // enrichWithCensusData already handles its own failures internally,
+      // but just in case, fall back to the regional estimate untouched.
+      finalScores = scores;
+    }
+  }
+
+  renderResults(zip, location, finalScores);
 }
 
 // ── EVENTS ─────────────────────────────────────────────────────────────
@@ -560,8 +582,8 @@ if (shareBtn) {
   shareBtn.addEventListener("click", () => {
     const zip = lastSearchedZip || zipInput?.value.trim();
     const url = zip
-      ? `https://safetyandcrime.com/?zip=${zip}`
-      : "https://safetyandcrime.com";
+      ? `https://safetyandcrime.com/crime.html?zip=${zip}`
+      : "https://safetyandcrime.com/crime.html";
 
     navigator.clipboard.writeText(url).then(() => {
       if (shareBtnText) shareBtnText.textContent = "Copied!";
@@ -702,7 +724,6 @@ function renderCompareTable() {
 
   comparePanel.style.display = "block";
 
-  const currentYear = new Date().getFullYear();
   const rows = [
     ["Safety Score",    z => `${z.safetyScore} ${getGrade(z.safetyScore).letter}`],
     ["Risk Level",      z => z.riskLevel],

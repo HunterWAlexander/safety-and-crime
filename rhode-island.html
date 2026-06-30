@@ -28,62 +28,60 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Rhode Island — ZIP Code Safety Scores</h1>
       <p class="sub">Rhode Island is the smallest U.S. state with a rich colonial history. Look up safety scores and crime statistics for ZIP codes across Rhode Island.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Providence</div><div class="zip-row medium" onclick="window.location='/?zip=02901'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Providence</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02901'">
           <div class="zip-num">02901</div>
           <div class="zip-hood">Downtown Providence</div>
           <div class="zip-score" style="color:#d97706;">62 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02903'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02903'">
           <div class="zip-num">02903</div>
           <div class="zip-hood">College Hill</div>
           <div class="zip-score" style="color:#d97706;">55 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02904'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02904'">
           <div class="zip-num">02904</div>
           <div class="zip-hood">North Providence</div>
           <div class="zip-score" style="color:#d97706;">60 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02905'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02905'">
           <div class="zip-num">02905</div>
           <div class="zip-hood">South Providence</div>
           <div class="zip-score" style="color:#d97706;">65 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=02906'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=02906'">
           <div class="zip-num">02906</div>
           <div class="zip-hood">East Side</div>
           <div class="zip-score" style="color:#16a34a;">70 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Warwick</div><div class="zip-row medium" onclick="window.location='/?zip=02886'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Warwick</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02886'">
           <div class="zip-num">02886</div>
           <div class="zip-hood">Downtown Warwick</div>
           <div class="zip-score" style="color:#d97706;">65 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=02887'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=02887'">
           <div class="zip-num">02887</div>
           <div class="zip-hood">Apponaug</div>
           <div class="zip-score" style="color:#16a34a;">70 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02888'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02888'">
           <div class="zip-num">02888</div>
           <div class="zip-hood">Norwood</div>
           <div class="zip-score" style="color:#d97706;">58 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02889'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02889'">
           <div class="zip-num">02889</div>
           <div class="zip-hood">East Greenwich</div>
           <div class="zip-score" style="color:#d97706;">63 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02893'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02893'">
           <div class="zip-num">02893</div>
           <div class="zip-hood">West Warwick</div>
           <div class="zip-score" style="color:#d97706;">54 <span class="zip-grade">C+</span></div>
@@ -93,7 +91,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Rhode Island</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Rhode Island, the smallest U.S. state by area, has a safety landscape concentrated heavily around Providence, its capital and largest city. Providence's compact urban core and historic colonial-era neighborhoods create a distinct character compared to suburban communities like Warwick closer to the coast.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Rhode Island's small size means its overall safety statistics are heavily influenced by patterns in just a handful of population centers, making ZIP-code-level data especially valuable for understanding the real variation that exists within such a small geographic footprint.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -116,5 +114,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

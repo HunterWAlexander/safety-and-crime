@@ -10,7 +10,7 @@
   <meta property="og:title" content="California ZIP Code Safety Scores — Safety & Crime" />
   <meta property="og:description" content="California is the most populous state in the U.S. Look up safety scores and crime statistics for ZIP codes across California including Los Angeles, San Francisco, and San Diego." />
   <meta property="og:type" content="website" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/styles.css" /><link rel="stylesheet" href="/hub-nav.css" /><link rel="stylesheet" href="/hub-nav.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
   <style>
     .page-wrap{max-width:900px;margin:0 auto;padding:40px 20px 80px;}
@@ -43,17 +43,12 @@
     .rank-badge.bronze{background:#fef3c7;color:#92400e;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}.zip-score,.zip-risk{grid-column:span 1;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">🛡️</div>
-      <div class="brand-title">Safety &amp; Crime</div>
-    </div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="page-wrap">
-      <a href="/" class="back-link">← Search any ZIP code</a>
+      <a href="/crime.html" class="back-link">← Search any ZIP code</a>
       <h1>California — ZIP Code Safety Scores</h1>
       <p class="sub">California is the most populous state in the U.S. Look up safety scores and crime statistics for ZIP codes across California including Los Angeles, San Francisco, and San Diego. Click any ZIP code to see the full safety report.</p>
       
@@ -66,121 +61,121 @@
         <div class="city-links"><a href="/texas" class="city-link">Texas</a><a href="/california" class="city-link active">California</a><a href="/florida" class="city-link">Florida</a><a href="/new-york-state" class="city-link">New York</a><a href="/pennsylvania" class="city-link">Pennsylvania</a><a href="/illinois" class="city-link">Illinois</a><a href="/ohio" class="city-link">Ohio</a><a href="/georgia" class="city-link">Georgia</a><a href="/north-carolina" class="city-link">North Carolina</a><a href="/michigan" class="city-link">Michigan</a></div>
       </div>
       <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;"><a href="/los-angeles" style="color:var(--green);text-decoration:none;">Los Angeles</a></div>
-        <div class="zip-row medium" onclick="window.location='/?zip=90012'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=90012'">
           <div class="zip-num">90012</div>
           <div class="zip-hood">Downtown LA</div>
           <div class="zip-score" style="color:#d97706;">44 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=90024'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=90024'">
           <div class="zip-num">90024</div>
           <div class="zip-hood">Westwood</div>
           <div class="zip-score" style="color:#d97706;">41 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=90046'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=90046'">
           <div class="zip-num">90046</div>
           <div class="zip-hood">West Hollywood</div>
           <div class="zip-score" style="color:#d97706;">42 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=90210'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=90210'">
           <div class="zip-num">90210</div>
           <div class="zip-hood">Beverly Hills</div>
           <div class="zip-score" style="color:#d97706;">62 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=90291'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=90291'">
           <div class="zip-num">90291</div>
           <div class="zip-hood">Venice</div>
           <div class="zip-score" style="color:#d97706;">65 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">San Francisco</div>
-        <div class="zip-row medium" onclick="window.location='/?zip=94102'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=94102'">
           <div class="zip-num">94102</div>
           <div class="zip-hood">Tenderloin</div>
           <div class="zip-score" style="color:#d97706;">49 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=94107'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=94107'">
           <div class="zip-num">94107</div>
           <div class="zip-hood">SoMa</div>
           <div class="zip-score" style="color:#d97706;">57 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=94110'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=94110'">
           <div class="zip-num">94110</div>
           <div class="zip-hood">Mission District</div>
           <div class="zip-score" style="color:#d97706;">60 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=94117'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=94117'">
           <div class="zip-num">94117</div>
           <div class="zip-hood">Haight-Ashbury</div>
           <div class="zip-score" style="color:#d97706;">61 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=94123'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=94123'">
           <div class="zip-num">94123</div>
           <div class="zip-hood">Marina District</div>
           <div class="zip-score" style="color:#d97706;">62 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;"><a href="/san-diego" style="color:var(--green);text-decoration:none;">San Diego</a></div>
-        <div class="zip-row medium" onclick="window.location='/?zip=92101'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=92101'">
           <div class="zip-num">92101</div>
           <div class="zip-hood">Downtown SD</div>
           <div class="zip-score" style="color:#d97706;">60 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=92103'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=92103'">
           <div class="zip-num">92103</div>
           <div class="zip-hood">Hillcrest</div>
           <div class="zip-score" style="color:#d97706;">53 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=92104'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=92104'">
           <div class="zip-num">92104</div>
           <div class="zip-hood">North Park</div>
           <div class="zip-score" style="color:#d97706;">58 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=92130'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=92130'">
           <div class="zip-num">92130</div>
           <div class="zip-hood">Carmel Valley</div>
           <div class="zip-score" style="color:#d97706;">50 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=92131'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=92131'">
           <div class="zip-num">92131</div>
           <div class="zip-hood">Scripps Ranch</div>
           <div class="zip-score" style="color:#d97706;">55 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;"><a href="/san-jose" style="color:var(--green);text-decoration:none;">San Jose</a></div>
-        <div class="zip-row medium" onclick="window.location='/?zip=95101'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=95101'">
           <div class="zip-num">95101</div>
           <div class="zip-hood">Downtown SJ</div>
           <div class="zip-score" style="color:#d97706;">60 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=95110'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=95110'">
           <div class="zip-num">95110</div>
           <div class="zip-hood">Downtown/Arena</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=95120'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=95120'">
           <div class="zip-num">95120</div>
           <div class="zip-hood">Almaden Valley</div>
           <div class="zip-score" style="color:#d97706;">46 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=95125'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=95125'">
           <div class="zip-num">95125</div>
           <div class="zip-hood">Willow Glen</div>
           <div class="zip-score" style="color:#d97706;">54 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=95126'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=95126'">
           <div class="zip-num">95126</div>
           <div class="zip-hood">Rose Garden</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
@@ -192,7 +187,7 @@
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">California's diverse geography means safety research really needs to happen at the ZIP code level rather than relying on city or even neighborhood reputation, since conditions can shift block by block in dense coastal cities. Master-planned communities in areas like Orange County and parts of the Bay Area suburbs consistently rank among the safer ZIP codes statewide.</p>
       <div class="search-cta">
         <p>Don't see your ZIP code? Search any U.S. ZIP code for a full safety report.</p>
-        <a href="/">Search any ZIP code →</a>
+        <a href="/crime.html">Search any ZIP code →</a>
       </div>
       <footer style="margin-top:32px;font-size:12px;color:var(--muted);text-align:center;">
         Data: <b>Regional Crime Index</b> · Based on FBI UCR historical averages · For informational purposes only.<br>
@@ -202,5 +197,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

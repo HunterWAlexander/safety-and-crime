@@ -28,62 +28,60 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Alaska — ZIP Code Safety Scores</h1>
       <p class="sub">Alaska is the largest U.S. state by area. Look up safety scores and crime statistics for ZIP codes across Alaska.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Anchorage</div><div class="zip-row low" onclick="window.location='/?zip=99501'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Anchorage</div><div class="zip-row low" onclick="window.location='/crime.html?zip=99501'">
           <div class="zip-num">99501</div>
           <div class="zip-hood">Downtown Anchorage</div>
           <div class="zip-score" style="color:#16a34a;">70 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=99502'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=99502'">
           <div class="zip-num">99502</div>
           <div class="zip-hood">West Anchorage</div>
           <div class="zip-score" style="color:#16a34a;">75 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=99503'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=99503'">
           <div class="zip-num">99503</div>
           <div class="zip-hood">Midtown</div>
           <div class="zip-score" style="color:#16a34a;">80 <span class="zip-grade">A-</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=99504'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=99504'">
           <div class="zip-num">99504</div>
           <div class="zip-hood">East Anchorage</div>
           <div class="zip-score" style="color:#d97706;">68 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=99508'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=99508'">
           <div class="zip-num">99508</div>
           <div class="zip-hood">University Area</div>
           <div class="zip-score" style="color:#16a34a;">71 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Fairbanks</div><div class="zip-row low" onclick="window.location='/?zip=99701'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Fairbanks</div><div class="zip-row low" onclick="window.location='/crime.html?zip=99701'">
           <div class="zip-num">99701</div>
           <div class="zip-hood">Downtown Fairbanks</div>
           <div class="zip-score" style="color:#16a34a;">80 <span class="zip-grade">A-</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=99703'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=99703'">
           <div class="zip-num">99703</div>
           <div class="zip-hood">Fort Wainwright</div>
           <div class="zip-score" style="color:#16a34a;">73 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=99709'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=99709'">
           <div class="zip-num">99709</div>
           <div class="zip-hood">West Fairbanks</div>
           <div class="zip-score" style="color:#16a34a;">86 <span class="zip-grade">A-</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=99712'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=99712'">
           <div class="zip-num">99712</div>
           <div class="zip-hood">North Pole</div>
           <div class="zip-score" style="color:#16a34a;">72 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=99725'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=99725'">
           <div class="zip-num">99725</div>
           <div class="zip-hood">Ester</div>
           <div class="zip-score" style="color:#16a34a;">74 <span class="zip-grade">B+</span></div>
@@ -93,7 +91,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Alaska</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Alaska's unique geography and low overall population density set it apart from nearly every other state when it comes to safety research. Anchorage, by far the state's largest city, accounts for a significant share of Alaska's population and shows safety patterns shaped by its relative isolation and unique seasonal economic factors tied to tourism and resource industries.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Fairbanks and other smaller Alaska communities tend to show very different safety profiles than Anchorage, often reflecting close-knit community dynamics in remote areas. Alaska's vast distances between population centers mean regional crime trends can vary significantly across the state.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -116,5 +114,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

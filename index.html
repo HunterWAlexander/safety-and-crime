@@ -3,522 +3,126 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Safety & Crime — ZIP Code Safety Lookup</title>
-  <meta name="description" content="Look up safety scores, violent crime rates, and property crime statistics for any U.S. ZIP code. Free, instant results with interactive map." />
-  <meta name="keywords" content="zip code safety, crime by zip code, neighborhood safety score, is my neighborhood safe, crime statistics by zip code" />
+  <title>Safety & Crime — Free ZIP Code Tools: Crime, Demographics, Weather & More</title>
+  <meta name="description" content="Free ZIP code tools for researching any U.S. area: crime and safety scores, demographics, weather risk, earthquake risk, and more. No signup required." />
+  <meta name="keywords" content="zip code lookup, zip code tools, crime by zip code, demographics by zip code, neighborhood research tools" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://safetyandcrime.com/" />
-  <meta property="og:title" content="Safety & Crime — ZIP Code Safety Lookup" />
-  <meta property="og:description" content="Instant safety scores and crime statistics for any U.S. ZIP code. Free tool with interactive map." />
+  <meta property="og:title" content="Safety & Crime — Free ZIP Code Research Tools" />
+  <meta property="og:description" content="Crime, demographics, weather, and more — all by ZIP code, all free." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://safetyandcrime.com/" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Safety & Crime — ZIP Code Safety Lookup" />
-  <meta name="twitter:description" content="Instant safety scores and crime statistics for any U.S. ZIP code." />
+  <meta name="twitter:title" content="Safety & Crime — Free ZIP Code Research Tools" />
+  <meta name="twitter:description" content="Crime, demographics, weather, and more — all by ZIP code, all free." />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Safety & Crime ZIP Lookup",
-    "description": "Look up safety scores and crime statistics for any U.S. ZIP code.",
-    "url": "https://safetyandcrime.com/",
-    "applicationCategory": "UtilitiesApplication",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    "@type": "WebSite",
+    "name": "Safety & Crime",
+    "description": "Free ZIP code research tools: crime and safety scores, demographics, weather risk, earthquake risk, and more.",
+    "url": "https://safetyandcrime.com/"
   }
   </script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="styles.css" />
-</head>
+  <link rel="stylesheet" href="styles.css" /><link rel="stylesheet" href="/hub-nav.css" /><link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/hub-grid.css" />
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body>
 
-  <header class="topbar" id="topbar">
-    <div class="brand">
-      <div class="brand-mark">🛡️</div>
-      <div class="brand-title">Safety &amp; Crime</div>
-    </div>
-    <div class="toggles">
-      <button id="shareBtn" class="btn ghost share-btn" title="Share this ZIP code">
-        🔗 <span id="shareBtnText">Share</span>
-      </button>
-    </div>
-  </header>
+  <div id="hub-header"></div>
 
-  <main class="container">
-    <div class="app-layout" id="appLayout">
-      <aside class="panel" id="panel">
+  <main class="hub-main">
 
-        <section class="card hero">
-          <div class="hero-head">
-            <div>
-              <h1>Safety &amp; Crime Lookup</h1>
-              <p class="muted">Enter any U.S. ZIP code to view safety statistics and crime rates.
-                <span class="tooltip" tabindex="0">ℹ
-                  <span class="tooltip-text">Safety Score is a regional index (0–100). Higher means safer relative to other U.S. ZIP codes. Based on FBI UCR historical averages by region.</span>
-                </span>
-              </p>
-            </div>
-          </div>
-          <div class="search-row">
-            <div class="input-wrap">
-              <input id="zipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code e.g. 90210" />
-              <div id="zipError" class="inline-error hidden"></div>
-            </div>
-            <button id="searchBtn" class="btn primary">Search</button>
-          </div>
-          <div class="toolbar">
-            <label class="toggle" style="border-radius:10px;">
-              <input id="compareToggle" type="checkbox" />
-              <span>Compare Mode</span>
-            </label>
-            <button id="clearHistoryBtn" class="btn ghost">Clear History</button>
-            <div class="spacer"></div>
-            <label class="select-wrap">
-              <select id="sortSelect">
-                <option value="safety_desc">Sort: Safety (high → low)</option>
-                <option value="safety_asc">Safety: Low → High</option>
-                <option value="zip_asc">ZIP: A → Z</option>
-                <option value="zip_desc">ZIP: Z → A</option>
-              </select>
-            </label>
-          </div>
-        </section>
+    <section class="hub-intro">
+      <h1>Free ZIP code research tools</h1>
+      <p>
+        Safety &amp; Crime started as a single tool for checking crime statistics by ZIP code. It's grown into
+        a small platform of free, ZIP-based research tools — because the data that actually helps you understand
+        an area rarely comes from just one source. Crime trends mean more alongside population and home value
+        context. Weather risk and earthquake exposure matter just as much as crime when you're deciding where
+        to live, work, or invest.
+      </p>
+      <p>
+        Pick a tool below, or use the search bar above to jump straight to crime and safety data for any
+        five-digit U.S. ZIP code. Every tool here is free, with no account required — and we're actively
+        building out more, so this list keeps growing.
+      </p>
+    </section>
 
-        <!-- View on Map button (mobile only) -->
-        <button id="viewMapBtn" class="view-map-btn hidden" onclick="scrollToMap()">📍 View on map ↓</button>
+    <section class="hub-grid" id="hubGrid">
 
-        <section class="card recent-row" id="recentSection" style="display:none;">
-          <div class="recent-header">
-            <h3>Recent ZIP Codes</h3>
-            <button id="clearAllBtn" class="btn ghost danger" style="padding:6px 12px;font-size:12px;">Clear All</button>
-          </div>
-          <div class="recent-cards" id="recentCards"></div>
-        </section>
+      <a href="/crime.html" class="hub-card">
+        <div class="hub-card-icon">🚨</div>
+        <div class="hub-card-title">ZIP Code Search</div>
+        <div class="hub-card-desc">Crime rates, safety scores, risk level, real Census demographics, and an interactive map for any U.S. ZIP code.</div>
+      </a>
 
-        <!-- Stat Cards -->
-        <section id="statSection" style="display:none;">
-          <div class="stat-cards">
-
-            <!-- Safety Score -->
-            <div class="stat-card expandable">
-              <div class="stat-card-top">
-                <div class="stat-icon green">🛡️</div>
-                <button class="expand-arrow" onclick="toggleCard('safety')" aria-label="Expand safety score">›</button>
-              </div>
-              <div class="stat-body">
-                <div class="stat-label">Safety Score</div>
-                <div style="display:flex;align-items:baseline;gap:12px;">
-                  <div class="stat-value green" id="statSafety">—</div>
-                  <div style="display:flex;flex-direction:column;align-items:flex-start;">
-                    <span id="statGrade" style="font-size:22px;font-weight:700;line-height:1;">—</span>
-                    <span id="statGradeLabel" style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;">Grade</span>
-                  </div>
-                </div>
-                <div class="stat-sub" id="statSafetySub">—</div>
-              </div>
-              <div class="expand-body" id="expand-safety">
-                <div class="expand-inner">
-                  <div class="expand-row"><span>Risk level</span><span id="ex-safetyRisk">—</span></div>
-                  <div class="expand-row"><span>Safer than</span><span id="ex-safetyPct">—</span></div>
-                  <div class="expand-row"><span>Score range</span><span>0 – 100</span></div>
-                  <div class="expand-bar-wrap">
-                    <div class="expand-bar-label">Score position</div>
-                    <div class="expand-bar-bg"><div class="expand-bar-fill" id="ex-safetyBar" style="width:0%"></div></div>
-                    <div class="expand-bar-ends"><span>Dangerous</span><span>Very safe</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Violent Crime -->
-            <div class="stat-card expandable">
-              <div class="stat-card-top">
-                <div class="stat-icon red">🚨</div>
-                <button class="expand-arrow" onclick="toggleCard('violent')" aria-label="Expand violent crime">›</button>
-              </div>
-              <div class="stat-body">
-                <div class="stat-label">Violent Crime</div>
-                <div class="stat-value red" id="statViolent">—</div>
-                <div class="stat-sub">per 100,000 people</div>
-              </div>
-              <div class="expand-body" id="expand-violent">
-                <div class="expand-inner">
-                  <div class="expand-row"><span>Aggravated assault</span><span>~45%</span></div>
-                  <div class="expand-row"><span>Robbery</span><span>~28%</span></div>
-                  <div class="expand-row"><span>Rape / sexual assault</span><span>~16%</span></div>
-                  <div class="expand-row"><span>Murder / manslaughter</span><span>~11%</span></div>
-                  <div class="expand-note">Breakdown based on national FBI UCR averages.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Property Crime -->
-            <div class="stat-card expandable">
-              <div class="stat-card-top">
-                <div class="stat-icon yellow">🏠</div>
-                <button class="expand-arrow" onclick="toggleCard('property')" aria-label="Expand property crime">›</button>
-              </div>
-              <div class="stat-body">
-                <div class="stat-label">Property Crime</div>
-                <div class="stat-value yellow" id="statProperty">—</div>
-                <div class="stat-sub">per 100,000 people</div>
-              </div>
-              <div class="expand-body" id="expand-property">
-                <div class="expand-inner">
-                  <div class="expand-row"><span>Larceny / theft</span><span>~60%</span></div>
-                  <div class="expand-row"><span>Burglary</span><span>~22%</span></div>
-                  <div class="expand-row"><span>Vehicle theft</span><span>~14%</span></div>
-                  <div class="expand-row"><span>Arson</span><span>~4%</span></div>
-                  <div class="expand-note">Breakdown based on national FBI UCR averages.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Crime Trend -->
-            <div class="stat-card expandable">
-              <div class="stat-card-top">
-                <div class="stat-icon" id="trendIcon">📈</div>
-                <button class="expand-arrow" onclick="toggleCard('trend')" aria-label="Expand crime trend">›</button>
-              </div>
-              <div class="stat-body">
-                <div class="stat-label">Crime Trend</div>
-                <div class="stat-value" id="statTrend">—</div>
-                <div class="stat-sub" id="statTrendSub">vs. prior year</div>
-              </div>
-              <div class="expand-body" id="expand-trend">
-                <div class="expand-inner">
-                  <div class="expand-row"><span>Direction</span><span id="ex-trendDir">—</span></div>
-                  <div class="expand-row"><span>Est. change</span><span id="ex-trendChg">—</span></div>
-                  <div class="expand-row"><span>Based on</span><span>Regional data</span></div>
-                  <div class="expand-note">Trend is estimated based on regional crime patterns and historical FBI UCR data.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Population -->
-            <div class="stat-card expandable">
-              <div class="stat-card-top">
-                <div class="stat-icon blue">👥</div>
-                <button class="expand-arrow" onclick="toggleCard('pop')" aria-label="Expand population">›</button>
-              </div>
-              <div class="stat-body">
-                <div class="stat-label">Population</div>
-                <div class="stat-value" id="statPop">—</div>
-                <div class="stat-sub" id="statPopSub">—</div>
-              </div>
-              <div class="expand-body" id="expand-pop">
-                <div class="expand-inner">
-                  <div class="expand-row"><span>Area type</span><span id="ex-popType">—</span></div>
-                  <div class="expand-row"><span>Density</span><span id="ex-popDensity">—</span></div>
-                  <div class="expand-row"><span>Est. households</span><span id="ex-popHH">—</span></div>
-                  <div class="expand-note">Population estimates based on U.S. Census regional averages by ZIP prefix.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Median Home Value -->
-            <div class="stat-card expandable">
-              <div class="stat-card-top">
-                <div class="stat-icon green">🏡</div>
-                <button class="expand-arrow" onclick="toggleCard('home')" aria-label="Expand home value">›</button>
-              </div>
-              <div class="stat-body">
-                <div class="stat-label">Median Home Value</div>
-                <div class="stat-value green" id="statHome">—</div>
-                <div class="stat-sub" id="statHomeSub">—</div>
-              </div>
-              <div class="expand-body" id="expand-home">
-                <div class="expand-inner">
-                  <div class="expand-row"><span>Price range</span><span id="ex-homeRange">—</span></div>
-                  <div class="expand-row"><span>Market</span><span id="ex-homeMarket">—</span></div>
-                  <div class="expand-row"><span>vs. U.S. median</span><span id="ex-homeVsUS">—</span></div>
-                  <div class="expand-note">Estimates based on regional Census and Zillow historical averages by ZIP prefix.</div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Bottom row: Data Year + Risk Level -->
-          <div class="stat-cards-2" style="margin-top:10px;">
-
-            <div class="stat-card expandable">
-              <div class="stat-card-top">
-                <div class="stat-icon blue">📅</div>
-                <button class="expand-arrow" onclick="toggleCard('year')" aria-label="Expand data year">›</button>
-              </div>
-              <div class="stat-body">
-                <div class="stat-label">Data Year</div>
-                <div class="stat-value" id="statYear">—</div>
-                <div class="stat-sub">Latest available data</div>
-              </div>
-              <div class="expand-body" id="expand-year">
-                <div class="expand-inner">
-                  <div class="expand-row"><span>Source</span><span>FBI UCR Program</span></div>
-                  <div class="expand-row"><span>Coverage</span><span>~18,000 agencies</span></div>
-                  <div class="expand-row"><span>Method</span><span>Regional index</span></div>
-                  <div class="expand-note">Scores based on regional historical averages from FBI Uniform Crime Reporting data.</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="stat-card expandable">
-              <div class="stat-card-top">
-                <div class="stat-icon purple">📊</div>
-                <button class="expand-arrow" onclick="toggleCard('risk')" aria-label="Expand risk level">›</button>
-              </div>
-              <div class="stat-body">
-                <div class="stat-label">Risk Level</div>
-                <div class="stat-value" id="statRisk">—</div>
-                <div class="stat-sub">Compared to U.S. average</div>
-              </div>
-              <div class="expand-body" id="expand-risk">
-                <div class="expand-inner">
-                  <div class="expand-row"><span>Low Risk</span><span>Score 70 – 100</span></div>
-                  <div class="expand-row"><span>Medium Risk</span><span>Score 40 – 69</span></div>
-                  <div class="expand-row"><span>High Risk</span><span>Score 0 – 39</span></div>
-                  <div class="expand-note">Risk level is determined by the safety score relative to all U.S. ZIP codes.</div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-
-        <!-- Trend Chart -->
-        <section class="card" id="trendSection" style="display:none;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <h3 style="font-size:14px;font-weight:600;">Crime Index Trend</h3>
-            <span id="trendYearRange" style="font-size:11px;color:#6b7280;"></span>
-          </div>
-          <div id="trendChartWrap" style="display:flex;align-items:flex-end;gap:8px;height:80px;padding:0 4px;"></div>
-          <div id="trendYearLabels" style="display:flex;justify-content:space-between;margin-top:6px;padding:0 4px;"></div>
-        </section>
-
-        <!-- Compare Panel -->
-        <section class="card" id="comparePanel" style="display:none;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <h3 style="font-size:14px;font-weight:600;">Compare ZIP Codes</h3>
-            <button onclick="clearCompare()" class="btn ghost danger" style="font-size:12px;padding:4px 10px;">Clear</button>
-          </div>
-          <div id="compareTable"></div>
-        </section>
-
-        <!-- Nearby ZIPs -->
-        <section class="card" id="nearbySection" style="display:none;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <h3 style="font-size:14px;font-weight:600;">Nearby ZIP Codes</h3>
-            <span style="font-size:11px;color:#6b7280;">Click any to search</span>
-          </div>
-          <div id="nearbyList" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
-        </section>
-
-        <section class="card status-card" id="statusCard">
-          <div id="emptyState" class="empty-state">Enter a ZIP code above to view safety statistics.</div>
-          <div id="compareHint" class="compare-hint hidden">Compare Mode is ON. Search at least <b>2 ZIP codes</b> to compare.</div>
-          <div id="loadingState" class="loading hidden">Looking up ZIP code…</div>
-        </section>
-
-        <section class="card results-card">
-          <div class="results-head">
-            <div class="results-title">Results <span id="resultsCount" class="pill">0</span></div>
-            <div id="compareSummary" class="compare-summary hidden"></div>
-          </div>
-          <div id="results" class="results"></div>
-        </section>
-
-
-        <!-- FAQ Section -->
-        <section class="card" id="faqSection">
-          <h3 style="font-size:15px;font-weight:600;margin-bottom:16px;">Frequently Asked Questions</h3>
-
-          <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">How is the Safety Score calculated? <span class="faq-arrow">›</span></button>
-            <div class="faq-a">The Safety Score (0–100) is a regional index based on FBI Uniform Crime Reporting (UCR) historical averages for each ZIP code region. Higher scores indicate safer areas relative to the national average.</div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">How current is the data? <span class="faq-arrow">›</span></button>
-            <div class="faq-a">Our Regional Crime Index reflects the most recent FBI UCR data available. The current data year is 2026, based on regional historical averages and crime trend patterns.</div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">What does Risk Level mean? <span class="faq-arrow">›</span></button>
-            <div class="faq-a">Risk Level classifies ZIP codes into three categories: Low Risk (score 70–100) is safer than most U.S. ZIP codes. Medium Risk (40–69) is around the national average. High Risk (0–39) indicates higher crime rates than average.</div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">Can I compare multiple ZIP codes? <span class="faq-arrow">›</span></button>
-            <div class="faq-a">Yes! Enable Compare Mode using the checkbox under the search bar, then search up to 3 ZIP codes. A side-by-side comparison table will appear showing all key stats.</div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">Is this tool free to use? <span class="faq-arrow">›</span></button>
-            <div class="faq-a">Yes, SafetyAndCrime.com is completely free. Search any U.S. ZIP code, compare areas, and view full safety reports at no cost.</div>
-          </div>
-          <div class="faq-item" style="border-bottom:none;">
-            <button class="faq-q" onclick="toggleFaq(this)">How do I share a ZIP code report? <span class="faq-arrow">›</span></button>
-            <div class="faq-a">After searching a ZIP code, click the green Share button in the top right. It copies a direct link to that ZIP code's report to your clipboard.</div>
-          </div>
-        </section>
-
-
-        <!-- Explore More -->
-        <section class="card" style="margin-top:4px;">
-          <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;">Explore by City</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-            <a href="/houston" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Houston</a>
-            <a href="/new-york" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">New York</a>
-            <a href="/los-angeles" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Los Angeles</a>
-            <a href="/chicago" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Chicago</a>
-            <a href="/dallas" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Dallas</a>
-            <a href="/phoenix" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Phoenix</a>
-            <a href="/san-diego" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">San Diego</a>
-            <a href="/san-antonio" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">San Antonio</a>
-          </div>
-          <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;">Explore by State</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-            <a href="/texas" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Texas</a>
-            <a href="/california" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">California</a>
-            <a href="/florida" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Florida</a>
-            <a href="/illinois" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Illinois</a>
-            <a href="/georgia" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Georgia</a>
-            <a href="/north-carolina" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">North Carolina</a>
-            <a href="/ohio" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Ohio</a>
-            <a href="/michigan" style="background:#f3f4f6;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);text-decoration:none;">Michigan</a>
-          </div>
-          <a href="/safest-cities" style="color:var(--green);font-size:13px;font-weight:500;text-decoration:none;">🏆 View 10 Safest Cities in the U.S. →</a>
-        </section>
-
-      </aside>
-
-      <div id="resizeHandle" class="resize-handle" title="Drag to resize · Double-click to reset">
-        <div class="resize-dots">
-          <div class="resize-dot"></div>
-          <div class="resize-dot"></div>
-          <div class="resize-dot"></div>
-          <div class="resize-dot"></div>
-          <div class="resize-dot"></div>
-        </div>
+      <div class="hub-card coming-soon">
+        <div class="hub-card-icon">🌦️</div>
+        <div class="hub-card-title">Weather <span class="hub-card-badge">Soon</span></div>
+        <div class="hub-card-desc">Current conditions and forecast risk for any ZIP code.</div>
       </div>
 
-      <section class="map-col">
-        <section class="card map-card" id="mapCard">
-          <div class="map-head">
-            <div class="section-title">Map</div>
-            <div class="map-actions">
-              <div class="legend" style="margin:0;">
-                <div class="legend-row"><span class="dot safe"></span> Safer</div>
-                <div class="legend-row"><span class="dot medium"></span> Medium</div>
-                <div class="legend-row"><span class="dot risk"></span> Higher risk</div>
-              </div>
-              <button id="fullscreenBtn" class="btn ghost">Fullscreen</button>
-              <button id="centerBtn" class="btn ghost">Center</button>
-              <button id="focusBtnMap" class="btn ghost">Focus</button>
-            </div>
-          </div>
-          <div id="mapWrap" class="map-wrap">
-            <div id="map" class="map"></div>
-            <div id="fsControls" class="fs-controls hidden">
-              <button id="fsCenterBtn" class="fs-btn">Center</button>
-              <button id="fsExitBtn" class="fs-btn danger">Exit Fullscreen</button>
-            </div>
-            <div id="focusExit" class="focus-exit hidden">
-              <button id="exitFocusBtn" class="fs-btn danger">Exit Focus</button>
-            </div>
-          </div>
-        </section>
+      <div class="hub-card coming-soon">
+        <div class="hub-card-icon">🌎</div>
+        <div class="hub-card-title">Earthquake Risk <span class="hub-card-badge">Soon</span></div>
+        <div class="hub-card-desc">Seismic activity and earthquake risk data by ZIP code.</div>
+      </div>
 
-        <div class="tip-bar" style="margin-top:10px;">
-          <span class="tip-icon">💡</span>
-          <span>Search any U.S. ZIP code for safety scores, crime rates, home values, and more. Tap › on any card for details.</span>
-        </div>
-        <footer class="footer card" style="margin-top:8px;">
-          <div>Data: <b>Regional Crime Index</b> · Based on FBI UCR &amp; Census historical averages · For informational purposes only.</div>
-          <div style="margin-top:8px;">
-            <a href="/about.html" style="color:var(--green);font-size:12px;text-decoration:none;margin-right:12px;">About</a>
-            <a href="/privacy.html" style="color:var(--green);font-size:12px;text-decoration:none;margin-right:12px;">Privacy Policy</a>
-            <a href="/terms.html" style="color:var(--green);font-size:12px;text-decoration:none;">Terms of Service</a>
-          </div>
-        </footer>
-      </section>
+      <div class="hub-card coming-soon">
+        <div class="hub-card-icon">📦</div>
+        <div class="hub-card-title">Recalls <span class="hub-card-badge">Soon</span></div>
+        <div class="hub-card-desc">Product and vehicle safety recalls relevant to your area.</div>
+      </div>
 
-    </div>
+    </section>
+
+    <section class="hub-explore">
+      <h3>Explore by city or state</h3>
+      <div class="hub-explore-links">
+        <a href="/houston">Houston</a>
+        <a href="/new-york">New York</a>
+        <a href="/los-angeles">Los Angeles</a>
+        <a href="/chicago">Chicago</a>
+        <a href="/dallas">Dallas</a>
+        <a href="/phoenix">Phoenix</a>
+        <a href="/san-diego">San Diego</a>
+        <a href="/san-antonio">San Antonio</a>
+        <a href="/texas">Texas</a>
+        <a href="/california">California</a>
+        <a href="/florida">Florida</a>
+        <a href="/illinois">Illinois</a>
+      </div>
+      <a href="/safest-cities" class="hub-explore-cta">🏆 View 10 Safest Cities in the U.S. →</a>
+    </section>
+
   </main>
 
-  <!-- Substantial written content for SEO and content quality -->
-  <section style="max-width:900px;margin:0 auto;padding:40px 20px 60px;background:#fff;">
-    <h2 style="font-size:22px;color:var(--green);margin-bottom:14px;">Understanding ZIP Code Safety in America</h2>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:16px;">
-      Choosing where to live, work, or invest involves weighing many factors, and safety is consistently one of the most important
-      considerations for individuals and families alike. SafetyAndCrime.com was built to make neighborhood safety research simple,
-      fast, and accessible to everyone — no subscriptions, no paywalls, no complicated reports. Just enter any U.S. ZIP code and get
-      an instant snapshot of the safety landscape in that area.
-    </p>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:16px;">
-      Our Regional Crime Index draws on historical patterns from the FBI's Uniform Crime Reporting (UCR) Program, which has tracked
-      crime data across more than 18,000 law enforcement agencies nationwide since 1930. While individual ZIP codes can vary year to
-      year, regional crime patterns tend to be far more stable, which is why we built our scoring model around broader geographic
-      trends rather than single-year snapshots that can be misleading.
-    </p>
+  <footer class="hub-footer">
+    <div>Free ZIP code research tools. For informational purposes only.</div>
+    <div style="margin-top:8px;">
+      <a href="/about.html">About</a>
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/terms.html">Terms of Service</a>
+    </div>
+  </footer>
 
-    <h3 style="font-size:17px;font-weight:600;margin:24px 0 10px;">How We Calculate the Safety Score</h3>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:16px;">
-      Every ZIP code on our site receives a Safety Score between 0 and 100, where a higher number indicates a safer area relative to
-      the rest of the United States. This score is derived from a weighted combination of violent crime rates (assault, robbery,
-      and related offenses) and property crime rates (burglary, theft, and vehicle-related crimes) for that ZIP code's broader region.
-      Violent crime is weighted more heavily than property crime in our model, reflecting its greater impact on community wellbeing.
-    </p>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:16px;">
-      We also factor in population density, since crime rates per capita can look very different in a dense urban core compared to
-      a sparsely populated suburb, even within the same metro area. This is why two ZIP codes just a few miles apart can sometimes
-      show meaningfully different scores — local population, housing density, and regional crime trends all play a role.
-    </p>
+  <script src="/hub-nav.js"></script>
+  <script>
+    // Legacy share-link support: old Share buttons generated links like
+    // safetyandcrime.com/?zip=77041 when the ZIP search lived on the homepage.
+    // Redirect those straight to the new crime.html location so old links don't break.
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const zip = params.get("zip");
+      if (zip && /^\d{5}$/.test(zip)) {
+        window.location.replace(`/crime.html?zip=${zip}`);
+      }
+    })();
+  </script>
 
-    <h3 style="font-size:17px;font-weight:600;margin:24px 0 10px;">What the Risk Levels Mean</h3>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:16px;">
-      We classify every ZIP code into one of three risk categories. <strong>Low Risk</strong> (score 70–100) means the area is
-      statistically safer than most U.S. ZIP codes, often correlating with suburban or rural communities with lower population
-      density. <strong>Medium Risk</strong> (score 40–69) represents areas that are roughly in line with the national average —
-      these are extremely common, since most Americans live in areas with moderate crime levels. <strong>High Risk</strong> (score
-      0–39) indicates higher than average crime rates, which is typical of dense urban cores and certain commercial districts where
-      property crime in particular tends to be elevated.
-    </p>
-
-    <h3 style="font-size:17px;font-weight:600;margin:24px 0 10px;">Why ZIP Code Safety Research Matters</h3>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:16px;">
-      Whether you're relocating for a new job, searching for your first home, evaluating a real estate investment, or simply curious
-      about a neighborhood you're visiting, understanding the safety profile of an area helps you make better-informed decisions.
-      Real estate agents and relocation specialists frequently point clients toward crime statistics as one of several factors —
-      alongside school quality, commute times, and cost of living — that shape a strong decision about where to settle down.
-    </p>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:16px;">
-      It's worth noting that crime statistics are just one piece of a much larger picture. A ZIP code with a Medium or even High Risk
-      classification might still contain individual blocks, developments, or gated communities with very low actual crime exposure —
-      our data reflects ZIP-code-level regional trends, not block-by-block precision. We recommend using our tool as a starting point
-      for research, then following up with local resources, in-person visits, and conversations with current residents before making
-      any major decision.
-    </p>
-
-    <h3 style="font-size:17px;font-weight:600;margin:24px 0 10px;">Explore Safety Data Across the United States</h3>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:16px;">
-      Beyond individual ZIP code lookups, we've built dedicated safety guides for the largest U.S. cities and all 50 states, making
-      it easy to compare neighborhoods within a city or browse safety trends across an entire state. Whether you're researching
-      <a href="/houston" style="color:var(--green);">Houston</a>, <a href="/new-york" style="color:var(--green);">New York City</a>,
-      <a href="/los-angeles" style="color:var(--green);">Los Angeles</a>, or any of the other major metros we cover, you'll find
-      neighborhood-level breakdowns with the same scoring methodology used throughout the site. Curious which U.S. cities rank
-      highest for safety overall? Check out our <a href="/safest-cities" style="color:var(--green);">10 Safest Cities in America</a>
-      ranking, updated regularly as part of our ongoing data review process.
-    </p>
-
-    <h3 style="font-size:17px;font-weight:600;margin:24px 0 10px;">A Free, Always-Accessible Tool</h3>
-    <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:0;">
-      SafetyAndCrime.com is, and will always remain, completely free to use. There are no account requirements, no hidden paywalls,
-      and no limits on how many ZIP codes you can search. We believe basic safety information should be accessible to everyone making
-      decisions about where to live, work, and raise a family — not locked behind expensive subscription services aimed at real
-      estate professionals. If you have feedback, spot an error, or want to suggest a feature, reach out any time at
-      <a href="mailto:contact@safetyandcrime.com" style="color:var(--green);">contact@safetyandcrime.com</a>.
-    </p>
-  </section>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="script.js"></script>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

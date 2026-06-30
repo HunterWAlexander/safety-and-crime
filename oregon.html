@@ -28,87 +28,85 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Oregon — ZIP Code Safety Scores</h1>
       <p class="sub">Oregon is a Pacific Northwest state known for its natural beauty. Look up safety scores and crime statistics for ZIP codes across Oregon.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Portland</div><div class="zip-row medium" onclick="window.location='/?zip=97201'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Portland</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97201'">
           <div class="zip-num">97201</div>
           <div class="zip-hood">Downtown Portland</div>
           <div class="zip-score" style="color:#d97706;">58 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97202'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97202'">
           <div class="zip-num">97202</div>
           <div class="zip-hood">SE Portland</div>
           <div class="zip-score" style="color:#d97706;">63 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97203'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97203'">
           <div class="zip-num">97203</div>
           <div class="zip-hood">St. Johns</div>
           <div class="zip-score" style="color:#d97706;">68 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97205'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97205'">
           <div class="zip-num">97205</div>
           <div class="zip-hood">West Hills</div>
           <div class="zip-score" style="color:#d97706;">61 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97210'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97210'">
           <div class="zip-num">97210</div>
           <div class="zip-hood">Northwest District</div>
           <div class="zip-score" style="color:#d97706;">57 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Eugene</div><div class="zip-row medium" onclick="window.location='/?zip=97401'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Eugene</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97401'">
           <div class="zip-num">97401</div>
           <div class="zip-hood">Downtown Eugene</div>
           <div class="zip-score" style="color:#d97706;">69 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97402'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97402'">
           <div class="zip-num">97402</div>
           <div class="zip-hood">West Eugene</div>
           <div class="zip-score" style="color:#d97706;">57 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97403'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97403'">
           <div class="zip-num">97403</div>
           <div class="zip-hood">University Area</div>
           <div class="zip-score" style="color:#d97706;">62 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97404'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97404'">
           <div class="zip-num">97404</div>
           <div class="zip-hood">North Eugene</div>
           <div class="zip-score" style="color:#d97706;">67 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=97405'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=97405'">
           <div class="zip-num">97405</div>
           <div class="zip-hood">South Eugene</div>
           <div class="zip-score" style="color:#16a34a;">72 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Salem</div><div class="zip-row medium" onclick="window.location='/?zip=97301'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Salem</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97301'">
           <div class="zip-num">97301</div>
           <div class="zip-hood">Downtown Salem</div>
           <div class="zip-score" style="color:#d97706;">63 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97302'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97302'">
           <div class="zip-num">97302</div>
           <div class="zip-hood">South Salem</div>
           <div class="zip-score" style="color:#d97706;">68 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97303'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97303'">
           <div class="zip-num">97303</div>
           <div class="zip-hood">North Salem</div>
           <div class="zip-score" style="color:#d97706;">56 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97304'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97304'">
           <div class="zip-num">97304</div>
           <div class="zip-hood">West Salem</div>
           <div class="zip-score" style="color:#d97706;">61 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=97306'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=97306'">
           <div class="zip-num">97306</div>
           <div class="zip-hood">Southeast Salem</div>
           <div class="zip-score" style="color:#d97706;">54 <span class="zip-grade">C+</span></div>
@@ -118,7 +116,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Oregon</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Oregon's safety landscape is dominated by the Portland metro area, known for its distinct urban planning approach and strong emphasis on density and public transit compared to many other West Coast cities. Eugene and Salem, the state's other major cities, show notably different economic bases tied respectively to higher education and government employment.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Oregon's strong land-use planning policies have shaped more compact urban growth boundaries than many other states, which has interesting implications for how safety statistics vary between dense urban neighborhoods and the surrounding countryside.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -141,5 +139,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

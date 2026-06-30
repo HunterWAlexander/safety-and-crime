@@ -1,0 +1,131 @@
+/* ---------------------------
+   Safety & Crime — hub-nav.css
+   Shared sticky header + tab navigation
+   Matches existing styles.css design tokens (--green, --border, --shadow, etc.)
+   --------------------------- */
+
+#hub-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: #fff;
+  border-bottom: 1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+
+.hub-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  gap: 16px;
+}
+
+.hub-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.hub-brand-mark { font-size: 22px; line-height: 1; }
+.hub-brand-title { font-size: 17px; font-weight: 600; color: var(--text, #1a1a2e); }
+
+.hub-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 340px;
+}
+.hub-search-row input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border, rgba(0,0,0,.08));
+  font-size: 13px;
+  background: #f9fafb;
+  outline: none;
+  transition: border-color .2s;
+}
+.hub-search-row input:focus {
+  border-color: var(--green, #16a34a);
+  background: #fff;
+}
+.hub-search-row button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: var(--green, #16a34a);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s;
+}
+.hub-search-row button:hover { background: #15803d; }
+
+.hub-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+.hub-tabs::-webkit-scrollbar { height: 3px; }
+.hub-tabs::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 3px; }
+
+.hub-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 14px;
+  border-bottom: 2.5px solid transparent;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: color .15s, border-color .15s;
+}
+.hub-tab:hover { color: var(--green, #16a34a); }
+.hub-tab.active {
+  color: var(--green, #16a34a);
+  border-bottom-color: var(--green, #16a34a);
+  font-weight: 600;
+}
+.hub-tab.coming-soon {
+  color: #9ca3af;
+  cursor: default;
+  pointer-events: none;
+}
+.hub-tab-badge {
+  font-size: 10px;
+  background: #f3f4f6;
+  color: #9ca3af;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .hub-row-top { padding: 10px 14px; gap: 10px; }
+  .hub-brand-title { font-size: 15px; }
+  .hub-search-row { max-width: none; }
+  .hub-search-row input { font-size: 13px; padding: 7px 10px; }
+  .hub-search-row button { padding: 7px 12px; font-size: 13px; }
+  .hub-tabs { padding: 0 10px; }
+  .hub-tab { padding: 10px 12px; font-size: 12px; }
+}
+
+/* On very narrow screens, hide the search bar from the top row —
+   it still works fine on the ZIP Code Search tab itself */
+@media (max-width: 480px) {
+  .hub-search-row { display: none; }
+}

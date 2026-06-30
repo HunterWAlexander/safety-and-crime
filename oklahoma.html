@@ -28,62 +28,60 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Oklahoma — ZIP Code Safety Scores</h1>
       <p class="sub">Oklahoma is a Southern Plains state known for its Native American heritage. Look up safety scores and crime statistics for ZIP codes across Oklahoma.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Oklahoma City</div><div class="zip-row medium" onclick="window.location='/?zip=73101'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Oklahoma City</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=73101'">
           <div class="zip-num">73101</div>
           <div class="zip-hood">Downtown OKC</div>
           <div class="zip-score" style="color:#d97706;">50 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=73103'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=73103'">
           <div class="zip-num">73103</div>
           <div class="zip-hood">Heritage Hills</div>
           <div class="zip-score" style="color:#d97706;">43 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=73104'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=73104'">
           <div class="zip-num">73104</div>
           <div class="zip-hood">Bricktown</div>
           <div class="zip-score" style="color:#d97706;">48 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=73105'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=73105'">
           <div class="zip-num">73105</div>
           <div class="zip-hood">Capitol Hill</div>
           <div class="zip-score" style="color:#d97706;">53 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=73116'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=73116'">
           <div class="zip-num">73116</div>
           <div class="zip-hood">Northwest OKC</div>
           <div class="zip-score" style="color:#d97706;">45 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Tulsa</div><div class="zip-row medium" onclick="window.location='/?zip=74101'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Tulsa</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=74101'">
           <div class="zip-num">74101</div>
           <div class="zip-hood">Downtown Tulsa</div>
           <div class="zip-score" style="color:#d97706;">52 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=74103'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=74103'">
           <div class="zip-num">74103</div>
           <div class="zip-hood">Brady Arts District</div>
           <div class="zip-score" style="color:#d97706;">45 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=74104'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=74104'">
           <div class="zip-num">74104</div>
           <div class="zip-hood">Cherry Street</div>
           <div class="zip-score" style="color:#d97706;">50 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=74105'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=74105'">
           <div class="zip-num">74105</div>
           <div class="zip-hood">Maple Ridge</div>
           <div class="zip-score" style="color:#d97706;">55 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=74114'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=74114'">
           <div class="zip-num">74114</div>
           <div class="zip-hood">Brookside</div>
           <div class="zip-score" style="color:#d97706;">54 <span class="zip-grade">C+</span></div>
@@ -93,7 +91,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Oklahoma</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Oklahoma's safety landscape is anchored by Oklahoma City and Tulsa, its two largest metros, both of which have economies historically tied to energy production alongside growing diversification in recent decades. Oklahoma City's downtown revitalization (Bricktown and surrounding areas) has generally correlated with improving safety trends in its urban core.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Tulsa's distinct arts and cultural districts, including the historic Greenwood neighborhood, reflect a different economic and social history than Oklahoma City. Both metros show typical variation between urban cores and favorable suburban safety statistics.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -116,5 +114,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

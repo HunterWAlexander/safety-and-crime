@@ -28,62 +28,60 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>New Mexico — ZIP Code Safety Scores</h1>
       <p class="sub">New Mexico is a Southwestern state known for its desert landscapes and culture. Look up safety scores and crime statistics for ZIP codes across New Mexico.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Albuquerque</div><div class="zip-row medium" onclick="window.location='/?zip=87101'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Albuquerque</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87101'">
           <div class="zip-num">87101</div>
           <div class="zip-hood">Downtown ABQ</div>
           <div class="zip-score" style="color:#d97706;">44 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=87102'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87102'">
           <div class="zip-num">87102</div>
           <div class="zip-hood">Old Town</div>
           <div class="zip-score" style="color:#d97706;">49 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=87104'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87104'">
           <div class="zip-num">87104</div>
           <div class="zip-hood">South Valley</div>
           <div class="zip-score" style="color:#d97706;">42 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=87106'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87106'">
           <div class="zip-num">87106</div>
           <div class="zip-hood">Nob Hill</div>
           <div class="zip-score" style="color:#d97706;">52 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=87110'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87110'">
           <div class="zip-num">87110</div>
           <div class="zip-hood">Uptown</div>
           <div class="zip-score" style="color:#d97706;">43 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Santa Fe</div><div class="zip-row medium" onclick="window.location='/?zip=87501'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Santa Fe</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87501'">
           <div class="zip-num">87501</div>
           <div class="zip-hood">Downtown Santa Fe</div>
           <div class="zip-score" style="color:#d97706;">68 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=87505'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87505'">
           <div class="zip-num">87505</div>
           <div class="zip-hood">Eastside</div>
           <div class="zip-score" style="color:#d97706;">54 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=87506'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87506'">
           <div class="zip-num">87506</div>
           <div class="zip-hood">Tesuque</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=87507'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87507'">
           <div class="zip-num">87507</div>
           <div class="zip-hood">Southside</div>
           <div class="zip-score" style="color:#d97706;">64 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=87508'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=87508'">
           <div class="zip-num">87508</div>
           <div class="zip-hood">South Santa Fe</div>
           <div class="zip-score" style="color:#d97706;">69 <span class="zip-grade">B</span></div>
@@ -93,7 +91,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in New Mexico</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">New Mexico's safety statistics are concentrated around Albuquerque, the state's largest city, and Santa Fe, the state capital known for its distinct arts and cultural economy. Albuquerque's larger and more diverse economy has created more neighborhood-level safety variation compared to the more compact Santa Fe metro.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">New Mexico's unique blend of Native American, Hispanic, and Anglo cultural influences has shaped distinct community dynamics throughout the state that differ from neighboring Southwestern states.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -116,5 +114,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

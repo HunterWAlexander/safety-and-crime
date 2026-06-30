@@ -28,87 +28,85 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Massachusetts — ZIP Code Safety Scores</h1>
       <p class="sub">Massachusetts is a Northeastern state with a rich history. Look up safety scores and crime statistics for ZIP codes across Massachusetts.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Boston</div><div class="zip-row medium" onclick="window.location='/?zip=02101'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Boston</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02101'">
           <div class="zip-num">02101</div>
           <div class="zip-hood">Downtown Boston</div>
           <div class="zip-score" style="color:#d97706;">55 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02108'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02108'">
           <div class="zip-num">02108</div>
           <div class="zip-hood">Beacon Hill</div>
           <div class="zip-score" style="color:#d97706;">56 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02116'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02116'">
           <div class="zip-num">02116</div>
           <div class="zip-hood">Back Bay</div>
           <div class="zip-score" style="color:#d97706;">67 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02118'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02118'">
           <div class="zip-num">02118</div>
           <div class="zip-hood">South End</div>
           <div class="zip-score" style="color:#d97706;">60 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=02127'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=02127'">
           <div class="zip-num">02127</div>
           <div class="zip-hood">South Boston</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Worcester</div><div class="zip-row medium" onclick="window.location='/?zip=01601'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Worcester</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01601'">
           <div class="zip-num">01601</div>
           <div class="zip-hood">Downtown Worcester</div>
           <div class="zip-score" style="color:#d97706;">68 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=01602'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01602'">
           <div class="zip-num">01602</div>
           <div class="zip-hood">West Worcester</div>
           <div class="zip-score" style="color:#d97706;">56 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=01603'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01603'">
           <div class="zip-num">01603</div>
           <div class="zip-hood">South Worcester</div>
           <div class="zip-score" style="color:#d97706;">61 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=01604'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01604'">
           <div class="zip-num">01604</div>
           <div class="zip-hood">East Worcester</div>
           <div class="zip-score" style="color:#d97706;">66 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=01605'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01605'">
           <div class="zip-num">01605</div>
           <div class="zip-hood">North Worcester</div>
           <div class="zip-score" style="color:#d97706;">54 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Springfield</div><div class="zip-row low" onclick="window.location='/?zip=01101'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Springfield</div><div class="zip-row low" onclick="window.location='/crime.html?zip=01101'">
           <div class="zip-num">01101</div>
           <div class="zip-hood">Downtown Springfield</div>
           <div class="zip-score" style="color:#16a34a;">70 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=01103'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01103'">
           <div class="zip-num">01103</div>
           <div class="zip-hood">South End</div>
           <div class="zip-score" style="color:#d97706;">63 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=01104'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01104'">
           <div class="zip-num">01104</div>
           <div class="zip-hood">East Springfield</div>
           <div class="zip-score" style="color:#d97706;">68 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=01105'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01105'">
           <div class="zip-num">01105</div>
           <div class="zip-hood">Metro Center</div>
           <div class="zip-score" style="color:#d97706;">56 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=01107'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=01107'">
           <div class="zip-num">01107</div>
           <div class="zip-hood">Indian Orchard</div>
           <div class="zip-score" style="color:#d97706;">66 <span class="zip-grade">B</span></div>
@@ -118,7 +116,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Massachusetts</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Massachusetts's safety landscape is dominated by the Greater Boston area, one of the most historically significant and economically diverse metros in the country. Boston's neighborhoods range from dense urban areas to historic residential communities, with safety patterns shaped heavily by the city's universities and biotech/finance economy.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Worcester and Springfield, the state's second and third largest cities, show notably different economic profiles than Boston, often reflecting patterns more typical of mid-sized industrial New England cities. Suburban communities throughout Massachusetts generally show favorable safety statistics relative to the urban cores.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -141,5 +139,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

@@ -11,7 +11,7 @@
   <meta property="og:title" content="Chicago ZIP Code Safety Scores" />
   <meta property="og:description" content="Chicago is the third largest city in the U.S. Look up safety scores and crime statistics for any Chicago ZIP code." />
   <meta property="og:type" content="website" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/styles.css" /><link rel="stylesheet" href="/hub-nav.css" /><link rel="stylesheet" href="/hub-nav.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
   <style>
     .city-wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
@@ -51,18 +51,13 @@
       .zip-score, .zip-risk { grid-column: span 1; }
     }
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">🛡️</div>
-      <div class="brand-title">Safety &amp; Crime</div>
-    </div>
-  </header>
+  <div id="hub-header"></div>
 
   <div style="padding-top:var(--topbar-h);">
     <div class="city-wrap">
-      <a href="/" class="back-link">← Search any ZIP code</a>
+      <a href="/crime.html" class="back-link">← Search any ZIP code</a>
       <h1>Chicago, IL — ZIP Code Safety Scores</h1>
       <p class="sub">Chicago is the third largest city in the U.S. Look up safety scores and crime statistics for any Chicago ZIP code. Click any ZIP code to see the full safety report including violent crime, property crime, home values, and more.</p>
 
@@ -81,61 +76,61 @@
 
       <div class="zip-table">
         
-        <div class="zip-row high" onclick="window.location='/?zip=60601'" style="cursor:pointer;">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=60601'" style="cursor:pointer;">
           <div class="zip-num">60601</div>
           <div class="zip-hood">The Loop</div>
           <div class="zip-score" style="color:#dc2626;">28 <span class="zip-grade">F</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=60605'" style="cursor:pointer;">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=60605'" style="cursor:pointer;">
           <div class="zip-num">60605</div>
           <div class="zip-hood">South Loop</div>
           <div class="zip-score" style="color:#dc2626;">31 <span class="zip-grade">D</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=60607'" style="cursor:pointer;">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=60607'" style="cursor:pointer;">
           <div class="zip-num">60607</div>
           <div class="zip-hood">West Loop</div>
           <div class="zip-score" style="color:#d97706;">41 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=60610'" style="cursor:pointer;">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=60610'" style="cursor:pointer;">
           <div class="zip-num">60610</div>
           <div class="zip-hood">Gold Coast</div>
           <div class="zip-score" style="color:#dc2626;">27 <span class="zip-grade">F</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=60614'" style="cursor:pointer;">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=60614'" style="cursor:pointer;">
           <div class="zip-num">60614</div>
           <div class="zip-hood">Lincoln Park</div>
           <div class="zip-score" style="color:#dc2626;">30 <span class="zip-grade">D</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=60622'" style="cursor:pointer;">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=60622'" style="cursor:pointer;">
           <div class="zip-num">60622</div>
           <div class="zip-hood">Wicker Park</div>
           <div class="zip-score" style="color:#d97706;">41 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=60625'" style="cursor:pointer;">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=60625'" style="cursor:pointer;">
           <div class="zip-num">60625</div>
           <div class="zip-hood">Ravenswood</div>
           <div class="zip-score" style="color:#dc2626;">39 <span class="zip-grade">D</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=60637'" style="cursor:pointer;">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=60637'" style="cursor:pointer;">
           <div class="zip-num">60637</div>
           <div class="zip-hood">Hyde Park</div>
           <div class="zip-score" style="color:#dc2626;">36 <span class="zip-grade">D</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=60640'" style="cursor:pointer;">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=60640'" style="cursor:pointer;">
           <div class="zip-num">60640</div>
           <div class="zip-hood">Uptown</div>
           <div class="zip-score" style="color:#dc2626;">39 <span class="zip-grade">D</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=60657'" style="cursor:pointer;">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=60657'" style="cursor:pointer;">
           <div class="zip-num">60657</div>
           <div class="zip-hood">Lakeview</div>
           <div class="zip-score" style="color:#dc2626;">27 <span class="zip-grade">F</span></div>
@@ -159,7 +154,7 @@
       </p>
       <div class="search-cta">
         <p>Don't see your ZIP code? Search any U.S. ZIP code for a full safety report.</p>
-        <a href="/">Search any ZIP code →</a>
+        <a href="/crime.html">Search any ZIP code →</a>
       </div>
 
       <footer style="margin-top:32px;font-size:12px;color:var(--muted);text-align:center;">
@@ -170,5 +165,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

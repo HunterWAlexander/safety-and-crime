@@ -10,7 +10,7 @@
   <meta property="og:title" content="Pennsylvania ZIP Code Safety Scores — Safety & Crime" />
   <meta property="og:description" content="Pennsylvania is a major northeastern state. Look up safety scores and crime statistics for ZIP codes across Pennsylvania including Philadelphia and Pittsburgh." />
   <meta property="og:type" content="website" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/styles.css" /><link rel="stylesheet" href="/hub-nav.css" /><link rel="stylesheet" href="/hub-nav.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
   <style>
     .page-wrap{max-width:900px;margin:0 auto;padding:40px 20px 80px;}
@@ -43,17 +43,12 @@
     .rank-badge.bronze{background:#fef3c7;color:#92400e;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}.zip-score,.zip-risk{grid-column:span 1;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">🛡️</div>
-      <div class="brand-title">Safety &amp; Crime</div>
-    </div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="page-wrap">
-      <a href="/" class="back-link">← Search any ZIP code</a>
+      <a href="/crime.html" class="back-link">← Search any ZIP code</a>
       <h1>Pennsylvania — ZIP Code Safety Scores</h1>
       <p class="sub">Pennsylvania is a major northeastern state. Look up safety scores and crime statistics for ZIP codes across Pennsylvania including Philadelphia and Pittsburgh. Click any ZIP code to see the full safety report.</p>
       
@@ -66,91 +61,91 @@
         <div class="city-links"><a href="/texas" class="city-link">Texas</a><a href="/california" class="city-link">California</a><a href="/florida" class="city-link">Florida</a><a href="/new-york-state" class="city-link">New York</a><a href="/pennsylvania" class="city-link active">Pennsylvania</a><a href="/illinois" class="city-link">Illinois</a><a href="/ohio" class="city-link">Ohio</a><a href="/georgia" class="city-link">Georgia</a><a href="/north-carolina" class="city-link">North Carolina</a><a href="/michigan" class="city-link">Michigan</a></div>
       </div>
       <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;"><a href="/philadelphia" style="color:var(--green);text-decoration:none;">Philadelphia</a></div>
-        <div class="zip-row high" onclick="window.location='/?zip=19102'">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=19102'">
           <div class="zip-num">19102</div>
           <div class="zip-hood">Center City</div>
           <div class="zip-score" style="color:#dc2626;">36 <span class="zip-grade">D</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=19103'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=19103'">
           <div class="zip-num">19103</div>
           <div class="zip-hood">Rittenhouse</div>
           <div class="zip-score" style="color:#d97706;">41 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=19106'">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=19106'">
           <div class="zip-num">19106</div>
           <div class="zip-hood">Old City</div>
           <div class="zip-score" style="color:#dc2626;">39 <span class="zip-grade">D</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row high" onclick="window.location='/?zip=19118'">
+        <div class="zip-row high" onclick="window.location='/crime.html?zip=19118'">
           <div class="zip-num">19118</div>
           <div class="zip-hood">Chestnut Hill</div>
           <div class="zip-score" style="color:#dc2626;">36 <span class="zip-grade">D</span></div>
           <div class="zip-risk high-text">High Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=19147'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=19147'">
           <div class="zip-num">19147</div>
           <div class="zip-hood">South Philly</div>
           <div class="zip-score" style="color:#d97706;">43 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Pittsburgh</div>
-        <div class="zip-row medium" onclick="window.location='/?zip=15201'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=15201'">
           <div class="zip-num">15201</div>
           <div class="zip-hood">Lawrenceville</div>
           <div class="zip-score" style="color:#d97706;">58 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=15203'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=15203'">
           <div class="zip-num">15203</div>
           <div class="zip-hood">South Side</div>
           <div class="zip-score" style="color:#d97706;">51 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=15206'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=15206'">
           <div class="zip-num">15206</div>
           <div class="zip-hood">East Liberty</div>
           <div class="zip-score" style="color:#d97706;">49 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=15213'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=15213'">
           <div class="zip-num">15213</div>
           <div class="zip-hood">Oakland</div>
           <div class="zip-score" style="color:#d97706;">55 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=15232'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=15232'">
           <div class="zip-num">15232</div>
           <div class="zip-hood">Shadyside</div>
           <div class="zip-score" style="color:#d97706;">58 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Allentown</div>
-        <div class="zip-row medium" onclick="window.location='/?zip=18101'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=18101'">
           <div class="zip-num">18101</div>
           <div class="zip-hood">Downtown Allentown</div>
           <div class="zip-score" style="color:#d97706;">61 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=18102'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=18102'">
           <div class="zip-num">18102</div>
           <div class="zip-hood">West End</div>
           <div class="zip-score" style="color:#d97706;">49 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=18103'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=18103'">
           <div class="zip-num">18103</div>
           <div class="zip-hood">South Side</div>
           <div class="zip-score" style="color:#d97706;">54 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=18104'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=18104'">
           <div class="zip-num">18104</div>
           <div class="zip-hood">West Allentown</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
         </div>
-        <div class="zip-row medium" onclick="window.location='/?zip=18106'">
+        <div class="zip-row medium" onclick="window.location='/crime.html?zip=18106'">
           <div class="zip-num">18106</div>
           <div class="zip-hood">Wescosville</div>
           <div class="zip-score" style="color:#d97706;">52 <span class="zip-grade">C+</span></div>
@@ -162,7 +157,7 @@
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Smaller Pennsylvania cities like Allentown also factor into the state's overall safety picture, often showing crime patterns more in line with mid-sized industrial cities elsewhere in the Northeast and Midwest. As with most states, suburban ZIP codes surrounding Philadelphia and Pittsburgh tend to show more favorable safety scores than the urban cores.</p>
       <div class="search-cta">
         <p>Don't see your ZIP code? Search any U.S. ZIP code for a full safety report.</p>
-        <a href="/">Search any ZIP code →</a>
+        <a href="/crime.html">Search any ZIP code →</a>
       </div>
       <footer style="margin-top:32px;font-size:12px;color:var(--muted);text-align:center;">
         Data: <b>Regional Crime Index</b> · Based on FBI UCR historical averages · For informational purposes only.<br>
@@ -172,5 +167,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

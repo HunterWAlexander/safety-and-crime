@@ -1,0 +1,150 @@
+/* ---------------------------
+   Safety & Crime — hub-grid.css
+   Homepage hub grid: intro, tool cards, explore links, footer
+   --------------------------- */
+
+body {
+  background: #f3f4f6;
+}
+
+.hub-main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px 50px;
+}
+
+/* ── INTRO ── */
+.hub-intro {
+  max-width: 720px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+.hub-intro h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--green, #16a34a);
+  margin-bottom: 14px;
+}
+.hub-intro p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+/* ── GRID ── */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.hub-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow: var(--shadow, 0 4px 16px rgba(0,0,0,.08));
+  padding: 22px 20px;
+  text-decoration: none;
+  color: var(--text, #1a1a2e);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform .15s, box-shadow .15s;
+}
+.hub-card:not(.coming-soon):hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+}
+
+.hub-card-icon { font-size: 28px; }
+.hub-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hub-card-desc {
+  font-size: 13px;
+  color: var(--muted, #6b7280);
+  line-height: 1.5;
+}
+
+.hub-card.coming-soon {
+  background: #fafafa;
+  cursor: default;
+}
+.hub-card.coming-soon .hub-card-title,
+.hub-card.coming-soon .hub-card-desc,
+.hub-card.coming-soon .hub-card-icon {
+  opacity: .55;
+}
+.hub-card-badge {
+  font-size: 10px;
+  background: #f3f4f6;
+  color: #9ca3af;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  opacity: 1 !important;
+}
+
+/* ── EXPLORE ── */
+.hub-explore {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow: var(--shadow, 0 4px 16px rgba(0,0,0,.08));
+  padding: 20px 22px;
+}
+.hub-explore h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.hub-explore-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.hub-explore-links a {
+  background: #f3f4f6;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text, #1a1a2e);
+  text-decoration: none;
+}
+.hub-explore-links a:hover { background: #e5e7eb; }
+.hub-explore-cta {
+  color: var(--green, #16a34a);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* ── FOOTER ── */
+.hub-footer {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted, #6b7280);
+  line-height: 1.6;
+  padding: 20px;
+}
+.hub-footer a {
+  color: var(--green, #16a34a);
+  text-decoration: none;
+  margin: 0 8px;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+  .hub-main { padding: 24px 14px 40px; }
+  .hub-intro h1 { font-size: 21px; }
+  .hub-grid { grid-template-columns: 1fr; }
+}

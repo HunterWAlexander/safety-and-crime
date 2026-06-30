@@ -28,62 +28,60 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Arkansas — ZIP Code Safety Scores</h1>
       <p class="sub">Arkansas is a Southern state known for its natural beauty. Look up safety scores and crime statistics for ZIP codes across Arkansas.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Little Rock</div><div class="zip-row medium" onclick="window.location='/?zip=72201'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Little Rock</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72201'">
           <div class="zip-num">72201</div>
           <div class="zip-hood">Downtown Little Rock</div>
           <div class="zip-score" style="color:#d97706;">53 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=72205'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72205'">
           <div class="zip-num">72205</div>
           <div class="zip-hood">Midtown</div>
           <div class="zip-score" style="color:#d97706;">56 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=72207'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72207'">
           <div class="zip-num">72207</div>
           <div class="zip-hood">Heights</div>
           <div class="zip-score" style="color:#d97706;">49 <span class="zip-grade">C</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=72211'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72211'">
           <div class="zip-num">72211</div>
           <div class="zip-hood">West Little Rock</div>
           <div class="zip-score" style="color:#d97706;">57 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=72223'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72223'">
           <div class="zip-num">72223</div>
           <div class="zip-hood">Chenal Valley</div>
           <div class="zip-score" style="color:#d97706;">54 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Fayetteville</div><div class="zip-row medium" onclick="window.location='/?zip=72701'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Fayetteville</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72701'">
           <div class="zip-num">72701</div>
           <div class="zip-hood">Downtown Fayetteville</div>
           <div class="zip-score" style="color:#d97706;">66 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=72703'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72703'">
           <div class="zip-num">72703</div>
           <div class="zip-hood">North Fayetteville</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=72704'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72704'">
           <div class="zip-num">72704</div>
           <div class="zip-hood">West Fayetteville</div>
           <div class="zip-score" style="color:#d97706;">64 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=72762'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=72762'">
           <div class="zip-num">72762</div>
           <div class="zip-hood">Springdale</div>
           <div class="zip-score" style="color:#d97706;">61 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=72764'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=72764'">
           <div class="zip-num">72764</div>
           <div class="zip-hood">Springdale East</div>
           <div class="zip-score" style="color:#16a34a;">71 <span class="zip-grade">B+</span></div>
@@ -93,7 +91,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Arkansas</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Arkansas's safety statistics are concentrated heavily around Little Rock, the state capital and largest metro area, along with the rapidly growing Northwest Arkansas region around Fayetteville and Bentonville. Northwest Arkansas has seen significant economic growth tied to major corporate headquarters, generally correlating with favorable safety trends in newer suburban developments.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Little Rock's safety profile reflects a mix of government and historic neighborhoods typical of many Southern state capitals, with meaningful variation between its urban core and surrounding suburban communities.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -116,5 +114,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>

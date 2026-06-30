@@ -28,62 +28,60 @@
     .nl:hover{background:#e5e7eb;}
     @media(max-width:600px){.zip-row{grid-template-columns:70px 1fr;gap:6px;}}
   </style>
-</head>
+<link rel="stylesheet" href="/hub-nav.css" /></head>
 <body style="background:#f3f4f6;">
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">🛡️</div><div class="brand-title">Safety &amp; Crime</div></div>
-  </header>
+  <div id="hub-header"></div>
   <div style="padding-top:var(--topbar-h);">
     <div class="pw">
-      <a href="/" class="back">← Search any ZIP code</a>
+      <a href="/crime.html" class="back">← Search any ZIP code</a>
       <h1>Vermont — ZIP Code Safety Scores</h1>
       <p class="sub">Vermont is a small Northeastern state known for maple syrup and fall foliage. Look up safety scores and crime statistics for ZIP codes across Vermont.</p>
-      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Burlington</div><div class="zip-row low" onclick="window.location='/?zip=05401'">
+      <div class="zip-table"><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Burlington</div><div class="zip-row low" onclick="window.location='/crime.html?zip=05401'">
           <div class="zip-num">05401</div>
           <div class="zip-hood">Downtown Burlington</div>
           <div class="zip-score" style="color:#16a34a;">70 <span class="zip-grade">B+</span></div>
           <div class="zip-risk low-text">Low Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=05402'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=05402'">
           <div class="zip-num">05402</div>
           <div class="zip-hood">South Burlington</div>
           <div class="zip-score" style="color:#d97706;">58 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=05403'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=05403'">
           <div class="zip-num">05403</div>
           <div class="zip-hood">Williston</div>
           <div class="zip-score" style="color:#d97706;">63 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=05404'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=05404'">
           <div class="zip-num">05404</div>
           <div class="zip-hood">Winooski</div>
           <div class="zip-score" style="color:#d97706;">68 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=05405'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=05405'">
           <div class="zip-num">05405</div>
           <div class="zip-hood">UVM Area</div>
           <div class="zip-score" style="color:#d97706;">56 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Montpelier</div><div class="zip-row medium" onclick="window.location='/?zip=05601'">
+        </div><div style="font-size:13px;font-weight:600;color:#374151;margin:16px 0 6px;padding-left:4px;">Montpelier</div><div class="zip-row medium" onclick="window.location='/crime.html?zip=05601'">
           <div class="zip-num">05601</div>
           <div class="zip-hood">Downtown Montpelier</div>
           <div class="zip-score" style="color:#d97706;">59 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=05602'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=05602'">
           <div class="zip-num">05602</div>
           <div class="zip-hood">East Montpelier</div>
           <div class="zip-score" style="color:#d97706;">64 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=05641'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=05641'">
           <div class="zip-num">05641</div>
           <div class="zip-hood">Barre</div>
           <div class="zip-score" style="color:#d97706;">58 <span class="zip-grade">C+</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row medium" onclick="window.location='/?zip=05651'">
+        </div><div class="zip-row medium" onclick="window.location='/crime.html?zip=05651'">
           <div class="zip-num">05651</div>
           <div class="zip-hood">Berlin</div>
           <div class="zip-score" style="color:#d97706;">62 <span class="zip-grade">B</span></div>
           <div class="zip-risk medium-text">Medium Risk</div>
-        </div><div class="zip-row low" onclick="window.location='/?zip=05671'">
+        </div><div class="zip-row low" onclick="window.location='/crime.html?zip=05671'">
           <div class="zip-num">05671</div>
           <div class="zip-hood">Waterbury</div>
           <div class="zip-score" style="color:#16a34a;">70 <span class="zip-grade">B+</span></div>
@@ -93,7 +91,7 @@
       <h2 style="font-size:19px;color:var(--green);margin:28px 0 12px;">About Safety Research in Vermont</h2>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Vermont's small population and strong rural character set it apart from most other states for safety research, with Burlington serving as its largest city and primary economic center. Burlington's compact size and strong sense of community generally correlate with favorable safety trends compared to many similarly sized cities elsewhere.</p>
       <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">Montpelier, the smallest state capital in the country by population, reflects Vermont's overall preference for small-scale, close-knit communities throughout the state, contributing to generally favorable statewide safety statistics.</p>
-      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/">Search any ZIP code →</a></div>
+      <div class="cta"><p>Search any ZIP code for a full safety report.</p><a href="/crime.html">Search any ZIP code →</a></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;">More states:</div>
       <div class="nav">
         <a href="/texas" class="nl">Texas</a><a href="/california" class="nl">California</a>
@@ -116,5 +114,6 @@
       </footer>
     </div>
   </div>
+<script src="/hub-nav.js"></script>
 </body>
 </html>
