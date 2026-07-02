@@ -319,15 +319,25 @@ function renderRecent() {
   recentSection.style.display = "block";
   recentCards.innerHTML = recentZips.map(z => {
     const cls = z.riskLevel==="Low Risk" ? "low" : z.riskLevel==="Medium Risk" ? "medium" : "high";
-    return `<div class="recent-card ${cls}" onclick="searchZip('${z.zip}')" style="cursor:pointer;">
-      <div class="recent-zip">${z.zip}</div>
-      <div class="recent-city">${z.city}, ${z.state}</div>
-      <div class="recent-score">Score ${z.safetyScore ?? "N/A"}</div>
-      <div class="recent-risk">${z.riskLevel}</div>
+    return `<div class="recent-card ${cls}" style="cursor:pointer;position:relative;">
+      <button onclick="event.stopPropagation(); removeRecent('${z.zip}')" title="Remove ${z.zip}"
+        style="position:absolute;top:4px;right:4px;background:none;border:none;cursor:pointer;font-size:14px;color:#dc2626;line-height:1;padding:2px;font-weight:700;">×</button>
+      <div onclick="searchZip('${z.zip}')">
+        <div class="recent-zip">${z.zip}</div>
+        <div class="recent-city">${z.city}, ${z.state}</div>
+        <div class="recent-score">Score ${z.safetyScore ?? "N/A"}</div>
+        <div class="recent-risk">${z.riskLevel}</div>
+      </div>
     </div>`;
   }).join("");
 }
 renderRecent();
+
+function removeRecent(zip) {
+  recentZips = recentZips.filter(z => z.zip !== zip);
+  localStorage.setItem("recentZips", JSON.stringify(recentZips));
+  renderRecent();
+}
 
 // ── FETCH CITY/STATE ───────────────────────────────────────────────────
 async function fetchZipInfo(zip) {
