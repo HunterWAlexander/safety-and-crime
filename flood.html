@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flood Risk by ZIP Code | Safety &amp; Crime</title>
+  <meta name="description" content="Check FEMA flood zones, active flood warnings, and live river gauge levels for any U.S. ZIP code. Free flood risk lookup with interactive map." />
+  <meta name="keywords" content="flood risk by zip code, fema flood zone lookup, flood zone map, am i in a flood zone, flood warnings near me" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/flood.html" />
+  <meta property="og:title" content="Flood Risk by ZIP Code | Safety & Crime" />
+  <meta property="og:description" content="FEMA flood zones, active flood warnings, and live river gauges for any U.S. ZIP code." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safetyandcrime.com/flood.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Flood Risk by ZIP Code | Safety & Crime" />
+  <meta name="twitter:description" content="FEMA flood zones, active flood warnings, and live river gauges for any U.S. ZIP code." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Flood Risk by ZIP Code",
+    "description": "FEMA flood zone lookup, active flood warnings, and live river gauge levels for any U.S. ZIP code.",
+    "url": "https://safetyandcrime.com/flood.html",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/earthquake.css" />
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="quake-wrap">
+    <h1>Flood Risk by ZIP Code</h1>
+    <p class="quake-sub">Enter any U.S. ZIP code to check its FEMA flood zone designation, active flood warnings, and live water levels from nearby USGS river gauges — free, no account required.</p>
+
+    <section class="e-search-card">
+      <div class="e-search-row">
+        <div class="input-wrap">
+          <input id="fZipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code e.g. 77002" />
+          <div id="fZipError" class="inline-error hidden"></div>
+        </div>
+        <button id="fSearchBtn" class="btn primary">Search</button>
+      </div>
+    </section>
+
+    <div id="fEmpty" class="e-empty">Enter a ZIP code above to view flood risk information.</div>
+    <div id="fLoading" class="e-loading" style="display:none;">Checking FEMA flood zones, alerts, and river gauges…</div>
+
+    <!-- National active flood warnings — loads automatically, no search needed -->
+    <section id="fLatestSection">
+      <div class="e-section-title">🌊 Active Flood &amp; Flash Flood Warnings (Nationwide)</div>
+      <div id="fLatest" class="e-list"><div class="e-loading" style="border:none;">Loading active flood warnings…</div></div>
+    </section>
+
+    <section id="fResults" style="display:none;">
+      <div id="fLocation" class="e-location"></div>
+      <div id="fStats" class="e-stats"></div>
+      <div id="fRiskNote" class="e-risk-note"></div>
+
+      <div class="e-map-card">
+        <div class="e-map-head">
+          <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+            <div class="section-title" style="font-size:14px;font-weight:600;">River &amp; Stream Gauge Map</div>
+            <span class="e-map-hint" style="font-size:11px;color:#9ca3af;">💡 Click anywhere to check that area · blue dots are live USGS gauges</span>
+          </div>
+        </div>
+        <div id="fMap" class="e-map"></div>
+      </div>
+
+      <div class="e-section-title">Active Flood Alerts for This Location</div>
+      <div id="fAlertList" class="e-list"></div>
+
+      <div class="e-section-title">Nearby River &amp; Stream Gauges (Live Readings)</div>
+      <div id="fGaugeList" class="e-list"></div>
+    </section>
+
+    <!-- Written content for SEO / content quality -->
+    <section style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-top:28px;">
+      <h2 style="font-size:19px;color:var(--green);margin-bottom:12px;">Understanding Flood Risk in America</h2>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Flooding is the most common and costly natural disaster in the United States — and one of the most misunderstood.
+        This tool combines three official government data sources: FEMA's National Flood Hazard Layer (the same flood zone maps
+        used by mortgage lenders and insurers), the National Weather Service's live alert system, and the U.S. Geological Survey's
+        network of thousands of real-time river and stream gauges.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">What FEMA Flood Zones Actually Mean</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Zones A, AE, AH, AO, V, and VE are Special Flood Hazard Areas — the so-called "100-year floodplain," meaning at least a
+        1% chance of flooding in any given year. Over a 30-year mortgage, that compounds to roughly a 26% chance of at least one
+        flood. Shaded Zone X (the "500-year floodplain") carries a 0.2% annual chance. Unshaded Zone X sits outside mapped
+        high-risk areas — but "outside the floodplain" does not mean "can't flood." Roughly 25% of all U.S. flood insurance
+        claims come from properties outside high-risk zones.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">The Houston Lesson: Maps Aren't the Whole Story</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Hurricane Harvey in 2017 flooded tens of thousands of Houston-area homes that sat outside FEMA's mapped flood zones —
+        many homeowners had no flood insurance because their maps said they didn't need it. Flat terrain, intense rainfall,
+        rapid development, and aging drainage infrastructure can all produce flooding that historical maps never anticipated.
+        That's why this tool also shows live river gauge levels and active warnings: real-time conditions matter as much as
+        static zone designations.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Flood Insurance: The Detail That Surprises Buyers</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:0;">
+        Standard homeowners and renters policies do not cover flood damage — coverage comes separately through the National
+        Flood Insurance Program or private insurers, and there's typically a 30-day waiting period before a new policy takes
+        effect. If you're researching a potential home with our <a href="/crime.html" style="color:var(--green);">ZIP Code
+        Search</a>, checking the flood zone early tells you whether flood insurance will be a required (and budget-relevant)
+        part of ownership — in high-risk zones with a federally backed mortgage, it's not optional.
+      </p>
+    </section>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      Data: <b>FEMA NFHL</b> · <b>National Weather Service</b> · <b>USGS Water Services</b> · For informational purposes only. Not an official flood determination.<br>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+    </footer>
+  </main>
+
+  <script src="/flood.js"></script>
+  <script src="/hub-nav.js"></script>
+</body>
+</html>

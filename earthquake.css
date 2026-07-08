@@ -1,0 +1,162 @@
+/* ---------------------------
+   Safety & Crime — earthquake.css
+   Earthquake tool page: search, stats, quake list, epicenter map
+   --------------------------- */
+
+.quake-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+.quake-wrap h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--green, #16a34a);
+  margin-bottom: 6px;
+}
+.quake-sub {
+  font-size: 14px;
+  color: var(--muted, #6b7280);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* ── SEARCH ── */
+.e-search-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow: var(--shadow, 0 4px 16px rgba(0,0,0,.08));
+  padding: 18px;
+  margin-bottom: 20px;
+}
+.e-search-row { display: flex; gap: 8px; }
+.e-search-row .input-wrap { flex: 1; }
+.e-search-row input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border, rgba(0,0,0,.08));
+  font-size: 15px;
+  outline: none;
+  background: #f9fafb;
+  transition: border-color .2s;
+  box-sizing: border-box;
+}
+.e-search-row input:focus { border-color: var(--green, #16a34a); background: #fff; }
+
+/* ── STATES ── */
+.e-empty, .e-loading {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted, #6b7280);
+}
+
+/* ── RESULTS ── */
+.e-location { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+
+.e-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.e-stat {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  padding: 16px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+.e-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted, #6b7280); margin-bottom: 6px; }
+.e-stat-value { font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+.e-stat-sub { font-size: 11px; color: var(--muted, #6b7280); line-height: 1.4; }
+
+.e-risk-note {
+  font-size: 13px;
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* ── MAP ── */
+.e-map-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow: var(--shadow, 0 4px 16px rgba(0,0,0,.08));
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.e-map-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.e-map {
+  width: 100%;
+  height: 420px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.e-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--muted, #6b7280); align-items: center; }
+.e-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 3px; }
+
+/* ── LIST ── */
+.e-section-title { font-size: 15px; font-weight: 600; margin: 20px 0 10px; }
+.e-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.e-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.e-mag {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-width: 52px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.e-row-place { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+.e-row-meta { font-size: 12px; color: var(--muted, #6b7280); }
+.e-none {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 13px;
+  color: #15803d;
+  text-align: center;
+}
+.e-more { font-size: 12px; color: var(--muted, #6b7280); text-align: center; padding: 8px; }
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+  .quake-wrap { padding: 20px 14px 40px; }
+  .e-stats { grid-template-columns: 1fr; }
+  .e-map { height: 300px; }
+  .e-map-hint { display: none; }
+}

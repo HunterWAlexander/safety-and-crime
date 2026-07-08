@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Earthquake Risk by ZIP Code | Safety &amp; Crime</title>
+  <meta name="description" content="Check recent earthquakes and seismic risk for any U.S. ZIP code using live USGS data. See quakes near you on an interactive map, free with no signup." />
+  <meta name="keywords" content="earthquakes near me, earthquake risk by zip code, recent earthquakes, seismic activity lookup, usgs earthquake map" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/earthquake.html" />
+  <meta property="og:title" content="Earthquake Risk by ZIP Code | Safety & Crime" />
+  <meta property="og:description" content="Recent earthquakes and seismic risk for any U.S. ZIP code, powered by live USGS data." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safetyandcrime.com/earthquake.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Earthquake Risk by ZIP Code | Safety & Crime" />
+  <meta name="twitter:description" content="Recent earthquakes and seismic risk for any U.S. ZIP code, powered by live USGS data." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Earthquake Risk by ZIP Code",
+    "description": "Recent earthquakes and seismic risk assessment for any U.S. ZIP code using live USGS data.",
+    "url": "https://safetyandcrime.com/earthquake.html",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/earthquake.css" />
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="quake-wrap">
+    <h1>Earthquake Risk by ZIP Code</h1>
+    <p class="quake-sub">Enter any U.S. ZIP code to see recent earthquakes within ~100 miles, historical significant quakes, and an overall seismic risk assessment — all powered by live USGS data.</p>
+
+    <section class="e-search-card">
+      <div class="e-search-row">
+        <div class="input-wrap">
+          <input id="eZipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code e.g. 90210" />
+          <div id="eZipError" class="inline-error hidden"></div>
+        </div>
+        <button id="eSearchBtn" class="btn primary">Search</button>
+      </div>
+    </section>
+
+    <div id="eEmpty" class="e-empty">Enter a ZIP code above to view earthquake activity near you.</div>
+    <div id="eLoading" class="e-loading" style="display:none;">Fetching earthquake data from USGS…</div>
+
+    <!-- Latest significant quakes — loads automatically, no search needed -->
+    <section id="eLatestSection">
+      <div class="e-section-title">🌐 Latest Significant Earthquakes (Worldwide)</div>
+      <div id="eLatest" class="e-list"><div class="e-loading" style="border:none;">Loading latest earthquakes…</div></div>
+    </section>
+
+    <section id="eResults" style="display:none;">
+      <div id="eLocation" class="e-location"></div>
+      <div id="eStats" class="e-stats"></div>
+      <div id="eRiskNote" class="e-risk-note"></div>
+
+      <div class="e-map-card">
+        <div class="e-map-head">
+          <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+            <div class="section-title" style="font-size:14px;font-weight:600;">Epicenter Map</div>
+            <span class="e-map-hint" style="font-size:11px;color:#9ca3af;">💡 Click anywhere to check that area</span>
+          </div>
+          <div class="e-legend">
+            <span><span class="dot" style="background:#16a34a;"></span>M&lt;2</span>
+            <span><span class="dot" style="background:#84cc16;"></span>M2-3</span>
+            <span><span class="dot" style="background:#d97706;"></span>M3-4</span>
+            <span><span class="dot" style="background:#ea580c;"></span>M4-5</span>
+            <span><span class="dot" style="background:#dc2626;"></span>M5-6</span>
+            <span><span class="dot" style="background:#7f1d1d;"></span>M6+</span>
+            <span style="margin-left:4px;">· dashed = historical</span>
+          </div>
+        </div>
+        <div id="eMap" class="e-map"></div>
+      </div>
+
+      <div class="e-section-title">Recent Earthquakes (Past 30 Days)</div>
+      <div id="eList" class="e-list"></div>
+
+      <div class="e-section-title">Largest Historical Quakes Nearby (Past 50 Years, M4+)</div>
+      <div id="eHistList" class="e-list"></div>
+    </section>
+
+    <!-- Written content for SEO / content quality -->
+    <section style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-top:28px;">
+      <h2 style="font-size:19px;color:var(--green);margin-bottom:12px;">Understanding Earthquake Risk in the United States</h2>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        All earthquake data on this page comes directly from the United States Geological Survey (USGS), which operates the
+        national seismic monitoring network and records earthquakes worldwide in near real-time. When you search a ZIP code,
+        we query the USGS catalog for every recorded quake within roughly 100 miles — both recent activity from the past 30
+        days and significant historical events going back 50 years.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Earthquake Risk Isn't Just a California Problem</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        While the West Coast gets most of the attention, seismic risk exists in surprising places. The New Madrid Seismic Zone
+        threatens parts of Missouri, Tennessee, Arkansas, and Kentucky. South Carolina experienced one of the strongest quakes
+        in U.S. history near Charleston in 1886. Oklahoma has seen significant induced seismicity in recent decades. And parts
+        of Texas, Utah, Nevada, and the Pacific Northwest each carry their own distinct earthquake profiles. Checking the actual
+        recorded history around a specific ZIP code tells you far more than state-level generalizations.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">How to Read Magnitude Numbers</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Earthquake magnitude is logarithmic — each whole number step represents roughly 32 times more energy released. A magnitude
+        3 quake is often felt but almost never damaging; a magnitude 5 can crack walls and shift foundations; a magnitude 6 or
+        higher can cause serious structural damage near the epicenter. Depth matters too: shallow quakes (under 10 km) transmit
+        far more shaking to the surface than deep ones of the same magnitude.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Why This Matters for Home Buyers and Renters</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:0;">
+        Standard homeowners and renters insurance policies do not cover earthquake damage — separate earthquake coverage must be
+        purchased, and premiums vary dramatically based on local seismic history. If you're researching an area with our
+        <a href="/crime.html" style="color:var(--green);">ZIP Code Search</a> before a move or purchase, a quick check of local
+        earthquake history helps you budget realistically for insurance and understand whether older homes in the area may need
+        seismic retrofitting.
+      </p>
+    </section>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      Data: <b>U.S. Geological Survey</b> (earthquake.usgs.gov) · For informational purposes only.<br>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+    </footer>
+  </main>
+
+  <script src="/earthquake.js"></script>
+  <script src="/hub-nav.js"></script>
+</body>
+</html>

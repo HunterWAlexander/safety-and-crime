@@ -10,7 +10,8 @@
 const HUB_TABS = [
   { label: "ZIP Code Search", icon: "🚨", href: "/crime.html",       match: ["crime.html", "index.html", ""] },
   { label: "Weather",         icon: "🌦️", href: "/weather.html",      match: ["weather.html"] },
-  { label: "Earthquake Risk", icon: "🌎", href: "/earthquake.html",   match: ["earthquake.html"],  comingSoon: true },
+  { label: "Earthquake Risk", icon: "🌎", href: "/earthquake.html",   match: ["earthquake.html"] },
+  { label: "Flood Risk",      icon: "🌊", href: "/flood.html",        match: ["flood.html"] },
   { label: "Recalls",         icon: "📦", href: "/recalls.html",      match: ["recalls.html"],     comingSoon: true },
 ];
 
