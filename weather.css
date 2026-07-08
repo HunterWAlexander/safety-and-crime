@@ -1,0 +1,220 @@
+/* ---------------------------
+   Safety & Crime — weather.css
+   Weather tool page: search, hero card, forecast grid
+   --------------------------- */
+
+.weather-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+.weather-wrap h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--green, #16a34a);
+  margin-bottom: 6px;
+}
+.weather-sub {
+  font-size: 14px;
+  color: var(--muted, #6b7280);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* ── SEARCH ── */
+.w-search-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow: var(--shadow, 0 4px 16px rgba(0,0,0,.08));
+  padding: 18px;
+  margin-bottom: 20px;
+}
+.w-search-row { display: flex; gap: 8px; }
+.w-search-row .input-wrap { flex: 1; position: relative; }
+.w-search-row input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border, rgba(0,0,0,.08));
+  font-size: 15px;
+  outline: none;
+  background: #f9fafb;
+  transition: border-color .2s;
+  box-sizing: border-box;
+}
+.w-search-row input:focus { border-color: var(--green, #16a34a); background: #fff; }
+
+/* ── STATES ── */
+.w-empty, .w-loading {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted, #6b7280);
+}
+
+/* ── RESULTS ── */
+.w-location {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.w-hero {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow: var(--shadow, 0 4px 16px rgba(0,0,0,.08));
+  padding: 22px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.w-hero-icon { font-size: 54px; line-height: 1; flex-shrink: 0; }
+.w-hero-temp { font-size: 38px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+.w-hero-label { font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+.w-hero-detail { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 8px; }
+.w-hero-meta { font-size: 12px; color: var(--muted, #6b7280); }
+
+/* ── FORECAST GRID ── */
+.w-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.w-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  padding: 14px 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+.w-card-name { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+.w-card-icon { font-size: 28px; margin-bottom: 6px; }
+.w-card-temp { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.w-card-desc { font-size: 11px; color: var(--muted, #6b7280); line-height: 1.4; }
+.w-card-precip { font-size: 11px; color: #2563eb; margin-top: 4px; font-weight: 500; }
+
+.w-updated {
+  font-size: 11px;
+  color: var(--muted, #6b7280);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+/* ── RADAR MAP ── */
+.w-radar-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow: var(--shadow, 0 4px 16px rgba(0,0,0,.08));
+  padding: 16px;
+  margin-top: 20px;
+}
+.w-radar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.w-radar-hint { font-size: 11px; color: var(--muted, #6b7280); }
+.w-radar-controls { display: flex; align-items: center; gap: 10px; }
+.w-radar-time { font-size: 12px; color: #374151; font-weight: 500; min-width: 90px; }
+.w-radar-map {
+  width: 100%;
+  height: 420px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  .w-radar-map { height: 300px; }
+  .w-radar-hint { display: none; }
+}
+
+/* ── DETAIL MODAL ── */
+.w-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.w-modal.open { display: flex; }
+.w-modal-card {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  animation: wZoomIn .22s ease;
+}
+@keyframes wZoomIn {
+  from { transform: scale(.85); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.w-modal-close {
+  position: absolute;
+  top: 12px; right: 14px;
+  background: none; border: none;
+  font-size: 26px; line-height: 1;
+  color: #9ca3af; cursor: pointer;
+  padding: 4px;
+}
+.w-modal-close:hover { color: #dc2626; }
+
+.wd-head { display: flex; gap: 16px; align-items: center; margin-bottom: 12px; }
+.wd-icon { font-size: 48px; line-height: 1; }
+.wd-name { font-size: 14px; font-weight: 600; color: #374151; }
+.wd-temp { font-size: 30px; font-weight: 700; line-height: 1.2; }
+.wd-feels { font-size: 13px; font-weight: 500; color: var(--muted, #6b7280); }
+.wd-short { font-size: 13px; color: #555; }
+.wd-detail { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 14px; }
+
+.wd-grid { display: flex; flex-direction: column; }
+.wd-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  padding: 8px 2px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.wd-row span:first-child { color: var(--muted, #6b7280); }
+.wd-row span:last-child { font-weight: 500; color: #111; text-align: right; }
+.wd-source {
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 14px;
+}
+
+/* Subtle lift on hover so cards read as clickable */
+.w-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.1); transition: transform .15s, box-shadow .15s; }
+.w-hero:hover { box-shadow: 0 6px 20px rgba(0,0,0,.12); transition: box-shadow .15s; }
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+  .weather-wrap { padding: 20px 14px 40px; }
+  .w-hero { padding: 16px; gap: 14px; }
+  .w-hero-icon { font-size: 42px; }
+  .w-hero-temp { font-size: 30px; }
+  .w-grid { grid-template-columns: repeat(2, 1fr); }
+}

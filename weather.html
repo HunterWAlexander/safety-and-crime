@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather Forecast by ZIP Code | Safety &amp; Crime</title>
+  <meta name="description" content="Free 7-day weather forecast for any U.S. ZIP code, powered by National Weather Service data. Current conditions, temperatures, wind, and precipitation." />
+  <meta name="keywords" content="weather by zip code, zip code weather forecast, 7 day forecast zip code, local weather lookup" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/weather.html" />
+  <meta property="og:title" content="Weather Forecast by ZIP Code | Safety & Crime" />
+  <meta property="og:description" content="Free 7-day forecast for any U.S. ZIP code, powered by National Weather Service data." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safetyandcrime.com/weather.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Weather Forecast by ZIP Code | Safety & Crime" />
+  <meta name="twitter:description" content="Free 7-day forecast for any U.S. ZIP code, powered by National Weather Service data." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Weather Forecast by ZIP Code",
+    "description": "Free 7-day weather forecast for any U.S. ZIP code using National Weather Service data.",
+    "url": "https://safetyandcrime.com/weather.html",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/weather.css" />
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="weather-wrap">
+    <h1>Weather Forecast by ZIP Code</h1>
+    <p class="weather-sub">Enter any U.S. ZIP code to get current conditions and a 7-day forecast, straight from the National Weather Service. Free, no account required.</p>
+
+    <section class="w-search-card">
+      <div class="w-search-row">
+        <div class="input-wrap">
+          <input id="wZipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code e.g. 77001" />
+          <div id="wZipError" class="inline-error hidden"></div>
+        </div>
+        <button id="wSearchBtn" class="btn primary">Search</button>
+      </div>
+    </section>
+
+    <div id="wEmpty" class="w-empty">Enter a ZIP code above to view the forecast.</div>
+    <div id="wLoading" class="w-loading" style="display:none;">Fetching forecast from the National Weather Service…</div>
+
+    <section id="wResults" style="display:none;">
+      <div id="wLocation" class="w-location"></div>
+      <div id="wCurrent" class="w-hero"></div>
+      <div id="wForecast" class="w-grid"></div>
+      <div id="wUpdated" class="w-updated"></div>
+
+      <!-- Animated radar map -->
+      <div class="w-radar-card">
+        <div class="w-radar-head">
+          <div style="display:flex;align-items:baseline;gap:10px;">
+            <div class="section-title" style="font-size:14px;font-weight:600;">Live Radar</div>
+            <span class="w-radar-hint">Past 2 hours + short-term forecast</span>
+          </div>
+          <div class="w-radar-controls">
+            <button id="wRadarPlay" class="btn ghost" style="padding:6px 14px;font-size:13px;">▶ Play</button>
+            <span id="wRadarTime" class="w-radar-time"></span>
+          </div>
+        </div>
+        <div id="wRadarMap" class="w-radar-map"></div>
+      </div>
+    </section>
+
+    <!-- Written content for SEO / content quality -->
+    <section style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-top:28px;">
+      <h2 style="font-size:19px;color:var(--green);margin-bottom:12px;">Weather Data You Can Trust</h2>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Every forecast on this page comes directly from the National Weather Service (NWS), the official weather agency of the
+        United States government. Unlike many weather apps that blend commercial data sources of varying quality, NWS forecasts
+        are produced by professional meteorologists at more than 120 local forecast offices across the country, each specializing
+        in their region's unique weather patterns. That means the forecast you see here is the same underlying data used by
+        emergency managers, airports, and broadcasters nationwide.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Why Weather Matters When Researching an Area</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        If you're using our <a href="/crime.html" style="color:var(--green);">ZIP Code Search</a> to research a potential move,
+        weather is a bigger factor than many people expect. Seasonal patterns affect everything from commute reliability and
+        utility bills to home insurance costs — hail-prone regions of Texas, hurricane-exposed coastal ZIP codes, and heavy-snow
+        northern metros all carry different practical trade-offs that only become obvious after you've lived through a season.
+        Checking an area's typical conditions alongside its safety profile gives you a more complete picture before committing
+        to a neighborhood.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">How to Read the Forecast</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:0;">
+        The large card at the top shows the current forecast period with detailed conditions, wind, and precipitation chance.
+        The grid below breaks the next several days into day and night periods, matching how the National Weather Service
+        structures its forecasts. Precipitation percentages show the chance of measurable rain or snow during that period.
+        Forecasts update several times daily, and the timestamp under the grid shows when the data was last refreshed.
+      </p>
+    </section>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      Data: <b>National Weather Service</b> (weather.gov) · For informational purposes only.<br>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+    </footer>
+  </main>
+
+  <!-- Period detail modal -->
+  <div id="wDetailModal" class="w-modal">
+    <div class="w-modal-card">
+      <button class="w-modal-close" onclick="closePeriodDetail()" aria-label="Close">×</button>
+      <div id="wDetailBody"></div>
+    </div>
+  </div>
+
+  <script src="/weather.js"></script>
+  <script src="/hub-nav.js"></script>
+</body>
+</html>
