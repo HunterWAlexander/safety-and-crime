@@ -286,7 +286,39 @@ window.addEventListener("load", () => {
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors",
   }).addTo(map);
+
+  // Click anywhere on the map → look up that location's ZIP code
+  map.on("click", async (e) => {
+    const { lat, lng } = e.latlng;
+    const zip = await reverseGeocodeZip(lat, lng);
+    if (zip) {
+      if (zipInput) zipInput.value = zip;
+      searchZip(zip);
+    } else if (zipError) {
+      zipError.textContent = "Couldn't find a ZIP code at that spot — try clicking closer to a populated area.";
+      zipError.classList.remove("hidden");
+      setTimeout(() => zipError.classList.add("hidden"), 4000);
+    }
+  });
 });
+
+// Reverse geocode lat/lng → 5-digit ZIP. Uses BigDataCloud (free, no key,
+// built for client-side use) with a graceful null on any failure.
+async function reverseGeocodeZip(lat, lng) {
+  try {
+    const res = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+    );
+    if (!res.ok) return null;
+    const d = await res.json();
+    // Only accept US results with a valid 5-digit ZIP
+    if (d?.countryCode !== "US") return null;
+    const zip = (d?.postcode || "").substring(0, 5);
+    return /^\d{5}$/.test(zip) ? zip : null;
+  } catch (_) {
+    return null;
+  }
+}
 
 function placeMarker(lat, lng, label, riskLevel) {
   if (!map) return;
@@ -299,7 +331,7 @@ function placeMarker(lat, lng, label, riskLevel) {
   });
   currentMarker = L.marker([lat,lng],{icon}).addTo(map)
     .bindPopup(`<strong>${label}</strong><br>${riskLevel}`).openPopup();
-  map.setView([lat,lng], 11);
+  map.setView([lat,lng], Math.max(map.getZoom(), 11));
 }
 
 // ── RECENT ZIPS ────────────────────────────────────────────────────────

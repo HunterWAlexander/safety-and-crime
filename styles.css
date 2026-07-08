@@ -264,6 +264,7 @@ body.focus-mode .map-col{ padding:0; }
 
 /* ── MOBILE FIXES ── */
 @media(max-width:768px){
+  .map-hint{ display:none; }
   .app-layout{ flex-direction:column; overflow-y:auto; height:auto; }
   .panel{ width:100%; max-width:100%; height:auto; overflow:visible; padding:12px; gap:10px; }
   .map-col{ height:320px; padding:0 12px 16px; }
