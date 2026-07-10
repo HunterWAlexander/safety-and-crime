@@ -51,21 +51,16 @@
       </div>
     </section>
 
-    <div id="fEmpty" class="e-empty">Enter a ZIP code above to view flood risk information.</div>
+    <div id="fEmpty" class="e-empty">Enter a ZIP code above — or click anywhere on the map — to view flood risk information.</div>
     <div id="fLoading" class="e-loading" style="display:none;">Checking FEMA flood zones, alerts, and river gauges…</div>
-
-    <!-- National active flood warnings — loads automatically, no search needed -->
-    <section id="fLatestSection">
-      <div class="e-section-title">🌊 Active Flood &amp; Flash Flood Warnings (Nationwide)</div>
-      <div id="fLatest" class="e-list"><div class="e-loading" style="border:none;">Loading active flood warnings…</div></div>
-    </section>
 
     <section id="fResults" style="display:none;">
       <div id="fLocation" class="e-location"></div>
       <div id="fStats" class="e-stats"></div>
       <div id="fRiskNote" class="e-risk-note"></div>
+    </section>
 
-      <div class="e-map-card">
+    <div class="e-map-card" style="margin-top:16px;">
         <div class="e-map-head">
           <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
             <div class="section-title" style="font-size:14px;font-weight:600;">River &amp; Stream Gauge Map</div>
@@ -73,8 +68,15 @@
           </div>
         </div>
         <div id="fMap" class="e-map"></div>
-      </div>
+    </div>
 
+    <!-- National active flood warnings — loads automatically, no search needed -->
+    <section id="fLatestSection">
+      <div class="e-section-title">🌊 Active Flood &amp; Flash Flood Warnings (Nationwide)</div>
+      <div id="fLatest" class="e-list"><div class="e-loading" style="border:none;">Loading active flood warnings…</div></div>
+    </section>
+
+    <section id="fListsSection" style="display:none;">
       <div class="e-section-title">Active Flood Alerts for This Location</div>
       <div id="fAlertList" class="e-list"></div>
 

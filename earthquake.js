@@ -124,20 +124,15 @@ let eMap = null;
 let eMapLayers = [];
 let eMapClickBound = false;
 
-function renderQuakeMap(lat, lng, recent, historical) {
+function initQuakeMapBase() {
   const mapEl = document.getElementById("eMap");
-  if (!mapEl || typeof L === "undefined") return;
+  if (eMap || !mapEl || typeof L === "undefined") return;
 
-  if (!eMap) {
-    eMap = L.map("eMap").setView([lat, lng], 8);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap contributors · Quakes: USGS",
-    }).addTo(eMap);
-  } else {
-    eMap.setView([lat, lng], Math.max(eMap.getZoom(), 8) === 8 ? 8 : eMap.getZoom());
-  }
+  eMap = L.map("eMap").setView([39.5, -98.35], 4); // national view until a search
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors · Quakes: USGS",
+  }).addTo(eMap);
 
-  // Click anywhere → look up quake activity for that area's nearest ZIP
   if (!eMapClickBound) {
     eMapClickBound = true;
     eMap.on("click", async (e) => {
@@ -152,6 +147,12 @@ function renderQuakeMap(lat, lng, recent, historical) {
       }
     });
   }
+}
+
+function renderQuakeMap(lat, lng, recent, historical) {
+  initQuakeMapBase();
+  if (!eMap) return;
+  eMap.setView([lat, lng], 8);
 
   // Clear previous layers
   eMapLayers.forEach(l => eMap.removeLayer(l));
@@ -276,6 +277,8 @@ function renderQuakes(zip, loc, data) {
   if (eEmpty)   eEmpty.style.display = "none";
   if (eLoading) eLoading.style.display = "none";
   if (eResults) eResults.style.display = "block";
+  const resultsTop = document.getElementById("eResultsTop");
+  if (resultsTop) resultsTop.style.display = "block";
   const latestSection = document.getElementById("eLatestSection");
   if (latestSection) latestSection.style.display = "none";
 
@@ -288,6 +291,8 @@ function renderQuakes(zip, loc, data) {
 function showQuakeError(msg) {
   if (eLoading) eLoading.style.display = "none";
   if (eResults) eResults.style.display = "none";
+  const resultsTop = document.getElementById("eResultsTop");
+  if (resultsTop) resultsTop.style.display = "none";
   if (eEmpty) { eEmpty.style.display = "block"; eEmpty.textContent = msg; }
 }
 
@@ -354,6 +359,22 @@ async function loadLatestQuakes() {
       return;
     }
 
+    // Plot feed quakes on the national map (cleared automatically on first ZIP search)
+    if (eMap) {
+      quakes.forEach(q => {
+        const [qlng, qlat] = q.geometry?.coordinates ?? [];
+        const mag = q.properties?.mag;
+        if (qlat == null) return;
+        const c = L.circleMarker([qlat, qlng], {
+          radius: Math.max(5, (mag ?? 3) * 2.2),
+          color: magColor(mag), weight: 1, fillColor: magColor(mag), fillOpacity: 0.55,
+        }).addTo(eMap).bindPopup(
+          `<strong>M${mag?.toFixed(1) ?? "?"}</strong> — ${q.properties?.place ?? ""}<br>${new Date(q.properties?.time).toLocaleString()}`
+        );
+        eMapLayers.push(c);
+      });
+    }
+
     el.innerHTML = quakes.map(q => {
       const p = q.properties ?? {};
       const mag = p.mag;
@@ -416,6 +437,8 @@ eSearchBtn?.addEventListener("click", () => searchQuakes());
 eZipInput?.addEventListener("keydown", e => { if (e.key === "Enter") searchQuakes(); });
 
 window.addEventListener("load", () => {
+  initQuakeMapBase();
+  setTimeout(() => eMap?.invalidateSize(), 200);
   loadLatestQuakes();
   const params = new URLSearchParams(window.location.search);
   const zipParam = params.get("zip");

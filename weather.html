@@ -59,22 +59,22 @@
       <div id="wCurrent" class="w-hero"></div>
       <div id="wForecast" class="w-grid"></div>
       <div id="wUpdated" class="w-updated"></div>
-
-      <!-- Animated radar map -->
-      <div class="w-radar-card">
-        <div class="w-radar-head">
-          <div style="display:flex;align-items:baseline;gap:10px;">
-            <div class="section-title" style="font-size:14px;font-weight:600;">Live Radar</div>
-            <span class="w-radar-hint">Past 2 hours + short-term forecast</span>
-          </div>
-          <div class="w-radar-controls">
-            <button id="wRadarPlay" class="btn ghost" style="padding:6px 14px;font-size:13px;">▶ Play</button>
-            <span id="wRadarTime" class="w-radar-time"></span>
-          </div>
-        </div>
-        <div id="wRadarMap" class="w-radar-map"></div>
-      </div>
     </section>
+
+    <!-- Animated radar map (always visible — national view until you search) -->
+    <div class="w-radar-card">
+      <div class="w-radar-head">
+        <div style="display:flex;align-items:baseline;gap:10px;">
+          <div class="section-title" style="font-size:14px;font-weight:600;">Live Radar</div>
+          <span class="w-radar-hint">Past 2 hours + short-term forecast · 💡 click anywhere to get that area's forecast</span>
+        </div>
+        <div class="w-radar-controls">
+          <button id="wRadarPlay" class="btn ghost" style="padding:6px 14px;font-size:13px;">▶ Play</button>
+          <span id="wRadarTime" class="w-radar-time"></span>
+        </div>
+      </div>
+      <div id="wRadarMap" class="w-radar-map"></div>
+    </div>
 
     <!-- Written content for SEO / content quality -->
     <section style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-top:28px;">

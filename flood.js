@@ -125,18 +125,14 @@ async function fReverseGeocodeZip(lat, lng) {
   } catch (_) { return null; }
 }
 
-function renderFloodMap(lat, lng, gauges) {
+function initFloodMapBase() {
   const mapEl = document.getElementById("fMap");
-  if (!mapEl || typeof L === "undefined") return;
+  if (fMap || !mapEl || typeof L === "undefined") return;
 
-  if (!fMap) {
-    fMap = L.map("fMap").setView([lat, lng], 9);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap contributors · Gauges: USGS",
-    }).addTo(fMap);
-  } else {
-    fMap.setView([lat, lng], 9);
-  }
+  fMap = L.map("fMap").setView([39.5, -98.35], 4); // national view until a search
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors · Gauges: USGS",
+  }).addTo(fMap);
 
   if (!fMapClickBound) {
     fMapClickBound = true;
@@ -152,6 +148,12 @@ function renderFloodMap(lat, lng, gauges) {
       }
     });
   }
+}
+
+function renderFloodMap(lat, lng, gauges) {
+  initFloodMapBase();
+  if (!fMap) return;
+  fMap.setView([lat, lng], 9);
 
   fMapLayers.forEach(l => fMap.removeLayer(l));
   fMapLayers = [];
@@ -241,6 +243,8 @@ function renderFlood(zip, loc, zone, alerts, gauges) {
   if (fEmpty)   fEmpty.style.display = "none";
   if (fLoading) fLoading.style.display = "none";
   if (fResults) fResults.style.display = "block";
+  const listsSection = document.getElementById("fListsSection");
+  if (listsSection) listsSection.style.display = "block";
   const latestSection = document.getElementById("fLatestSection");
   if (latestSection) latestSection.style.display = "none";
 
@@ -328,6 +332,8 @@ fSearchBtn?.addEventListener("click", () => searchFlood());
 fZipInput?.addEventListener("keydown", e => { if (e.key === "Enter") searchFlood(); });
 
 window.addEventListener("load", () => {
+  initFloodMapBase();
+  setTimeout(() => fMap?.invalidateSize(), 200);
   loadNationalFloodAlerts();
   const params = new URLSearchParams(window.location.search);
   const zipParam = params.get("zip");

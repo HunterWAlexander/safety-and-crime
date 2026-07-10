@@ -51,8 +51,33 @@
       </div>
     </section>
 
-    <div id="eEmpty" class="e-empty">Enter a ZIP code above to view earthquake activity near you.</div>
+    <div id="eEmpty" class="e-empty">Enter a ZIP code above — or click anywhere on the map — to view earthquake activity near you.</div>
     <div id="eLoading" class="e-loading" style="display:none;">Fetching earthquake data from USGS…</div>
+
+    <section id="eResultsTop" style="display:none;">
+      <div id="eLocation" class="e-location"></div>
+      <div id="eStats" class="e-stats"></div>
+      <div id="eRiskNote" class="e-risk-note"></div>
+    </section>
+
+    <div class="e-map-card" style="margin-top:16px;">
+      <div class="e-map-head">
+        <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+          <div class="section-title" style="font-size:14px;font-weight:600;">Epicenter Map</div>
+          <span class="e-map-hint" style="font-size:11px;color:#9ca3af;">💡 Click anywhere to check that area</span>
+        </div>
+        <div class="e-legend">
+          <span><span class="dot" style="background:#16a34a;"></span>M&lt;2</span>
+          <span><span class="dot" style="background:#84cc16;"></span>M2-3</span>
+          <span><span class="dot" style="background:#d97706;"></span>M3-4</span>
+          <span><span class="dot" style="background:#ea580c;"></span>M4-5</span>
+          <span><span class="dot" style="background:#dc2626;"></span>M5-6</span>
+          <span><span class="dot" style="background:#7f1d1d;"></span>M6+</span>
+          <span style="margin-left:4px;">· dashed = historical</span>
+        </div>
+      </div>
+      <div id="eMap" class="e-map"></div>
+    </div>
 
     <!-- Latest significant quakes — loads automatically, no search needed -->
     <section id="eLatestSection">
@@ -61,29 +86,6 @@
     </section>
 
     <section id="eResults" style="display:none;">
-      <div id="eLocation" class="e-location"></div>
-      <div id="eStats" class="e-stats"></div>
-      <div id="eRiskNote" class="e-risk-note"></div>
-
-      <div class="e-map-card">
-        <div class="e-map-head">
-          <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
-            <div class="section-title" style="font-size:14px;font-weight:600;">Epicenter Map</div>
-            <span class="e-map-hint" style="font-size:11px;color:#9ca3af;">💡 Click anywhere to check that area</span>
-          </div>
-          <div class="e-legend">
-            <span><span class="dot" style="background:#16a34a;"></span>M&lt;2</span>
-            <span><span class="dot" style="background:#84cc16;"></span>M2-3</span>
-            <span><span class="dot" style="background:#d97706;"></span>M3-4</span>
-            <span><span class="dot" style="background:#ea580c;"></span>M4-5</span>
-            <span><span class="dot" style="background:#dc2626;"></span>M5-6</span>
-            <span><span class="dot" style="background:#7f1d1d;"></span>M6+</span>
-            <span style="margin-left:4px;">· dashed = historical</span>
-          </div>
-        </div>
-        <div id="eMap" class="e-map"></div>
-      </div>
-
       <div class="e-section-title">Recent Earthquakes (Past 30 Days)</div>
       <div id="eList" class="e-list"></div>
 

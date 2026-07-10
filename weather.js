@@ -310,23 +310,43 @@ let radarPlaying = false;
 const wRadarPlayBtn = document.getElementById("wRadarPlay");
 const wRadarTimeEl  = document.getElementById("wRadarTime");
 
-function initRadarMap(lat, lng) {
+async function wReverseGeocodeZip(lat, lng) {
+  try {
+    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+    if (!res.ok) return null;
+    const d = await res.json();
+    if (d?.countryCode !== "US") return null;
+    const zip = (d?.postcode || "").substring(0, 5);
+    return /^\d{5}$/.test(zip) ? zip : null;
+  } catch (_) { return null; }
+}
+
+function initRadarMap(lat, lng, national = false) {
   const mapEl = document.getElementById("wRadarMap");
   if (!mapEl || typeof L === "undefined") return;
 
   if (!radarMap) {
-    radarMap = L.map("wRadarMap").setView([lat, lng], 7);
+    radarMap = L.map("wRadarMap").setView([lat, lng], national ? 4 : 7);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors · Radar: RainViewer",
     }).addTo(radarMap);
-  } else {
+    // Click anywhere on the radar → jump to that area's forecast
+    radarMap.on("click", async (e) => {
+      const zip = await wReverseGeocodeZip(e.latlng.lat, e.latlng.lng);
+      if (zip) {
+        if (wZipInput) wZipInput.value = zip;
+        searchWeather(zip);
+      }
+    });
+    loadRadarFrames(); // radar tiles are national — load once, valid everywhere
+  } else if (!national) {
     radarMap.setView([lat, lng], 7);
   }
 
-  if (radarMarker) radarMap.removeLayer(radarMarker);
-  radarMarker = L.marker([lat, lng]).addTo(radarMap);
-
-  loadRadarFrames();
+  if (!national) {
+    if (radarMarker) radarMap.removeLayer(radarMarker);
+    radarMarker = L.marker([lat, lng]).addTo(radarMap);
+  }
 }
 
 async function loadRadarFrames() {
@@ -453,6 +473,9 @@ wZipInput?.addEventListener("keydown", e => { if (e.key === "Enter") searchWeath
 
 // Handle ?zip= URL param on page load (deep links from header search / homepage)
 window.addEventListener("load", () => {
+  // National radar view on page open — search re-centers it
+  initRadarMap(39.5, -98.35, true);
+  setTimeout(() => radarMap?.invalidateSize(), 200);
   const params = new URLSearchParams(window.location.search);
   const zipParam = params.get("zip");
   if (zipParam && /^\d{5}$/.test(zipParam)) {
