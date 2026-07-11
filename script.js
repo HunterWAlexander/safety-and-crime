@@ -331,7 +331,7 @@ function placeMarker(lat, lng, label, riskLevel) {
   });
   currentMarker = L.marker([lat,lng],{icon}).addTo(map)
     .bindPopup(`<strong>${label}</strong><br>${riskLevel}`).openPopup();
-  map.setView([lat,lng], Math.max(map.getZoom(), 11));
+  map.setView([lat,lng], 11);
 }
 
 // ── RECENT ZIPS ────────────────────────────────────────────────────────
@@ -500,13 +500,27 @@ function renderResults(zip, location, scores) {
 }
 
 // ── MAIN SEARCH ────────────────────────────────────────────────────────
+let lastCityZips = null;
+let lastCityName = null;
+
 async function searchZip(zip) {
-  zip = (zip || zipInput.value.trim()).toString();
+  let q = (zip || zipInput?.value.trim() || "").toString();
+  let cityResult = null;
+  if (!/^\d{5}$/.test(q) && typeof geoResolveToZip === "function") {
+    cityResult = await geoResolveToZip(q);
+    if (cityResult?.zip) { q = cityResult.zip; if (zipInput) zipInput.value = q; }
+  }
+  zip = q;
   if (!/^\d{5}$/.test(zip)) {
-    if (zipError) { zipError.textContent="Please enter a valid 5-digit ZIP code."; zipError.classList.remove("hidden"); }
+    if (zipError) { zipError.textContent="Enter a 5-digit ZIP code or a city name (e.g. Houston, TX)."; zipError.classList.remove("hidden"); }
     return;
   }
   if (zipError) { zipError.textContent=""; zipError.classList.add("hidden"); }
+
+  // Remember the city's full ZIP list (plotted on the map after render).
+  // Plain ZIP searches clear any previous city overlay.
+  lastCityZips = cityResult?.cityZips || null;
+  lastCityName = cityResult?.cityName || null;
 
   if (emptyState)   emptyState.style.display   = "none";
   if (loadingState) { loadingState.style.display="block"; loadingState.classList.remove("hidden"); }
@@ -533,6 +547,36 @@ async function searchZip(zip) {
   }
 
   renderResults(zip, location, finalScores);
+  plotCityZips();
+}
+
+// ── CITY ZIP OVERLAY ────────────────────────────────────────────────────
+// When a search came from a city name, plot every ZIP in that city as a
+// clickable green dot and fit the map to show the whole city.
+let cityZipLayers = [];
+
+function plotCityZips() {
+  if (!map) return;
+
+  // Clear previous city overlay
+  cityZipLayers.forEach(l => map.removeLayer(l));
+  cityZipLayers = [];
+  if (!lastCityZips || lastCityZips.length < 2) return;
+
+  const bounds = [];
+  lastCityZips.forEach(z => {
+    bounds.push([z.lat, z.lng]);
+    const c = L.circleMarker([z.lat, z.lng], {
+      radius: 9, color: "#15803d", weight: 2, fillColor: "#22c55e", fillOpacity: 0.45,
+    }).addTo(map).bindTooltip(z.zip, { direction: "top", offset: [0, -6] });
+    c.on("click", (ev) => {
+      if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
+      searchZip(z.zip);
+    });
+    cityZipLayers.push(c);
+  });
+
+  if (bounds.length) map.fitBounds(bounds, { padding: [30, 30] });
 }
 
 // ── EVENTS ─────────────────────────────────────────────────────────────
@@ -641,13 +685,17 @@ if (shareBtn) {
   });
 }
 
-// Handle ?zip= URL param on page load
+// Handle ?zip= and ?q= (city) URL params on page load
 window.addEventListener("load", () => {
   const params = new URLSearchParams(window.location.search);
   const zipParam = params.get("zip");
+  const qParam = params.get("q");
   if (zipParam && /^\d{5}$/.test(zipParam)) {
     if (zipInput) zipInput.value = zipParam;
     searchZip(zipParam);
+  } else if (qParam) {
+    if (zipInput) zipInput.value = qParam;
+    searchZip(qParam);
   }
 });
 

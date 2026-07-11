@@ -4,6 +4,85 @@
 // This is the ONLY file that needs editing to change the header/tabs site-wide.
 // ---------------------------
 
+// ── SHARED GEO SEARCH (ZIP or city name) ──────────────────────────────
+// Used by the header search and every tool page. Resolves "Houston" or
+// "Katy, TX" to a ZIP code (plus the city's full ZIP list when available).
+const US_STATE_ABBR = {
+  "Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR","California":"CA","Colorado":"CO",
+  "Connecticut":"CT","Delaware":"DE","Florida":"FL","Georgia":"GA","Hawaii":"HI","Idaho":"ID",
+  "Illinois":"IL","Indiana":"IN","Iowa":"IA","Kansas":"KS","Kentucky":"KY","Louisiana":"LA",
+  "Maine":"ME","Maryland":"MD","Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS",
+  "Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH","New Jersey":"NJ",
+  "New Mexico":"NM","New York":"NY","North Carolina":"NC","North Dakota":"ND","Ohio":"OH","Oklahoma":"OK",
+  "Oregon":"OR","Pennsylvania":"PA","Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD",
+  "Tennessee":"TN","Texas":"TX","Utah":"UT","Vermont":"VT","Virginia":"VA","Washington":"WA",
+  "West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY","District of Columbia":"DC",
+};
+
+async function geoReverseZip(lat, lng) {
+  try {
+    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+    if (!res.ok) return null;
+    const d = await res.json();
+    if (d?.countryCode !== "US") return null;
+    const zip = (d?.postcode || "").substring(0, 5);
+    return /^\d{5}$/.test(zip) ? zip : null;
+  } catch (_) { return null; }
+}
+
+async function geoResolveToZip(raw) {
+  raw = (raw || "").trim();
+  if (/^\d{5}$/.test(raw)) return { zip: raw, cityZips: null };
+  if (raw.length < 2) return null;
+
+  // Support "City, ST" or "City, State" format
+  let name = raw, stateHint = null;
+  const parts = raw.split(",").map(s => s.trim());
+  if (parts.length > 1 && parts[1]) { name = parts[0]; stateHint = parts[1].toUpperCase(); }
+
+  try {
+    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=10&language=en&format=json`);
+    if (!res.ok) return null;
+    const d = await res.json();
+    let results = (d?.results || []).filter(r => r.country_code === "US");
+    if (stateHint) {
+      results = results.filter(r => {
+        const ab = US_STATE_ABBR[r.admin1] || "";
+        return ab === stateHint || (r.admin1 || "").toUpperCase() === stateHint;
+      });
+    }
+    const best = results[0];
+    if (!best) return null;
+
+    const stateAb = US_STATE_ABBR[best.admin1] || null;
+
+    // Full ZIP list for the city (Zippopotam city endpoint) — used to plot
+    // every ZIP in the city on the crime map
+    let cityZips = null;
+    if (stateAb) {
+      try {
+        const zr = await fetch(`https://api.zippopotam.us/us/${stateAb.toLowerCase()}/${encodeURIComponent(best.name.toLowerCase())}`);
+        if (zr.ok) {
+          const zd = await zr.json();
+          cityZips = (zd?.places || []).map(p => ({
+            zip: p["post code"],
+            lat: parseFloat(p.latitude),
+            lng: parseFloat(p.longitude),
+          })).filter(z => /^\d{5}$/.test(z.zip) && Number.isFinite(z.lat));
+          if (cityZips.length === 0) cityZips = null;
+        }
+      } catch (_) { /* zip list is a bonus */ }
+    }
+
+    // Primary ZIP: reverse-geocode the city center; fall back to first listed ZIP
+    let zip = await geoReverseZip(best.latitude, best.longitude);
+    if (!zip && cityZips?.length) zip = cityZips[0].zip;
+    if (!zip) return null;
+
+    return { zip, cityZips, cityName: best.name, state: stateAb };
+  } catch (_) { return null; }
+}
+
 // ── TAB DEFINITIONS ──────────────────────────────────────────────────
 // `match` = which page filenames this tab should appear "active" on.
 // `comingSoon: true` tabs render disabled with a "Soon" badge and no link.
@@ -39,7 +118,7 @@ function buildHubHeader() {
         <span class="hub-brand-title">Safety &amp; Crime</span>
       </a>
       <div class="hub-search-row">
-        <input id="hubZipInput" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Enter ZIP code" />
+        <input id="hubZipInput" autocomplete="off" placeholder="ZIP code or city" />
         <button id="hubSearchBtn">Search</button>
       </div>
     </div>
@@ -50,16 +129,28 @@ function buildHubHeader() {
 }
 
 // ── GLOBAL SEARCH BEHAVIOR ───────────────────────────────────────────
-// Always routes to the ZIP Code Search tool with the ZIP pre-filled,
-// regardless of which page the search was triggered from.
-function hubSearch() {
+// On a tool page (weather/earthquake/flood), search stays on that tool.
+// Everywhere else it routes to the ZIP Code Search. City searches pass the
+// raw query (?q=) so crime.html can plot every ZIP in the city.
+async function hubSearch() {
   const input = document.getElementById("hubZipInput");
-  const zip = input?.value.trim();
-  if (!/^\d{5}$/.test(zip)) {
+  const raw = input?.value?.trim() || "";
+  const r = await geoResolveToZip(raw);
+  if (!r?.zip) {
     input?.focus();
+    if (input) { input.value = ""; input.placeholder = "Try a ZIP or city, e.g. Houston, TX"; }
     return;
   }
-  window.location.href = `/crime.html?zip=${zip}`;
+
+  const page = window.location.pathname.split("/").pop();
+  const toolPages = ["weather.html", "earthquake.html", "flood.html"];
+  if (toolPages.includes(page)) {
+    window.location.href = `/${page}?zip=${r.zip}`;
+  } else if (r.cityZips?.length) {
+    window.location.href = `/crime.html?q=${encodeURIComponent(raw)}`;
+  } else {
+    window.location.href = `/crime.html?zip=${r.zip}`;
+  }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────

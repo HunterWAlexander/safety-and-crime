@@ -293,9 +293,14 @@ async function loadNationalFloodAlerts() {
 
 // ── MAIN SEARCH ────────────────────────────────────────────────────────
 async function searchFlood(zip) {
-  zip = (zip || fZipInput?.value.trim() || "").toString();
+  let q = (zip || fZipInput?.value.trim() || "").toString();
+  if (!/^\d{5}$/.test(q) && typeof geoResolveToZip === "function") {
+    const resolved = await geoResolveToZip(q);
+    if (resolved?.zip) { q = resolved.zip; if (fZipInput) fZipInput.value = q; }
+  }
+  zip = q;
   if (!/^\d{5}$/.test(zip)) {
-    if (fZipError) { fZipError.textContent = "Please enter a valid 5-digit ZIP code."; fZipError.classList.remove("hidden"); }
+    if (fZipError) { fZipError.textContent = "Enter a 5-digit ZIP code or a city name (e.g. Houston, TX)."; fZipError.classList.remove("hidden"); }
     return;
   }
   if (fZipError) { fZipError.textContent = ""; fZipError.classList.add("hidden"); }

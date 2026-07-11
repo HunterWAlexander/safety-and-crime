@@ -424,9 +424,14 @@ wRadarPlayBtn?.addEventListener("click", () => {
 
 // ── MAIN SEARCH ────────────────────────────────────────────────────────
 async function searchWeather(zip) {
-  zip = (zip || wZipInput?.value.trim() || "").toString();
+  let q = (zip || wZipInput?.value.trim() || "").toString();
+  if (!/^\d{5}$/.test(q) && typeof geoResolveToZip === "function") {
+    const resolved = await geoResolveToZip(q);
+    if (resolved?.zip) { q = resolved.zip; if (wZipInput) wZipInput.value = q; }
+  }
+  zip = q;
   if (!/^\d{5}$/.test(zip)) {
-    if (wZipError) { wZipError.textContent = "Please enter a valid 5-digit ZIP code."; wZipError.classList.remove("hidden"); }
+    if (wZipError) { wZipError.textContent = "Enter a 5-digit ZIP code or a city name (e.g. Houston, TX)."; wZipError.classList.remove("hidden"); }
     return;
   }
   if (wZipError) { wZipError.textContent = ""; wZipError.classList.add("hidden"); }

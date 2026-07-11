@@ -403,9 +403,14 @@ async function loadLatestQuakes() {
 
 // ── MAIN SEARCH ────────────────────────────────────────────────────────
 async function searchQuakes(zip) {
-  zip = (zip || eZipInput?.value.trim() || "").toString();
+  let q = (zip || eZipInput?.value.trim() || "").toString();
+  if (!/^\d{5}$/.test(q) && typeof geoResolveToZip === "function") {
+    const resolved = await geoResolveToZip(q);
+    if (resolved?.zip) { q = resolved.zip; if (eZipInput) eZipInput.value = q; }
+  }
+  zip = q;
   if (!/^\d{5}$/.test(zip)) {
-    if (eZipError) { eZipError.textContent = "Please enter a valid 5-digit ZIP code."; eZipError.classList.remove("hidden"); }
+    if (eZipError) { eZipError.textContent = "Enter a 5-digit ZIP code or a city name (e.g. Houston, TX)."; eZipError.classList.remove("hidden"); }
     return;
   }
   if (eZipError) { eZipError.textContent = ""; eZipError.classList.add("hidden"); }
