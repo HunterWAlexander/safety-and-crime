@@ -91,7 +91,7 @@ const HUB_TABS = [
   { label: "Weather",         icon: "🌦️", href: "/weather.html",      match: ["weather.html"] },
   { label: "Earthquake Risk", icon: "🌎", href: "/earthquake.html",   match: ["earthquake.html"] },
   { label: "Flood Risk",      icon: "🌊", href: "/flood.html",        match: ["flood.html"] },
-  { label: "Recalls",         icon: "📦", href: "/recalls.html",      match: ["recalls.html"],     comingSoon: true },
+  { label: "Recalls",         icon: "📦", href: "/recalls.html",      match: ["recalls.html"] },
 ];
 
 // ── BUILD HEADER HTML ────────────────────────────────────────────────

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Our Data &amp; Methodology | Safety &amp; Crime</title>
+  <meta name="description" content="How Safety & Crime works: the government data sources behind our tools (Census, NWS, USGS, FEMA) and how our safety scores are calculated." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/methodology.html" />
+  <meta property="og:title" content="Our Data & Methodology | Safety & Crime" />
+  <meta property="og:description" content="The data sources and methods behind every number on Safety & Crime." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safetyandcrime.com/methodology.html" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <style>
+    .method-wrap { max-width: 800px; margin: 0 auto; padding: 32px 20px 60px; }
+    .method-wrap h1 { font-size: 26px; font-weight: 700; color: var(--green, #16a34a); margin-bottom: 8px; }
+    .method-intro { font-size: 15px; color: var(--muted, #6b7280); line-height: 1.7; margin-bottom: 28px; }
+    .method-card { background: #fff; border: 1px solid var(--border, rgba(0,0,0,.08)); border-radius: 14px; padding: 24px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+    .method-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: #111; }
+    .method-card h3 { font-size: 15px; font-weight: 600; margin: 16px 0 6px; color: #1f2937; }
+    .method-card p { font-size: 14px; line-height: 1.8; color: #444; margin-bottom: 12px; }
+    .method-card p:last-child { margin-bottom: 0; }
+    .method-card a { color: var(--green, #16a34a); }
+    .source-tag { display: inline-block; font-size: 11px; font-weight: 600; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; border-radius: 6px; padding: 3px 8px; margin-bottom: 10px; }
+    .est-tag { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+  </style>
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="method-wrap">
+    <h1>Our Data &amp; Methodology</h1>
+    <p class="method-intro">
+      Every tool on Safety &amp; Crime is built on publicly available data, and we believe you should know exactly where
+      each number comes from — including which figures are official government statistics and which are our own estimates.
+      This page explains all of it, tool by tool.
+    </p>
+
+    <div class="method-card">
+      <span class="source-tag">Official Source · U.S. Census Bureau</span>
+      <h2>Population &amp; Home Values</h2>
+      <p>
+        Population and median home value figures on our <a href="/crime.html">ZIP Code Search</a> come directly from the
+        U.S. Census Bureau's American Community Survey (ACS) 5-Year estimates, queried live for each ZIP Code Tabulation
+        Area (ZCTA). When a figure comes from the Census, the card is labeled "Census" and the expanded detail panel lists
+        the source. For a small number of ZIP codes the Census has no ZCTA record — typically P.O. Box-only ZIPs or very
+        new ones — and in those cases we fall back to a regional estimate, clearly labeled "Est."
+      </p>
+      <p>
+        The ACS 5-Year survey is the most reliable public source for small-area demographics in the United States. Because
+        it aggregates five years of survey responses, figures update annually but represent a rolling average rather than a
+        single point in time.
+      </p>
+    </div>
+
+    <div class="method-card">
+      <span class="source-tag est-tag">Modeled Estimate · Not Official Statistics</span>
+      <h2>Safety Scores &amp; Crime Rates</h2>
+      <p>
+        <strong>Our safety scores and crime rate figures are statistical estimates, not official police data.</strong>
+        The United States has no unified, publicly available database of crime statistics at the ZIP code level — police
+        agencies report at the department or jurisdiction level, coverage is voluntary and incomplete, and ZIP codes don't
+        align with police district boundaries. Any website showing "crime by ZIP code" is modeling, whether it says so or not.
+        We say so.
+      </p>
+      <h3>How the estimates work</h3>
+      <p>
+        Our model assigns each ZIP code a baseline derived from the crime profile of its broader region (using the ZIP's
+        prefix, which groups geographically related areas), adjusted for population density patterns and urban/suburban/rural
+        classification. Violent and property crime figures are expressed per 100,000 residents to make areas comparable. The
+        Safety Score (0–100) and letter grade summarize these estimates relative to national patterns — a score of 64 means
+        the model places that ZIP as safer than roughly 64% of U.S. ZIP codes.
+      </p>
+      <h3>What the estimates are good for — and not</h3>
+      <p>
+        These estimates are useful for getting a general sense of how an area compares to national patterns and for
+        side-by-side comparisons of regions. They are <em>not</em> suitable for insurance, legal, lending, or security
+        decisions, and they cannot capture block-by-block variation within a ZIP code. For official statistics, we recommend
+        the FBI's Crime Data Explorer and your local police department's published reports, both linked from our
+        <a href="/about.html">About page</a>.
+      </p>
+    </div>
+
+    <div class="method-card">
+      <span class="source-tag">Official Source · National Weather Service</span>
+      <h2>Weather Forecasts</h2>
+      <p>
+        Every forecast on our <a href="/weather.html">Weather tool</a> comes live from the National Weather Service API —
+        the same forecasts produced by NWS meteorologists at 120+ regional offices. Supplementary metrics in the detail
+        view (humidity, feels-like temperature, wind gusts, pressure, visibility, UV index, sunrise/sunset) come from
+        Open-Meteo, an open-data weather service, and air quality readings use the EPA's US AQI scale via Open-Meteo's
+        air quality feed. Radar imagery is provided by RainViewer, showing real weather radar from the past two hours plus
+        a short-term projection. Moon phases are computed astronomically and don't rely on any external source.
+      </p>
+    </div>
+
+    <div class="method-card">
+      <span class="source-tag">Official Source · U.S. Geological Survey</span>
+      <h2>Earthquake Data</h2>
+      <p>
+        Our <a href="/earthquake.html">Earthquake tool</a> queries the USGS earthquake catalog live for every search:
+        recorded quakes within roughly 100 miles of the searched location over the past 30 days, plus significant (M4+)
+        historical events over the past 50 years. Magnitudes, depths, times, and locations are exactly as recorded by the
+        USGS seismic network. The "Seismic Risk" label (Low / Moderate / Elevated) is our simple summary based on the count
+        and size of historical quakes in the area — it's a readability aid, not an official USGS hazard rating. For
+        engineering-grade hazard data, see the USGS National Seismic Hazard Model.
+      </p>
+    </div>
+
+    <div class="method-card">
+      <span class="source-tag">Official Sources · FEMA, NWS &amp; USGS</span>
+      <h2>Flood Data</h2>
+      <p>
+        The <a href="/flood.html">Flood tool</a> combines three official sources. Flood zone designations come from FEMA's
+        National Flood Hazard Layer — the same maps used for federal flood insurance requirements — queried at the searched
+        ZIP code's center point. Active flood warnings, watches, and advisories come live from the National Weather Service
+        alert system. River and stream levels come from USGS Water Services' network of real-time gauges.
+      </p>
+      <p>
+        One important caveat: a ZIP code covers a wide area, and flood zones can change from one street to the next. Our
+        lookup checks the ZIP's central point, so it's a starting reference — for a property-specific determination
+        (the kind lenders require), use FEMA's Flood Map Service Center with the exact address.
+      </p>
+    </div>
+
+    <div class="method-card">
+      <h2>Corrections &amp; Updates</h2>
+      <p>
+        Live data (weather, earthquakes, flood alerts, river gauges) refreshes on every search. Census figures update when
+        the Census Bureau publishes new ACS releases, typically annually. Our regional crime estimates are reviewed and
+        recalibrated periodically. If you believe any figure on this site is wrong or misleading, we genuinely want to know —
+        reach out via the contact information on our <a href="/about.html">About page</a> and we'll investigate.
+      </p>
+    </div>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+    </footer>
+  </main>
+
+  <script src="/hub-nav.js"></script>
+</body>
+</html>

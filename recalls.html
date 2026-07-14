@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vehicle &amp; Product Recall Lookup | Safety &amp; Crime</title>
+  <meta name="description" content="Check open safety recalls for your car by year, make, and model (NHTSA data), and browse the latest consumer product recalls from the CPSC. Free lookup." />
+  <meta name="keywords" content="vehicle recall lookup, car recall check, product recalls, nhtsa recall search, cpsc recalls" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/recalls.html" />
+  <meta property="og:title" content="Vehicle & Product Recall Lookup | Safety & Crime" />
+  <meta property="og:description" content="Check open recalls for your vehicle and browse the latest consumer product recalls." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safetyandcrime.com/recalls.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Vehicle & Product Recall Lookup | Safety & Crime" />
+  <meta name="twitter:description" content="Check open recalls for your vehicle and browse the latest consumer product recalls." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Vehicle & Product Recall Lookup",
+    "description": "Open vehicle recall search by year, make, and model, plus the latest consumer product recalls.",
+    "url": "https://safetyandcrime.com/recalls.html",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/earthquake.css" />
+  <style>
+    .r-inputs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .r-inputs input {
+      padding: 10px 14px; border-radius: 10px; font-size: 15px; outline: none;
+      border: 1.5px solid var(--border, rgba(0,0,0,.08)); background: #f9fafb;
+      transition: border-color .2s; box-sizing: border-box;
+    }
+    .r-inputs input:focus { border-color: var(--green, #16a34a); background: #fff; }
+    #rYear { width: 110px; }
+    #rMake, #rModel { flex: 1; min-width: 140px; }
+    @media (max-width: 600px) {
+      .r-inputs { flex-direction: column; }
+      #rYear, #rMake, #rModel { width: 100%; }
+    }
+  </style>
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="quake-wrap">
+    <h1>Vehicle &amp; Product Recall Lookup</h1>
+    <p class="quake-sub">Check whether your car has open safety recalls using official NHTSA data, and browse the latest consumer product recalls from the CPSC. Recall repairs on vehicles are always free at franchised dealers.</p>
+
+    <section class="e-search-card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px;">🚗 Check Your Vehicle</div>
+      <div class="r-inputs">
+        <input id="rYear" inputmode="numeric" maxlength="4" placeholder="Year" />
+        <input id="rMake" placeholder="Make e.g. Honda" />
+        <input id="rModel" placeholder="Model e.g. Civic" />
+        <button id="rSearchBtn" class="btn primary">Search</button>
+      </div>
+      <div id="rError" class="inline-error hidden" style="margin-top:8px;"></div>
+    </section>
+
+    <div id="rEmpty" class="e-empty">Enter your vehicle's year, make, and model to check for open recalls.</div>
+    <div id="rLoading" class="e-loading" style="display:none;">Checking the NHTSA recall database…</div>
+
+    <div id="rVehicleTitle" class="e-section-title" style="display:none;"></div>
+    <div id="rVehicleList" class="e-list"></div>
+
+    <div class="e-section-title" style="margin-top:28px;">📦 Latest Consumer Product Recalls (CPSC)</div>
+    <div id="rProductList" class="e-list"><div class="e-loading" style="border:none;">Loading latest product recalls…</div></div>
+
+    <!-- Written content for SEO / content quality -->
+    <section style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-top:28px;">
+      <h2 style="font-size:19px;color:var(--green);margin-bottom:12px;">How Safety Recalls Work</h2>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        A recall happens when a manufacturer or a federal agency determines that a product creates an unreasonable safety
+        risk or fails to meet minimum safety standards. Vehicle recalls are overseen by the National Highway Traffic Safety
+        Administration (NHTSA); most other consumer products fall under the Consumer Product Safety Commission (CPSC). Both
+        agencies publish every recall publicly — the data on this page comes live from their official databases.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Vehicle Recalls: What Owners Should Know</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Roughly one in five vehicles on U.S. roads has an open, unrepaired recall. Manufacturers must fix recalled defects
+        free of charge at franchised dealerships — there is never a fee for recall repair, regardless of the vehicle's age
+        or how many owners it's had. A year/make/model search like the one above shows every campaign affecting that model;
+        for certainty about your specific car (some recalls only cover certain production runs), run your 17-character VIN
+        through NHTSA's official VIN tool. If you're buying a used car, checking recalls before purchase takes two minutes
+        and can reveal unrepaired safety defects the seller may not even know about.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Product Recalls: Why They're Easy to Miss</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Unlike vehicles, most consumer products aren't registered to an owner — so when a crib, space heater, or battery
+        pack is recalled, the manufacturer usually has no way to contact buyers directly. Recalls of children's products
+        deserve particular attention: nursery products, toys, and furniture account for a large share of CPSC actions, often
+        for tip-over, choking, or entrapment hazards. Checking the feed above periodically — or before buying secondhand
+        items — is one of the simplest safety habits a household can build. Remedies typically include free repair kits,
+        replacement, or full refunds.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Part of a Complete Safety Picture</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:0;">
+        Recalls cover the products in your life; our other tools cover the place you live. Check an area's
+        <a href="/crime.html" style="color:var(--green);">safety profile</a>,
+        <a href="/weather.html" style="color:var(--green);">weather</a>,
+        <a href="/earthquake.html" style="color:var(--green);">earthquake history</a>, and
+        <a href="/flood.html" style="color:var(--green);">flood risk</a> — and see exactly where all our data comes from on
+        our <a href="/methodology.html" style="color:var(--green);">Data &amp; Methodology</a> page.
+      </p>
+    </section>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      Data: <b>NHTSA</b> (nhtsa.gov) · <b>CPSC</b> (cpsc.gov) · For informational purposes only.<br>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/methodology.html" style="color:var(--green);margin-right:10px;">Data &amp; Methodology</a>
+      <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+    </footer>
+  </main>
+
+  <script src="/recalls.js"></script>
+  <script src="/hub-nav.js"></script>
+</body>
+</html>
