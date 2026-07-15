@@ -92,14 +92,17 @@ const HUB_TABS = [
   { label: "Earthquake Risk", icon: "🌎", href: "/earthquake.html",   match: ["earthquake.html"] },
   { label: "Flood Risk",      icon: "🌊", href: "/flood.html",        match: ["flood.html"] },
   { label: "Recalls",         icon: "📦", href: "/recalls.html",      match: ["recalls.html"] },
+  { label: "Guides",          icon: "📖", href: "/blog/",             match: ["blog"] },
 ];
 
 // ── BUILD HEADER HTML ────────────────────────────────────────────────
 function buildHubHeader() {
-  const path = window.location.pathname.split("/").pop(); // e.g. "crime.html" or "" for homepage
+  const fullPath = window.location.pathname;
+  const inBlog = fullPath.startsWith("/blog");
+  const path = fullPath.split("/").pop(); // e.g. "crime.html" or "" for homepage
 
   const tabsHtml = HUB_TABS.map(tab => {
-    const isActive = tab.match.includes(path);
+    const isActive = inBlog ? tab.match.includes("blog") : tab.match.includes(path);
     if (tab.comingSoon) {
       return `<span class="hub-tab coming-soon">
         <span>${tab.icon}</span><span>${tab.label}</span>
