@@ -28,7 +28,7 @@
   </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/styles.css" />
-  
+  <link rel="stylesheet" href="/hub-nav.css" />
   <link rel="stylesheet" href="/earthquake.css" />
   <style>
     .r-inputs { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -45,7 +45,7 @@
       #rYear, #rMake, #rModel { width: 100%; }
     }
   </style>
-<link rel="stylesheet" href="/hub-nav.css" /></head>
+</head>
 <body style="background:#f3f4f6;">
 
   <div id="hub-header"></div>
@@ -70,6 +70,22 @@
 
     <div id="rVehicleTitle" class="e-section-title" style="display:none;"></div>
     <div id="rVehicleList" class="e-list"></div>
+
+    <section class="e-search-card" style="margin-top:20px;">
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px;">📦 Search Product Recalls</div>
+      <div class="e-search-row">
+        <div class="input-wrap">
+          <input id="rpInput" autocomplete="off" placeholder="Product keyword e.g. stroller, space heater, battery" />
+          <div id="rpError" class="inline-error hidden"></div>
+        </div>
+        <button id="rpSearchBtn" class="btn primary">Search</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;">Searches the CPSC's full historical recall database — past recalls included.</div>
+    </section>
+
+    <div id="rpLoading" class="e-loading" style="display:none;">Searching the CPSC recall database…</div>
+    <div id="rpResultTitle" class="e-section-title" style="display:none;"></div>
+    <div id="rpResultList" class="e-list"></div>
 
     <div class="e-section-title" style="margin-top:28px;">📦 Latest Consumer Product Recalls (CPSC)</div>
     <div id="rProductList" class="e-list"><div class="e-loading" style="border:none;">Loading latest product recalls…</div></div>
@@ -114,7 +130,7 @@
 
     <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
       Data: <b>NHTSA</b> (nhtsa.gov) · <b>CPSC</b> (cpsc.gov) · For informational purposes only.<br>
-      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a> <a href="/methodology.html" style="color:var(--green);margin-right:10px;">Data &amp; Methodology</a>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
       <a href="/methodology.html" style="color:var(--green);margin-right:10px;">Data &amp; Methodology</a>
       <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
       <a href="/terms.html" style="color:var(--green);">Terms of Service</a>

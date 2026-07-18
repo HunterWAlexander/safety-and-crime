@@ -73,6 +73,82 @@ async function searchVehicleRecalls() {
 rBtn?.addEventListener("click", searchVehicleRecalls);
 [rYear, rMake, rModel].forEach(el => el?.addEventListener("keydown", e => { if (e.key === "Enter") searchVehicleRecalls(); }));
 
+// ── PRODUCT RECALL SEARCH (CPSC keyword search, full historical DB) ────
+const rpInput = document.getElementById("rpInput");
+const rpBtn   = document.getElementById("rpSearchBtn");
+const rpError = document.getElementById("rpError");
+const rpLoad  = document.getElementById("rpLoading");
+const rpList  = document.getElementById("rpResultList");
+const rpTitle = document.getElementById("rpResultTitle");
+
+function renderProductRecallRows(recalls) {
+  return recalls.map(r => {
+    const hazard  = r.Hazards?.map(h => h.Name).filter(Boolean).join("; ") ?? "";
+    const remedy  = r.Remedies?.map(x => x.Name).filter(Boolean).join(", ") ?? "";
+    const date    = r.RecallDate ? new Date(r.RecallDate).toLocaleDateString() : "";
+    return `
+      <div class="e-row" style="align-items:flex-start;">
+        <div class="e-mag" style="background:#d97706;font-size:11px;min-width:70px;">${date}</div>
+        <div class="e-row-body">
+          <div class="e-row-place">${r.Title ?? r.Products?.[0]?.Name ?? "Product recall"}</div>
+          ${hazard ? `<div class="e-row-meta" style="margin-top:4px;"><strong>Hazard:</strong> ${hazard}</div>` : ""}
+          ${remedy ? `<div class="e-row-meta" style="margin-top:4px;"><strong>Remedy:</strong> ${remedy}</div>` : ""}
+          ${r.URL ? `<div class="e-row-meta" style="margin-top:4px;"><a href="${r.URL}" target="_blank" rel="noopener" style="color:var(--green,#16a34a);text-decoration:none;">Full CPSC recall notice →</a></div>` : ""}
+        </div>
+      </div>`;
+  }).join("");
+}
+
+async function searchProductRecalls() {
+  const q = (rpInput?.value || "").trim();
+  if (q.length < 2) {
+    if (rpError) { rpError.textContent = "Enter a product keyword (e.g. stroller, heater, battery)."; rpError.classList.remove("hidden"); }
+    return;
+  }
+  if (rpError) { rpError.textContent = ""; rpError.classList.add("hidden"); }
+  if (rpList)  rpList.innerHTML = "";
+  if (rpTitle) rpTitle.style.display = "none";
+  if (rpLoad)  rpLoad.style.display = "block";
+
+  try {
+    // Search recall titles first, then product names, across CPSC's full historical DB
+    const [byTitle, byProduct] = await Promise.all([
+      fetch(`https://www.saferproducts.gov/RestWebServices/Recall?format=json&RecallTitle=${encodeURIComponent(q)}`).then(r => r.ok ? r.json() : []),
+      fetch(`https://www.saferproducts.gov/RestWebServices/Recall?format=json&ProductName=${encodeURIComponent(q)}`).then(r => r.ok ? r.json() : []),
+    ]);
+    if (rpLoad) rpLoad.style.display = "none";
+
+    // Merge + dedupe by RecallID, newest first
+    const seen = new Set();
+    const merged = [...(Array.isArray(byTitle) ? byTitle : []), ...(Array.isArray(byProduct) ? byProduct : [])]
+      .filter(r => { if (seen.has(r.RecallID)) return false; seen.add(r.RecallID); return true; })
+      .sort((a, b) => new Date(b.RecallDate) - new Date(a.RecallDate));
+
+    if (rpTitle) {
+      rpTitle.style.display = "block";
+      rpTitle.textContent = `Product recalls matching "${q}" (${merged.length})`;
+    }
+
+    if (merged.length === 0) {
+      if (rpList) rpList.innerHTML = `<div class="e-none">No recalls found matching "${q}" in the CPSC database — good news! Try a broader term (e.g. "crib" instead of a brand name) to double-check.</div>`;
+      return;
+    }
+
+    if (rpList) {
+      rpList.innerHTML = renderProductRecallRows(merged.slice(0, 25));
+      if (merged.length > 25) {
+        rpList.innerHTML += `<div class="e-more">Showing the 25 most recent of ${merged.length} matches · full archive at <a href="https://www.cpsc.gov/Recalls" target="_blank" rel="noopener" style="color:var(--green,#16a34a);">cpsc.gov/Recalls</a></div>`;
+      }
+    }
+  } catch (_) {
+    if (rpLoad) rpLoad.style.display = "none";
+    if (rpList) rpList.innerHTML = `<div class="e-none">Couldn't reach the CPSC database right now. Please try again in a moment.</div>`;
+  }
+}
+
+rpBtn?.addEventListener("click", searchProductRecalls);
+rpInput?.addEventListener("keydown", e => { if (e.key === "Enter") searchProductRecalls(); });
+
 // ── LATEST PRODUCT RECALLS (CPSC feed, loads on page open) ─────────────
 async function loadProductRecalls() {
   const el = document.getElementById("rProductList");

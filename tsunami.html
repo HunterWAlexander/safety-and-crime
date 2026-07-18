@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tsunami History &amp; Live Alerts | Safety &amp; Crime</title>
+  <meta name="description" content="Search NOAA's global historical tsunami database by country or coastal location, see live U.S. tsunami alerts, and explore past events on an interactive world map." />
+  <meta name="keywords" content="tsunami history, tsunami warning today, past tsunamis, tsunami database, tsunami map" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/tsunami.html" />
+  <meta property="og:title" content="Tsunami History & Live Alerts | Safety & Crime" />
+  <meta property="og:description" content="Search centuries of recorded tsunamis by location, see live alerts, and explore events on a world map." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safetyandcrime.com/tsunami.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Tsunami History & Live Alerts | Safety & Crime" />
+  <meta name="twitter:description" content="Search centuries of recorded tsunamis by location, see live alerts, and explore events on a world map." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Tsunami History & Live Alerts",
+    "description": "Search NOAA's global historical tsunami database and see live U.S. tsunami alerts on an interactive map.",
+    "url": "https://safetyandcrime.com/tsunami.html",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/earthquake.css" />
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="quake-wrap">
+    <h1>Tsunami History &amp; Live Alerts</h1>
+    <p class="quake-sub">Search NOAA's global historical tsunami database — centuries of recorded events with wave heights, causes, and impacts — by country or coastal location. Live U.S. tsunami alert status loads automatically.</p>
+
+    <section class="e-search-card">
+      <div class="e-search-row">
+        <div class="input-wrap">
+          <input id="tsInput" autocomplete="off" placeholder="Country or coastal location e.g. Japan, Alaska, Chile" />
+          <div id="tsError" class="inline-error hidden"></div>
+        </div>
+        <button id="tsSearchBtn" class="btn primary">Search</button>
+      </div>
+    </section>
+
+    <div id="tsEmpty" class="e-empty">Search a country or coastal location above to explore its recorded tsunami history.</div>
+    <div id="tsLoading" class="e-loading" style="display:none;">Searching the NOAA historical tsunami database…</div>
+
+    <section id="tsResults" style="display:none;">
+      <div id="tsLocation" class="e-location"></div>
+      <div id="tsStats" class="e-stats"></div>
+    </section>
+
+    <div class="e-map-card" style="margin-top:16px;">
+      <div class="e-map-head">
+        <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+          <div class="section-title" style="font-size:14px;font-weight:600;">Tsunami Impact Map</div>
+          <span class="e-map-hint" style="font-size:11px;color:#9ca3af;">Dots mark recorded impact locations · size and color reflect max wave height</span>
+        </div>
+        <div class="e-legend">
+          <span><span class="dot" style="background:#16a34a;"></span>&lt;1 m</span>
+          <span><span class="dot" style="background:#d97706;"></span>1–3 m</span>
+          <span><span class="dot" style="background:#ea580c;"></span>3–10 m</span>
+          <span><span class="dot" style="background:#dc2626;"></span>10+ m</span>
+        </div>
+      </div>
+      <div id="tsMap" class="e-map"></div>
+    </div>
+
+    <section id="tsLatestSection">
+      <div class="e-section-title">🚨 Live U.S. Tsunami Alert Status</div>
+      <div id="tsAlertList" class="e-list"><div class="e-loading" style="border:none;">Checking active alerts…</div></div>
+
+      <div class="e-section-title">🌊 Recent Tsunami Events Worldwide</div>
+      <div id="tsRecentList" class="e-list"><div class="e-loading" style="border:none;">Loading recent events…</div></div>
+    </section>
+
+    <section id="tsListsSectionAnchor" style="display:none;"></section>
+    <div class="e-section-title" id="tsHistTitle" style="display:none;">Recorded Events</div>
+    <div id="tsList" class="e-list"></div>
+
+    <!-- Written content for SEO / content quality -->
+    <section style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-top:28px;">
+      <h2 style="font-size:19px;color:var(--green);margin-bottom:12px;">Understanding Tsunamis: History as a Guide to Risk</h2>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        The historical records on this page come from NOAA's National Centers for Environmental Information Global
+        Historical Tsunami Database — the most complete public record of tsunami events, stretching back centuries and
+        documenting wave heights, causes, casualties, and damage. Live alert status comes from the National Weather
+        Service, which operates the U.S. Tsunami Warning Centers.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">What Actually Causes Tsunamis</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Most destructive tsunamis are triggered by large undersea earthquakes — which is why our
+        <a href="/earthquake.html" style="color:var(--green);">Earthquake tool</a> and this page are close cousins. But
+        the database also records tsunamis caused by volcanic eruptions, underwater landslides, and even meteorological
+        events. Wave height at the shore varies enormously with coastal shape: the same event can produce a barely
+        noticeable surge on one coastline and a devastating wall of water in a funnel-shaped bay a hundred miles away.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">U.S. Tsunami Risk Isn't Hypothetical</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Search "USA" or "Alaska" in the database above and the record speaks for itself. The 1964 Great Alaska Earthquake
+        sent waves that killed people as far away as Crescent City, California — a town struck by damaging tsunamis
+        repeatedly due to its unlucky seafloor geometry. Hawaii has been hit from earthquakes originating in Chile,
+        Japan, and the Aleutians. The Pacific Northwest's Cascadia Subduction Zone produced a massive tsunami in 1700 and
+        will again. If you live on or are moving to a Pacific coastline, know your evacuation zone — most coastal
+        communities publish maps, and the difference between safety and danger is usually just a few minutes of walking
+        uphill.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">The Warning Signs That Don't Need Technology</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:0;">
+        Official alerts save lives, but nature often gives its own: strong coastal shaking, a sudden loud ocean roar, or
+        the sea visibly withdrawing from the shore are all signals to move to high ground immediately — don't wait for
+        sirens. For the full hazard picture of any area, pair this page with our
+        <a href="/flood.html" style="color:var(--green);">Flood</a> and
+        <a href="/weather.html" style="color:var(--green);">Weather</a> tools, and see our
+        <a href="/methodology.html" style="color:var(--green);">Data &amp; Methodology</a> page for our sources.
+      </p>
+    </section>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      Data: <b>NOAA NCEI</b> Global Historical Tsunami Database · <b>National Weather Service</b> · For informational purposes only. In an emergency, follow official warnings at tsunami.gov.<br>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/methodology.html" style="color:var(--green);margin-right:10px;">Data &amp; Methodology</a>
+      <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+    </footer>
+  </main>
+
+  <script src="/tsunami.js"></script>
+  <script src="/hub-nav.js"></script>
+</body>
+</html>

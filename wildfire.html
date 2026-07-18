@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wildfire Tracker by ZIP Code | Safety &amp; Crime</title>
+  <meta name="description" content="Track active wildfires near any U.S. ZIP code with live NIFC data: fire size, containment, Red Flag Warnings, plus major fires burning worldwide. Free interactive map." />
+  <meta name="keywords" content="wildfires near me, active wildfire map, fire tracker, red flag warning, wildfires today" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/wildfire.html" />
+  <meta property="og:title" content="Wildfire Tracker by ZIP Code | Safety & Crime" />
+  <meta property="og:description" content="Active wildfires near any U.S. ZIP code, fire weather alerts, and major fires worldwide — live data on an interactive map." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safetyandcrime.com/wildfire.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Wildfire Tracker by ZIP Code | Safety & Crime" />
+  <meta name="twitter:description" content="Active wildfires near any U.S. ZIP code, fire weather alerts, and major fires worldwide." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Wildfire Tracker by ZIP Code",
+    "description": "Active wildfires near any U.S. ZIP code with live NIFC data, fire weather alerts, and major fires worldwide.",
+    "url": "https://safetyandcrime.com/wildfire.html",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <link rel="stylesheet" href="/earthquake.css" />
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="quake-wrap">
+    <h1>Wildfire Tracker by ZIP Code</h1>
+    <p class="quake-sub">See every active wildland fire within ~150 miles of any U.S. ZIP code — size, containment, and discovery date from live National Interagency Fire Center data — plus fire weather alerts and major fires burning worldwide.</p>
+
+    <section class="e-search-card">
+      <div class="e-search-row">
+        <div class="input-wrap">
+          <input id="wfZipInput" autocomplete="off" placeholder="ZIP code or city e.g. 90210 or Boise, ID" />
+          <div id="wfZipError" class="inline-error hidden"></div>
+        </div>
+        <button id="wfSearchBtn" class="btn primary">Search</button>
+      </div>
+    </section>
+
+    <div id="wfEmpty" class="e-empty">Enter a ZIP code above — or click anywhere on the map — to check for active fires near a location.</div>
+    <div id="wfLoading" class="e-loading" style="display:none;">Checking active fires and fire weather alerts…</div>
+
+    <section id="wfResults" style="display:none;">
+      <div id="wfLocation" class="e-location"></div>
+      <div id="wfStats" class="e-stats"></div>
+    </section>
+
+    <div class="e-map-card" style="margin-top:16px;">
+      <div class="e-map-head">
+        <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+          <div class="section-title" style="font-size:14px;font-weight:600;">Active Fire Map</div>
+          <span class="e-map-hint" style="font-size:11px;color:#9ca3af;">💡 Click anywhere to check that area · dot size reflects fire size</span>
+        </div>
+        <div class="e-legend">
+          <span><span class="dot" style="background:#d97706;"></span>&lt;100 ac</span>
+          <span><span class="dot" style="background:#ea580c;"></span>100–10k ac</span>
+          <span><span class="dot" style="background:#dc2626;"></span>10k+ ac</span>
+        </div>
+      </div>
+      <div id="wfMap" class="e-map"></div>
+    </div>
+
+    <section id="wfNationalSection">
+      <div class="e-section-title">🔥 Largest Active Fires in the U.S. Right Now</div>
+      <div id="wfNationalList" class="e-list"><div class="e-loading" style="border:none;">Loading active fires…</div></div>
+    </section>
+
+    <section id="wfWorldSection">
+      <div class="e-section-title">🌍 Major Wildfire Events Worldwide</div>
+      <div id="wfWorldList" class="e-list"><div class="e-loading" style="border:none;">Loading worldwide fire events…</div></div>
+    </section>
+
+    <section id="wfListsSection" style="display:none;">
+      <div class="e-section-title">Fire Weather Alerts for This Location</div>
+      <div id="wfAlertList" class="e-list"></div>
+
+      <div class="e-section-title">Active Fires Within ~150 Miles</div>
+      <div id="wfFireList" class="e-list"></div>
+    </section>
+
+    <!-- Written content for SEO / content quality -->
+    <section style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-top:28px;">
+      <h2 style="font-size:19px;color:var(--green);margin-bottom:12px;">Understanding Wildfire Risk in America</h2>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        Wildfire data on this page comes from the National Interagency Fire Center's public incident feed — the same
+        system federal and state agencies use to coordinate firefighting — refreshed continuously as incidents are
+        reported and updated. Worldwide events come from NASA's Earth Observatory Natural Event Tracker, and fire weather
+        alerts come live from the National Weather Service.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Reading Fire Data: Acres and Containment</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        A fire's acreage tells you its footprint; containment tells you the fight's progress. "40% contained" means
+        firefighters have secured control lines around 40% of the fire's perimeter — not that 40% of it is out. A large
+        fire at high containment can be less concerning than a small fire at 0% during dangerous weather. Discovery date
+        matters too: a fire that grew 10,000 acres in two days behaves very differently from one that reached the same
+        size over a month.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Red Flag Warnings: The Alert That Precedes the Fire</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:14px;">
+        A Red Flag Warning means weather conditions — typically the combination of low humidity, strong winds, and dry
+        fuels — could cause any new ignition to spread rapidly. It's issued <em>before</em> fires start, which makes it
+        the most actionable alert on this page: avoid outdoor burning, secure trailer chains that can spark, and know
+        that any fire that does start will move fast. Wildfire risk isn't limited to California; Texas, Oklahoma,
+        Florida, and the Carolinas all rank among the states with the most wildfires annually.
+      </p>
+      <h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;">Wildfire and Where You Live</h3>
+      <p style="font-size:14px;line-height:1.8;color:#444;margin-bottom:0;">
+        If you're researching an area — especially in the wildland-urban interface, where neighborhoods meet undeveloped
+        land — fire history affects home insurance availability and cost in a growing number of states. Pair this tool
+        with our <a href="/crime.html" style="color:var(--green);">ZIP Code Search</a>,
+        <a href="/flood.html" style="color:var(--green);">Flood</a>, and
+        <a href="/earthquake.html" style="color:var(--green);">Earthquake</a> tools for the full hazard picture, and see
+        our <a href="/methodology.html" style="color:var(--green);">Data &amp; Methodology</a> page for exactly where
+        every number comes from.
+      </p>
+    </section>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      Data: <b>NIFC</b> (nifc.gov) · <b>NASA EONET</b> · <b>National Weather Service</b> · For informational purposes only. In an emergency, follow local evacuation orders.<br>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/methodology.html" style="color:var(--green);margin-right:10px;">Data &amp; Methodology</a>
+      <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+    </footer>
+  </main>
+
+  <script src="/wildfire.js"></script>
+  <script src="/hub-nav.js"></script>
+</body>
+</html>
