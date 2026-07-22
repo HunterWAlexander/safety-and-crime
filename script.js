@@ -478,6 +478,67 @@ function renderResults(zip, location, scores) {
   if (exHomeVsUS)   exHomeVsUS.textContent   = vsUS;
   if (exHomeSource) exHomeSource.textContent = dataSource === "census" ? "U.S. Census Bureau (ACS 5-Year)" : "Regional estimate";
 
+  // Median household income (real Census data only — no synthetic fallback)
+  const elIncome       = document.getElementById("statIncome");
+  const elIncomeSub    = document.getElementById("statIncomeSub");
+  const exIncomeVsUS   = document.getElementById("ex-incomeVsUS");
+  const exIncomeMonthly= document.getElementById("ex-incomeMonthly");
+  const exIncomeSource = document.getElementById("ex-incomeSource");
+  const usMedianIncome = 80610; // U.S. median household income, ACS 2023
+  if (scores.income != null && Number.isFinite(scores.income)) {
+    const inc = scores.income;
+    const vsIncome = inc >= usMedianIncome
+      ? `${Math.round((inc/usMedianIncome - 1)*100)}% above U.S. median`
+      : `${Math.round((1 - inc/usMedianIncome)*100)}% below U.S. median`;
+    if (elIncome)        elIncome.textContent        = "$" + inc.toLocaleString();
+    if (elIncomeSub)     elIncomeSub.textContent     = "Per household · Census";
+    if (exIncomeVsUS)    exIncomeVsUS.textContent    = vsIncome;
+    if (exIncomeMonthly) exIncomeMonthly.textContent = "$" + Math.round(inc/12).toLocaleString() + "/mo";
+    if (exIncomeSource)  exIncomeSource.textContent  = "U.S. Census Bureau (ACS 5-Year)";
+  } else {
+    if (elIncome)        elIncome.textContent        = "N/A";
+    if (elIncomeSub)     elIncomeSub.textContent     = "No Census data for this ZIP";
+    if (exIncomeVsUS)    exIncomeVsUS.textContent    = "—";
+    if (exIncomeMonthly) exIncomeMonthly.textContent = "—";
+    if (exIncomeSource)  exIncomeSource.textContent  = "Not available";
+  }
+
+  // Comfortable living estimate (30% housing rule on Census median rent)
+  const elComfort        = document.getElementById("statComfort");
+  const elComfortSub     = document.getElementById("statComfortSub");
+  const exComfortRent    = document.getElementById("ex-comfortRent");
+  const exComfortSingle  = document.getElementById("ex-comfortSingle");
+  const exComfortFamily  = document.getElementById("ex-comfortFamily");
+  const exComfortVsInc   = document.getElementById("ex-comfortVsIncome");
+  if (scores.rent != null && Number.isFinite(scores.rent)) {
+    const rent = scores.rent;
+    // Income at which annual rent = 30% of gross pay, rounded to nearest $1,000
+    const single = Math.round((rent * 12 / 0.30) / 1000) * 1000;
+    const family = Math.round((single * 1.85) / 1000) * 1000;
+    const fmtK = v => v >= 1000 ? "$" + Math.round(v / 1000) + "K" : "$" + v;
+    if (elComfort)    elComfort.textContent    = fmtK(single);
+    if (elComfortSub) elComfortSub.textContent = `single · ${fmtK(family)} family of 3–4 · Census rent`;
+    if (exComfortRent)   exComfortRent.textContent   = "$" + rent.toLocaleString() + "/mo (Census)";
+    if (exComfortSingle) exComfortSingle.textContent = "$" + single.toLocaleString() + "/yr";
+    if (exComfortFamily) exComfortFamily.textContent = "$" + family.toLocaleString() + "/yr";
+    if (exComfortVsInc) {
+      if (scores.income != null && Number.isFinite(scores.income)) {
+        exComfortVsInc.textContent = scores.income >= single
+          ? "Median household here earns enough for single-adult comfort"
+          : `Median household here earns ${Math.round((1 - scores.income/single)*100)}% less than the single-adult benchmark`;
+      } else {
+        exComfortVsInc.textContent = "—";
+      }
+    }
+  } else {
+    if (elComfort)       elComfort.textContent       = "N/A";
+    if (elComfortSub)    elComfortSub.textContent    = "No Census rent data for this ZIP";
+    if (exComfortRent)   exComfortRent.textContent   = "—";
+    if (exComfortSingle) exComfortSingle.textContent = "—";
+    if (exComfortFamily) exComfortFamily.textContent = "—";
+    if (exComfortVsInc)  exComfortVsInc.textContent  = "—";
+  }
+
   // Footer
   const footer = document.querySelector(".footer div");
   if (footer) footer.innerHTML = `Data: <b>Regional Crime Index</b> &amp; <b>U.S. Census</b> (population, home value) · For informational purposes only.`;

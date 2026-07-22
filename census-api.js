@@ -14,7 +14,7 @@ const CENSUS_ACS_YEAR = 2023;
 // Variable codes:
 //   B01003_001E = Total Population
 //   B25077_001E = Median Home Value (owner-occupied housing units)
-const CENSUS_VARIABLES = "B01003_001E,B25077_001E";
+const CENSUS_VARIABLES = "B01003_001E,B25077_001E,B19013_001E,B25064_001E";
 
 /**
  * Fetch real population + median home value for a ZIP code from the Census API.
@@ -48,6 +48,8 @@ async function fetchCensusData(zip) {
     const row = data[1];
     const population = parseInt(row[0], 10);
     const homeValue = parseInt(row[1], 10);
+    const income = parseInt(row[2], 10);
+    const rent = parseInt(row[3], 10);
 
     // Census uses negative sentinel values (e.g. -666666666) for "data not available"
     if (!Number.isFinite(population) || population < 0) return null;
@@ -56,6 +58,8 @@ async function fetchCensusData(zip) {
     return {
       population,
       homeValue,
+      income: Number.isFinite(income) && income > 0 ? income : null,
+      rent: Number.isFinite(rent) && rent > 0 ? rent : null,
       source: "census",
       year: CENSUS_ACS_YEAR,
     };
@@ -79,6 +83,8 @@ async function enrichWithCensusData(zip, scores) {
   if (census) {
     scores.population = census.population;
     scores.homeValue = census.homeValue;
+    scores.income = census.income;
+    scores.rent = census.rent;
     scores.dataSource = "census";
     scores.censusYear = census.year;
   } else {

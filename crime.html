@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="styles.css" />
-  
-<link rel="stylesheet" href="/hub-nav.css" /></head>
+  <link rel="stylesheet" href="/hub-nav.css" />
+</head>
 <body>
 
   <div id="hub-header"></div>
@@ -233,6 +233,47 @@
               </div>
             </div>
 
+            <div class="stat-card expandable">
+              <div class="stat-card-top">
+                <div class="stat-icon green">💵</div>
+                <button class="expand-arrow" onclick="toggleCard('income')" aria-label="Expand household income">›</button>
+              </div>
+              <div class="stat-body">
+                <div class="stat-label">Median Household Income</div>
+                <div class="stat-value green" id="statIncome">—</div>
+                <div class="stat-sub" id="statIncomeSub">—</div>
+              </div>
+              <div class="expand-body" id="expand-income">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>vs. U.S. median</span><span id="ex-incomeVsUS">—</span></div>
+                  <div class="expand-row"><span>Monthly equivalent</span><span id="ex-incomeMonthly">—</span></div>
+                  <div class="expand-row"><span>Source</span><span id="ex-incomeSource">—</span></div>
+                  <div class="expand-note">Median household income from the U.S. Census Bureau's American Community Survey 5-Year estimates for this ZIP Code Tabulation Area.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card expandable">
+              <div class="stat-card-top">
+                <div class="stat-icon green">🛋️</div>
+                <button class="expand-arrow" onclick="toggleCard('comfort')" aria-label="Expand comfortable living estimate">›</button>
+              </div>
+              <div class="stat-body">
+                <div class="stat-label">Comfortable Living (Est.)</div>
+                <div class="stat-value green" id="statComfort">—</div>
+                <div class="stat-sub" id="statComfortSub">—</div>
+              </div>
+              <div class="expand-body" id="expand-comfort">
+                <div class="expand-inner">
+                  <div class="expand-row"><span>Median rent here</span><span id="ex-comfortRent">—</span></div>
+                  <div class="expand-row"><span>Single adult</span><span id="ex-comfortSingle">—</span></div>
+                  <div class="expand-row"><span>Family of 3–4</span><span id="ex-comfortFamily">—</span></div>
+                  <div class="expand-row"><span>vs. local median income</span><span id="ex-comfortVsIncome">—</span></div>
+                  <div class="expand-note">Estimate using the 30% housing rule: income at which this ZIP's Census median rent equals 30% of gross pay. Family figure scales housing and living costs (~1.85×). A budgeting benchmark, not financial advice.</div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <!-- Bottom row: Data Year + Risk Level -->
@@ -430,10 +471,9 @@
           <span>Search any U.S. ZIP code for safety scores, crime rates, home values, and more. Tap › on any card for details.</span>
         </div>
         <footer class="footer card" style="margin-top:8px;">
-          <div>Safety scores are regional estimates · Population &amp; home values from the U.S. Census Bureau · For informational purposes only. <a href="/methodology.html" style="color:var(--green);">How our data works →</a></div>
+          <div>Data: <b>Regional Crime Index</b> · Based on FBI UCR &amp; Census historical averages · For informational purposes only.</div>
           <div style="margin-top:8px;">
             <a href="/about.html" style="color:var(--green);font-size:12px;text-decoration:none;margin-right:12px;">About</a>
-            <a href="/methodology.html" style="color:var(--green);font-size:12px;text-decoration:none;margin-right:12px;">Data &amp; Methodology</a>
             <a href="/privacy.html" style="color:var(--green);font-size:12px;text-decoration:none;margin-right:12px;">Privacy Policy</a>
             <a href="/terms.html" style="color:var(--green);font-size:12px;text-decoration:none;">Terms of Service</a>
           </div>
