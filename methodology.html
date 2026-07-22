@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://safetyandcrime.com/methodology.html" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/styles.css" />
-  
+  <link rel="stylesheet" href="/hub-nav.css" />
   <style>
     .method-wrap { max-width: 800px; margin: 0 auto; padding: 32px 20px 60px; }
     .method-wrap h1 { font-size: 26px; font-weight: 700; color: var(--green, #16a34a); margin-bottom: 8px; }
@@ -27,7 +27,7 @@
     .source-tag { display: inline-block; font-size: 11px; font-weight: 600; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; border-radius: 6px; padding: 3px 8px; margin-bottom: 10px; }
     .est-tag { background: #fffbeb; color: #b45309; border-color: #fde68a; }
   </style>
-<link rel="stylesheet" href="/hub-nav.css" /></head>
+</head>
 <body style="background:#f3f4f6;">
 
   <div id="hub-header"></div>
@@ -128,6 +128,47 @@
     </div>
 
     <div class="method-card">
+      <span class="source-tag">Official Sources · NIFC, NASA &amp; NWS</span>
+      <h2>Wildfire Data</h2>
+      <p>
+        Our <a href="/wildfire.html">Wildfire tool</a> shows active incidents from the National Interagency Fire
+        Center's public WFIGS feed — the interagency system used to coordinate wildland firefighting — including each
+        fire's reported size, containment percentage, and discovery date, refreshed as agencies update their incidents.
+        Worldwide major fire events come from NASA's Earth Observatory Natural Event Tracker (EONET), and Red Flag
+        Warnings and other fire weather alerts come live from the National Weather Service. Note that incident data is
+        operational: newly reported fires can take time to appear, and acreage figures update as incidents are mapped.
+        The feed also includes prescribed burns — planned, managed fires — which we label separately from wildfires.
+      </p>
+    </div>
+
+    <div class="method-card">
+      <span class="source-tag">Official Sources · NOAA NCEI &amp; NWS</span>
+      <h2>Tsunami Data</h2>
+      <p>
+        Historical tsunami records on our <a href="/tsunami.html">Tsunami tool</a> come from NOAA's National Centers for
+        Environmental Information Global Historical Tsunami Database — the standard scholarly record of tsunami events,
+        including dates, source causes, maximum water heights, casualties, and damage estimates. Live U.S. alert status
+        comes from the National Weather Service, which operates the national Tsunami Warning Centers. Historical entries
+        vary in completeness, especially for older events: a missing wave height or casualty figure means the database
+        has no verified value, not that the value was zero.
+      </p>
+    </div>
+
+    <div class="method-card">
+      <span class="source-tag">Official Sources · NHTSA &amp; CPSC</span>
+      <h2>Recall Data</h2>
+      <p>
+        Vehicle recall results on our <a href="/recalls.html">Recalls tool</a> come directly from the National Highway
+        Traffic Safety Administration's recall database, queried live by year, make, and model. Consumer product recalls
+        — both the latest feed and keyword search — come from the Consumer Product Safety Commission's recall database,
+        which covers past recalls as well as current ones. One important limit: a year/make/model search shows every
+        campaign affecting that model, but some campaigns only cover specific production runs. For a definitive answer
+        about an individual vehicle, use NHTSA's official VIN lookup at nhtsa.gov/recalls — we link to it throughout
+        the tool.
+      </p>
+    </div>
+
+    <div class="method-card">
       <h2>Corrections &amp; Updates</h2>
       <p>
         Live data (weather, earthquakes, flood alerts, river gauges) refreshes on every search. Census figures update when
@@ -138,7 +179,7 @@
     </div>
 
     <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
-      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a> <a href="/methodology.html" style="color:var(--green);margin-right:10px;">Data &amp; Methodology</a>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
       <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
       <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
     </footer>
