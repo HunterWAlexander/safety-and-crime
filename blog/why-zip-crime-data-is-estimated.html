@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Why Every "Crime by ZIP Code" Number Is an Estimate (Including Ours) | Safety &amp; Crime</title>
+  <meta name="description" content="No official ZIP-level crime database exists in America. How crime data actually flows from police to public, why every site models it, and how to research safety honestly." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/blog/why-zip-crime-data-is-estimated.html" />
+  <meta property="og:title" content="Why Every 'Crime by ZIP Code' Number Is an Estimate (Including Ours)" />
+  <meta property="og:description" content="No official ZIP-level crime database exists. How crime data actually works, and how to research safety honestly." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://safetyandcrime.com/blog/why-zip-crime-data-is-estimated.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Why Every 'Crime by ZIP Code' Number Is an Estimate (Including Ours)",
+    "description": "No official ZIP-level crime database exists in America. How crime data actually flows from police to public, and how to research safety honestly.",
+    "datePublished": "2026-07-22",
+    "dateModified": "2026-07-22",
+    "author": { "@type": "Organization", "name": "Safety & Crime" },
+    "publisher": { "@type": "Organization", "name": "Safety & Crime", "url": "https://safetyandcrime.com" },
+    "mainEntityOfPage": "https://safetyandcrime.com/blog/why-zip-crime-data-is-estimated.html"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <style>
+    .art-wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 60px; }
+    .art-wrap h1 { font-size: 27px; font-weight: 800; line-height: 1.3; color: #111; margin-bottom: 10px; }
+    .art-meta { font-size: 13px; color: var(--muted, #6b7280); margin-bottom: 26px; }
+    .art-wrap h2 { font-size: 20px; font-weight: 700; color: var(--green, #16a34a); margin: 30px 0 10px; }
+    .art-wrap h3 { font-size: 16px; font-weight: 600; color: #1f2937; margin: 20px 0 8px; }
+    .art-wrap p { font-size: 15px; line-height: 1.85; color: #374151; margin-bottom: 16px; }
+    .art-wrap a { color: var(--green, #16a34a); }
+    .art-wrap ul, .art-wrap ol { margin: 0 0 16px 22px; }
+    .art-wrap li { font-size: 15px; line-height: 1.8; color: #374151; margin-bottom: 6px; }
+    .callout { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 14px 18px; font-size: 14px; line-height: 1.7; color: #166534; margin-bottom: 16px; }
+    .back-link { font-size: 13px; margin-bottom: 18px; display: inline-block; }
+  </style>
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="art-wrap">
+    <a class="back-link" href="/blog/">← All guides</a>
+    <h1>Why Every "Crime by ZIP Code" Number Is an Estimate (Including Ours)</h1>
+    <div class="art-meta">Published July 2026 · 7 min read · By the Safety &amp; Crime team</div>
+
+    <p>
+      Type any ZIP code into a neighborhood site — this one included — and you'll get a crime rate, usually with a
+      confident-looking decimal point. Here's what almost none of those sites will tell you: <strong>there is no
+      official database of crime by ZIP code in the United States.</strong> Not from the FBI, not from any federal
+      agency, not from anyone. Every ZIP-level crime figure you've ever seen — on any site, ours included — is a
+      statistical estimate.
+    </p>
+    <p>
+      That's not a scandal; it's a data reality worth understanding, because knowing <em>how</em> the numbers are made
+      tells you exactly how much to trust them and where to look when you need more.
+    </p>
+
+    <h2>How crime data actually flows</h2>
+    <p>
+      Crime statistics in America start with roughly 18,000 separate law enforcement agencies — city police departments,
+      county sheriffs, state police, campus forces. Each one keeps its own records, and each may voluntarily report
+      totals to the FBI's national system (NIBRS, which replaced the older UCR summary program). Three structural gaps
+      appear immediately:
+    </p>
+    <ul>
+      <li><strong>Reporting is voluntary and incomplete.</strong> In any given year, a meaningful share of agencies — including some large ones — report partial data or none at all. National figures are built with statistical imputation to fill the holes.</li>
+      <li><strong>Data is organized by jurisdiction, not geography.</strong> A police department reports totals for its whole coverage area. Those boundaries follow city limits and county lines drawn a century ago.</li>
+      <li><strong>ZIP codes aren't even geographic areas.</strong> They're postal delivery routes, invented to sort mail. They cross city limits, county lines, and police districts freely. A single ZIP can span two cities and three law-enforcement jurisdictions.</li>
+    </ul>
+    <p>
+      So converting "the Houston Police Department reported X incidents" into "ZIP 77008 has a crime rate of Y" requires
+      modeling, full stop. There is no way to do it that isn't an estimate.
+    </p>
+
+    <h2>How the estimates get made</h2>
+    <p>
+      Sites in this space (commercial data vendors included) build ZIP figures through some combination of: allocating
+      jurisdiction totals down to smaller areas using population weights; incorporating incident-level data where
+      cities publish it; and modeling from regional patterns, density, and demographics where they don't. The methods
+      vary in sophistication, but the output is the same category of thing everywhere: <strong>a modeled estimate
+      wearing the costume of a precise statistic.</strong>
+    </p>
+    <p>
+      Our approach is on the simpler end and we say so plainly: regional baselines derived from an area's broader crime
+      profile, adjusted for urban/suburban/rural character, expressed per 100,000 residents for comparability — full
+      details on our <a href="/methodology.html">Data &amp; Methodology page</a>. What we won't do is present those
+      numbers as if they came from a police blotter.
+    </p>
+
+    <h2>What estimates are good for — and where they break</h2>
+    <h3>Good for:</h3>
+    <ul>
+      <li><strong>Comparing areas at a glance.</strong> Broad relative patterns — this region versus that one — are exactly what regional modeling captures.</li>
+      <li><strong>A starting point.</strong> A first-pass filter when you're narrowing a list of places to research properly.</li>
+      <li><strong>Context alongside other data.</strong> Crime estimates mean more next to real Census population, income, and home values — which is why our <a href="/crime.html">ZIP Code Search</a> pairs them.</li>
+    </ul>
+    <h3>Where they break:</h3>
+    <ul>
+      <li><strong>Block-by-block conclusions.</strong> No ZIP-level model can see that one side of a ZIP is quiet residential streets and the other is a commercial strip that generates most incidents.</li>
+      <li><strong>Precision comparisons.</strong> A "score of 64" versus "score of 61" is noise, not signal. Treat scores as bands, not rankings.</li>
+      <li><strong>High-stakes decisions.</strong> Insurance, legal, lending, or security decisions need primary sources, not modeled estimates — any site that suggests otherwise is overselling.</li>
+    </ul>
+
+    <h2>Where to get closer to the ground truth</h2>
+    <ol>
+      <li><strong>Your city's own crime dashboard.</strong> Many police departments publish incident-level maps — actual reported incidents with locations and dates. Search "[city name] police crime map." This is the closest thing to ground truth that exists.</li>
+      <li><strong>The FBI Crime Data Explorer</strong> (cde.ucr.cjis.gov) for official jurisdiction-level statistics and trends.</li>
+      <li><strong>Local journalism and community forums</strong> for the texture data can't carry — which intersections people avoid, whether car break-ins are trending, how response times feel.</li>
+      <li><strong>Your own eyes.</strong> The visit-at-three-different-times advice from our <a href="/blog/research-neighborhood-before-moving.html">neighborhood research guide</a> exists because no dataset replaces walking a street on a Friday night.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>The honest hierarchy:</strong> local police incident maps &gt; official jurisdiction statistics &gt;
+      modeled ZIP estimates (ours or anyone's) &gt; vibes. Use each level for what it's actually good at.
+    </div>
+
+    <h2>Why we publish estimates anyway</h2>
+    <p>
+      Because the alternative isn't "perfect data" — it's people making relocation decisions with no quantitative
+      context at all, or trusting sites that present the same class of estimates as courtroom fact. A clearly-labeled
+      estimate, paired with real Census data and pointers to primary sources, beats both. That's the standard we hold
+      every number on this site to, and if you ever find one that falls short, our
+      <a href="/methodology.html">methodology page</a> tells you how to call us on it.
+    </p>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      <a href="/blog/" style="color:var(--green);margin-right:10px;">More guides</a>
+      <a href="/methodology.html" style="color:var(--green);margin-right:10px;">Data &amp; Methodology</a>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/privacy.html" style="color:var(--green);">Privacy Policy</a>
+    </footer>
+  </main>
+
+  <script src="/hub-nav.js"></script>
+</body>
+</html>

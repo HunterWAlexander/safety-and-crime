@@ -4,6 +4,15 @@
 // This is the ONLY file that needs editing to change the header/tabs site-wide.
 // ---------------------------
 
+// ── THEME BOOTSTRAP (runs immediately so dark mode applies without flash) ──
+(function () {
+  try {
+    if (localStorage.getItem("scTheme") === "dark") {
+      document.documentElement.classList.add("dark");
+    }
+  } catch (_) { /* localStorage unavailable — default to light */ }
+})();
+
 // ── SHARED GEO SEARCH (ZIP or city name) ──────────────────────────────
 // Used by the header search and every tool page. Resolves "Houston" or
 // "Katy, TX" to a ZIP code (plus the city's full ZIP list when available).
@@ -126,6 +135,7 @@ function buildHubHeader() {
       <div class="hub-search-row">
         <input id="hubZipInput" autocomplete="off" placeholder="ZIP code or city" />
         <button id="hubSearchBtn">Search</button>
+        <button id="hubThemeBtn" class="hub-theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
       </div>
     </div>
     <nav class="hub-tabs" aria-label="Site tools">
@@ -172,6 +182,18 @@ function initHubHeader() {
   searchBtn?.addEventListener("click", hubSearch);
   zipInput?.addEventListener("keydown", e => {
     if (e.key === "Enter") hubSearch();
+  });
+
+  // Dark mode toggle
+  const themeBtn = document.getElementById("hubThemeBtn");
+  const setThemeIcon = () => {
+    if (themeBtn) themeBtn.textContent = document.documentElement.classList.contains("dark") ? "☀️" : "🌙";
+  };
+  setThemeIcon();
+  themeBtn?.addEventListener("click", () => {
+    const dark = document.documentElement.classList.toggle("dark");
+    try { localStorage.setItem("scTheme", dark ? "dark" : "light"); } catch (_) {}
+    setThemeIcon();
   });
 }
 

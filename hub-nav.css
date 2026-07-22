@@ -129,3 +129,27 @@
 @media (max-width: 480px) {
   .hub-search-row { display: none; }
 }
+/* ── DARK MODE ─────────────────────────────────────────────── */
+.hub-theme-btn {
+  background: none;
+  border: 1.5px solid rgba(0,0,0,.12);
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 6px 10px;
+  cursor: pointer;
+  line-height: 1;
+}
+.hub-theme-btn:hover { border-color: #16a34a; }
+
+html.dark { background: #0f172a; }
+html.dark body {
+  filter: invert(0.92) hue-rotate(180deg);
+  background: #16213a;
+}
+/* Re-invert media and map tiles so they render normally inside dark UI */
+html.dark img,
+html.dark video,
+html.dark iframe,
+html.dark .leaflet-tile-pane {
+  filter: invert(1.087) hue-rotate(180deg);
+}
