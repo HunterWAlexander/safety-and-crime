@@ -564,6 +564,26 @@ function renderResults(zip, location, scores) {
 let lastCityZips = null;
 let lastCityName = null;
 
+// Fetch the full ZIP list for whichever city a given ZIP belongs to.
+// Used to power the heat map on single-ZIP searches — we already have
+// `location` from Zippopotam, so this is one more call to its city endpoint.
+async function fetchCityZipsFor(location) {
+  if (!location?.city || !location?.state) return null;
+  try {
+    const city = location.city.toLowerCase();
+    const state = location.state.toLowerCase();
+    const r = await fetch(`https://api.zippopotam.us/us/${state}/${encodeURIComponent(city)}`);
+    if (!r.ok) return null;
+    const d = await r.json();
+    const zips = (d?.places || []).map(p => ({
+      zip: p["post code"],
+      lat: parseFloat(p.latitude),
+      lng: parseFloat(p.longitude),
+    })).filter(z => /^\d{5}$/.test(z.zip) && Number.isFinite(z.lat));
+    return zips.length ? zips : null;
+  } catch (_) { return null; }
+}
+
 async function searchZip(zip) {
   let q = (zip || zipInput?.value.trim() || "").toString();
   let cityResult = null;
@@ -608,6 +628,21 @@ async function searchZip(zip) {
   }
 
   renderResults(zip, location, finalScores);
+
+  // If this was a plain-ZIP search (not from a city name), fetch the city's
+  // ZIP list now so the heat map toggle works everywhere. Runs in the
+  // background — the results are already rendered.
+  if (!lastCityZips && location?.city && location?.state) {
+    fetchCityZipsFor(location).then(zips => {
+      if (zips && zips.length >= 5) {
+        lastCityZips = zips;
+        const heatBtn = document.getElementById("heatToggleBtn");
+        if (heatBtn) heatBtn.style.display = "";
+        if (heatOn) buildHeatLayer();
+      }
+    });
+  }
+
   plotCityZips();
 }
 
@@ -615,30 +650,91 @@ async function searchZip(zip) {
 // When a search came from a city name, plot every ZIP in that city as a
 // clickable green dot and fit the map to show the whole city.
 let cityZipLayers = [];
+let heatLayer = null;
+let heatOn = false;
+let cityDotsShown = false; // green ZIP dots only appear on explicit city searches
 
 function plotCityZips() {
   if (!map) return;
 
-  // Clear previous city overlay
+  // Always clear any prior overlay + heat
   cityZipLayers.forEach(l => map.removeLayer(l));
   cityZipLayers = [];
+  if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
+  cityDotsShown = false;
+
+  const heatBtn = document.getElementById("heatToggleBtn");
+  if (heatBtn) heatBtn.style.display = "none";
+
   if (!lastCityZips || lastCityZips.length < 2) return;
 
-  const bounds = [];
-  lastCityZips.forEach(z => {
-    bounds.push([z.lat, z.lng]);
-    const c = L.circleMarker([z.lat, z.lng], {
-      radius: 9, color: "#15803d", weight: 2, fillColor: "#22c55e", fillOpacity: 0.45,
-    }).addTo(map).bindTooltip(z.zip, { direction: "top", offset: [0, -6] });
-    c.on("click", (ev) => {
-      if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
-      searchZip(z.zip);
+  // Green clickable ZIP dots + fit-to-city ONLY when the search came from a
+  // city name (lastCityName set). For plain-ZIP searches we skip dots and
+  // fitBounds so the searched ZIP stays centered.
+  if (lastCityName) {
+    const bounds = [];
+    lastCityZips.forEach(z => {
+      bounds.push([z.lat, z.lng]);
+      const c = L.circleMarker([z.lat, z.lng], {
+        radius: 9, color: "#15803d", weight: 2, fillColor: "#22c55e", fillOpacity: 0.45,
+      }).addTo(map).bindTooltip(z.zip, { direction: "top", offset: [0, -6] });
+      c.on("click", (ev) => {
+        if (ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
+        searchZip(z.zip);
+      });
+      cityZipLayers.push(c);
     });
-    cityZipLayers.push(c);
+    if (bounds.length) map.fitBounds(bounds, { padding: [30, 30] });
+    cityDotsShown = true;
+  }
+
+  // Heat toggle appears whenever we have enough ZIPs to make a meaningful gradient
+  if (lastCityZips.length >= 5) {
+    if (heatBtn) heatBtn.style.display = "";
+    if (heatOn) buildHeatLayer();
+  }
+}
+
+// Build a Leaflet.heat layer from the city's ZIPs, weighted so higher-risk
+// ZIPs burn hotter (red) and safer ZIPs stay cool (green).
+function buildHeatLayer() {
+  if (!map || typeof L?.heatLayer !== "function") return;
+  if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
+  if (!lastCityZips || lastCityZips.length < 5) return;
+
+  // For each city ZIP, compute the same synthetic safety score searchZip uses.
+  // Weight = risk intensity (0 = safest, 1 = highest risk).
+  const points = lastCityZips.map(z => {
+    const s = calcScore(z.zip);
+    const risk = 1 - (s.safetyScore / 100); // invert so higher risk = higher weight
+    return [z.lat, z.lng, Math.max(0.15, Math.min(1, risk))];
   });
 
-  if (bounds.length) map.fitBounds(bounds, { padding: [30, 30] });
+  heatLayer = L.heatLayer(points, {
+    radius: 35,
+    blur: 25,
+    maxZoom: 12,
+    minOpacity: 0.35,
+    // Gradient: green (safe) → yellow → orange → red (risk)
+    gradient: { 0.2: "#16a34a", 0.45: "#eab308", 0.7: "#ea580c", 0.9: "#dc2626" },
+  }).addTo(map);
 }
+
+function toggleHeatMap() {
+  heatOn = !heatOn;
+  const btn = document.getElementById("heatToggleBtn");
+  if (heatOn) {
+    buildHeatLayer();
+    if (btn) { btn.textContent = "🔥 Heatmap: On"; btn.classList.add("primary"); btn.classList.remove("ghost"); }
+  } else {
+    if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
+    if (btn) { btn.textContent = "🔥 Heatmap"; btn.classList.add("ghost"); btn.classList.remove("primary"); }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("heatToggleBtn")?.addEventListener("click", toggleHeatMap);
+});
 
 // ── EVENTS ─────────────────────────────────────────────────────────────
 searchBtn?.addEventListener("click", () => searchZip());
