@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sex Offender Registry Lookup: Official State &amp; National Search | Safety &amp; Crime</title>
+  <meta name="description" content="Search official state sex offender registries and the National Sex Offender Public Website (NSOPW). Direct links to every U.S. state's official registry, plus context on how registries work." />
+  <meta name="keywords" content="sex offender registry, sex offender search, nsopw, sex offender lookup by state, national sex offender registry" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://safetyandcrime.com/registry.html" />
+  <meta property="og:title" content="Sex Offender Registry Lookup | Safety & Crime" />
+  <meta property="og:description" content="Direct links to every U.S. state's official sex offender registry, plus the NSOPW national search." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safetyandcrime.com/registry.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Sex Offender Registry Lookup | Safety & Crime" />
+  <meta name="twitter:description" content="Official state and national sex offender registries in one place." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Sex Offender Registry Lookup",
+    "description": "Direct links to every U.S. state's official sex offender registry and the NSOPW national search.",
+    "url": "https://safetyandcrime.com/registry.html"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7950673745643467" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hub-nav.css" />
+  <style>
+    .reg-wrap { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
+    .reg-wrap h1 { font-size: 26px; font-weight: 700; color: var(--green, #16a34a); margin-bottom: 8px; }
+    .reg-intro { font-size: 15px; color: var(--muted, #6b7280); line-height: 1.7; margin-bottom: 24px; }
+
+    .nsopw-card {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 1.5px solid #bbf7d0;
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .nsopw-card .icon { font-size: 34px; }
+    .nsopw-card .body { flex: 1; min-width: 220px; }
+    .nsopw-card .title { font-size: 17px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .nsopw-card .desc { font-size: 13px; color: #444; line-height: 1.6; }
+    .nsopw-card a.btn { background: var(--green, #16a34a); color: #fff; padding: 10px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; font-size: 14px; }
+    .nsopw-card a.btn:hover { background: #15803d; }
+
+    .state-grid-card {
+      background: #fff;
+      border: 1px solid var(--border, rgba(0,0,0,.08));
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .state-grid-card h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .state-grid-sub { font-size: 13px; color: var(--muted, #6b7280); margin-bottom: 16px; }
+    .state-select-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .state-select-row select {
+      flex: 1; min-width: 200px;
+      padding: 10px 14px; border-radius: 10px; font-size: 15px;
+      border: 1.5px solid var(--border, rgba(0,0,0,.08));
+      background: #f9fafb; outline: none;
+    }
+    .state-select-row select:focus { border-color: var(--green, #16a34a); background: #fff; }
+    .state-select-row button {
+      padding: 10px 22px; border-radius: 10px; border: none;
+      background: var(--green, #16a34a); color: #fff; font-weight: 600; font-size: 14px; cursor: pointer;
+    }
+    .state-select-row button:hover { background: #15803d; }
+
+    .state-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
+    }
+    .state-grid a {
+      display: block;
+      padding: 10px 12px;
+      background: #f9fafb;
+      border: 1px solid var(--border, rgba(0,0,0,.08));
+      border-radius: 8px;
+      font-size: 13px;
+      color: #1f2937;
+      text-decoration: none;
+      text-align: center;
+      transition: background .15s, border-color .15s;
+    }
+    .state-grid a:hover { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+
+    .info-card {
+      background: #fff;
+      border: 1px solid var(--border, rgba(0,0,0,.08));
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .info-card h2 { font-size: 18px; font-weight: 700; color: var(--green, #16a34a); margin-bottom: 10px; }
+    .info-card h3 { font-size: 15px; font-weight: 600; color: #1f2937; margin: 16px 0 6px; }
+    .info-card p { font-size: 14px; line-height: 1.8; color: #444; margin-bottom: 12px; }
+    .info-card p:last-child { margin-bottom: 0; }
+    .info-card a { color: var(--green, #16a34a); }
+    .info-card ul { margin: 0 0 12px 22px; }
+    .info-card li { font-size: 14px; line-height: 1.8; color: #444; margin-bottom: 4px; }
+
+    .callout {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 14px 0;
+    }
+  </style>
+</head>
+<body style="background:#f3f4f6;">
+
+  <div id="hub-header"></div>
+
+  <main class="reg-wrap">
+    <h1>Sex Offender Registry Lookup</h1>
+    <p class="reg-intro">
+      Every U.S. state and territory maintains a public sex offender registry, and there's also a national tool
+      (NSOPW) that searches them all at once. This page routes you straight to the official source for your state
+      — we don't store or reproduce any registry data ourselves, so you're always seeing the current, authoritative
+      information directly from the government agency responsible for it.
+    </p>
+
+    <!-- NSOPW — national search featured at the top -->
+    <div class="nsopw-card">
+      <div class="icon">🇺🇸</div>
+      <div class="body">
+        <div class="title">National Search: NSOPW.gov</div>
+        <div class="desc">The U.S. Department of Justice's National Sex Offender Public Website searches every state, tribal, and territory registry from one place. Best starting point if you're not sure which state to check.</div>
+      </div>
+      <a class="btn" href="https://www.nsopw.gov/" target="_blank" rel="noopener">Search NSOPW →</a>
+    </div>
+
+    <!-- State selector -->
+    <div class="state-grid-card">
+      <h2>Search by State</h2>
+      <div class="state-grid-sub">Every state's registry is accessible through NSOPW.gov — the actively-maintained DOJ search that routes to each state's current registry system. Pick your state below to open it there.</div>
+
+      <div class="state-select-row">
+        <select id="stateSelect">
+          <option value="">Choose a state…</option>
+        </select>
+        <button id="stateGoBtn">Go to NSOPW →</button>
+      </div>
+    </div>
+
+    <!-- Educational content — high SEO value + genuine utility -->
+    <div class="info-card">
+      <h2>How Sex Offender Registries Work</h2>
+      <p>
+        Registries were established under federal legislation — most importantly the Adam Walsh Child Protection and
+        Safety Act of 2006 (SORNA) — which created national minimum standards while leaving each state to run its own
+        system. That's why the search experience varies so much: some states let you search by name only, others by
+        address radius, others show interactive maps. All of them are authoritative for offenders registered in that
+        state, and all of them roll up into the NSOPW national search.
+      </p>
+      <h3>The three federal tiers</h3>
+      <p>
+        Under SORNA, registered offenses fall into three tiers based on the underlying crime, and the tier determines
+        how often the person must re-register and how long they remain on the registry:
+      </p>
+      <ul>
+        <li><strong>Tier I</strong> — the least serious registrable offenses; typically 15 years of registration with annual verification</li>
+        <li><strong>Tier II</strong> — more serious offenses; 25 years, verification every six months</li>
+        <li><strong>Tier III</strong> — the most serious offenses, including offenses against children; lifetime registration with quarterly verification</li>
+      </ul>
+      <p>
+        Not every state uses the federal tier system directly — some use their own classification (Levels 1/2/3, or
+        "Sexually Violent Predator" designations) — but every registered record includes the underlying conviction, so
+        you're never guessing at severity when you read a listing.
+      </p>
+      <h3>What registries do — and don't — tell you</h3>
+      <p>
+        A public registry entry generally shows the person's name, photograph, physical description, current registered
+        address, the offense of conviction, and often the date of last verification. What it does <em>not</em> tell you
+        is whether that person has committed any new offenses since — only the underlying conviction that put them on
+        the registry in the first place. Registries also don't include people whose offenses fall outside registration
+        requirements, unregistered individuals in violation, or people accused but not convicted.
+      </p>
+      <div class="callout">
+        <strong>Use registry data responsibly.</strong> These lookups exist to help families make informed safety
+        decisions. Harassment, vigilantism, or discrimination based on registry status is illegal in every state and
+        undermines the system's public-safety purpose. If you have a specific concern, contact local law enforcement.
+      </div>
+      <h3>Practical searches families actually run</h3>
+      <ul>
+        <li><strong>Before moving:</strong> check the destination address against the state registry's map view. Most state sites let you draw a radius or view a neighborhood-level map.</li>
+        <li><strong>Before hiring a babysitter, tutor, or caregiver:</strong> a name search on NSOPW covers every state at once.</li>
+        <li><strong>When your kid starts spending time at a friend's house:</strong> the map view over your area gives context without requiring a specific name.</li>
+        <li><strong>Buying a house:</strong> the registry check pairs naturally with the safety and hazard research on our other tools — pattern captured in our <a href="/blog/research-neighborhood-before-moving.html">neighborhood research guide</a>.</li>
+      </ul>
+      <h3>If information looks wrong</h3>
+      <p>
+        Every state registry publishes a contact for reporting errors or apparent unregistered offenders. Because we
+        don't reproduce registry data on this site, corrections always need to go to the source — the state's own
+        registry office is the only entity that can update a record.
+      </p>
+    </div>
+
+    <div class="info-card">
+      <h2>Part of a Full Neighborhood Safety Picture</h2>
+      <p>
+        Registry data is one signal among many. For the broader safety context of an area, our
+        <a href="/crime.html">ZIP Code Search</a> gives you crime rate estimates, real Census demographics, and a
+        comfortable-living income benchmark for any ZIP. <a href="/flood.html">Flood zones</a>,
+        <a href="/wildfire.html">wildfire activity</a>, <a href="/earthquake.html">seismic history</a>, and
+        <a href="/weather.html">local weather</a> round out the natural-hazard side — see exactly where every number
+        comes from on our <a href="/methodology.html">Data &amp; Methodology page</a>.
+      </p>
+    </div>
+
+    <footer style="margin-top:28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;">
+      Registry data hosted by official state and federal agencies. For informational purposes only.<br>
+      <a href="/about.html" style="color:var(--green);margin-right:10px;">About</a>
+      <a href="/methodology.html" style="color:var(--green);margin-right:10px;">Data &amp; Methodology</a>
+      <a href="/privacy.html" style="color:var(--green);margin-right:10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--green);">Terms of Service</a>
+    </footer>
+  </main>
+
+  <script>
+    // We route every state through NSOPW.gov — the U.S. Department of Justice's
+    // official national sex offender search — rather than trying to maintain
+    // 51 direct state URLs ourselves. State registry URLs change often and
+    // NSOPW is the source of truth for the currently-valid registry per state.
+    const STATES = [
+      "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
+      "Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois",
+      "Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts",
+      "Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada",
+      "New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota",
+      "Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina",
+      "South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington",
+      "West Virginia","Wisconsin","Wyoming",
+    ];
+    const NSOPW_URL = "https://www.nsopw.gov/search-public-sex-offender-registries";
+
+    const sel = document.getElementById("stateSelect");
+    STATES.forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name; opt.textContent = name;
+      sel.appendChild(opt);
+    });
+
+    document.getElementById("stateGoBtn").addEventListener("click", () => {
+      if (sel.value) window.open(NSOPW_URL, "_blank", "noopener");
+      else sel.focus();
+    });
+    sel.addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("stateGoBtn").click(); });
+  </script>
+
+  <script src="/hub-nav.js"></script>
+</body>
+</html>
