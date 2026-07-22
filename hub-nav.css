@@ -153,3 +153,9 @@ html.dark iframe,
 html.dark .leaflet-tile-pane {
   filter: invert(1.087) hue-rotate(180deg);
 }
+/* Mobile-only vs desktop-only theme toggle */
+.hub-theme-mobile { display: none; }
+@media (max-width: 768px) {
+  .hub-theme-mobile { display: inline-flex; margin-left: auto; }
+  .hub-theme-desktop { display: none; }
+}

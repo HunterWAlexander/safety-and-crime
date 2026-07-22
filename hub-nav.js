@@ -132,10 +132,11 @@ function buildHubHeader() {
         <span class="hub-brand-mark">🛡️</span>
         <span class="hub-brand-title">Safety &amp; Crime</span>
       </a>
+      <button id="hubThemeBtnMobile" class="hub-theme-btn hub-theme-mobile" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
       <div class="hub-search-row">
         <input id="hubZipInput" autocomplete="off" placeholder="ZIP code or city" />
         <button id="hubSearchBtn">Search</button>
-        <button id="hubThemeBtn" class="hub-theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+        <button id="hubThemeBtn" class="hub-theme-btn hub-theme-desktop" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
       </div>
     </div>
     <nav class="hub-tabs" aria-label="Site tools">
@@ -184,16 +185,22 @@ function initHubHeader() {
     if (e.key === "Enter") hubSearch();
   });
 
-  // Dark mode toggle
-  const themeBtn = document.getElementById("hubThemeBtn");
+  // Dark mode toggle (both desktop and mobile buttons share the same logic)
+  const themeBtns = [
+    document.getElementById("hubThemeBtn"),
+    document.getElementById("hubThemeBtnMobile"),
+  ].filter(Boolean);
   const setThemeIcon = () => {
-    if (themeBtn) themeBtn.textContent = document.documentElement.classList.contains("dark") ? "☀️" : "🌙";
+    const icon = document.documentElement.classList.contains("dark") ? "☀️" : "🌙";
+    themeBtns.forEach(b => { b.textContent = icon; });
   };
   setThemeIcon();
-  themeBtn?.addEventListener("click", () => {
-    const dark = document.documentElement.classList.toggle("dark");
-    try { localStorage.setItem("scTheme", dark ? "dark" : "light"); } catch (_) {}
-    setThemeIcon();
+  themeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const dark = document.documentElement.classList.toggle("dark");
+      try { localStorage.setItem("scTheme", dark ? "dark" : "light"); } catch (_) {}
+      setThemeIcon();
+    });
   });
 }
 
