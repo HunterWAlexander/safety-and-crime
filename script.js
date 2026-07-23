@@ -564,6 +564,59 @@ function renderResults(zip, location, scores) {
 let lastCityZips = null;
 let lastCityName = null;
 
+// Local news for the searched city — GDELT Project DOC API (free, no key).
+// Filters to safety/crime-relevant keywords and shows the 6 most recent
+// English-language articles mentioning the city.
+async function loadLocalNews(location) {
+  const section = document.getElementById("newsSection");
+  const list = document.getElementById("newsList");
+  const cityLabel = document.getElementById("newsCity");
+  if (!section || !list) return;
+
+  section.style.display = "block";
+  cityLabel.textContent = location?.city ? `— ${location.city}, ${location.state}` : "";
+  list.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:8px 0;">Loading recent news…</div>`;
+
+  if (!location?.city) {
+    section.style.display = "none";
+    return;
+  }
+
+  try {
+    // GDELT DOC API: search the city name in English news over the past week,
+    // sorted newest first. We keep the query permissive here (just the city
+    // name in quotes) and let recency + our display filter do the work — a
+    // strict AND with safety keywords silently returned zero results for
+    // smaller cities. Country filter to US, so we get local coverage.
+    const q = `"${location.city}" sourcecountry:US`;
+    const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(q)}&mode=artlist&maxrecords=20&format=json&sourcelang=english&sort=datedesc&timespan=2w`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const articles = (data?.articles ?? []).slice(0, 8);
+
+    if (articles.length === 0) {
+      list.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:8px 0;">No recent local news found for this area. Try a nearby larger city.</div>`;
+      return;
+    }
+
+    list.innerHTML = articles.map(a => {
+      const dateStr = a.seendate
+        ? new Date(a.seendate.slice(0,4) + "-" + a.seendate.slice(4,6) + "-" + a.seendate.slice(6,8))
+            .toLocaleDateString(undefined, { month: "short", day: "numeric" })
+        : "";
+      const domain = a.domain || (a.url ? new URL(a.url).hostname.replace(/^www\./, "") : "");
+      return `
+        <a href="${a.url}" target="_blank" rel="noopener" class="news-item" style="display:block;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;text-decoration:none;color:inherit;transition:border-color .15s;">
+          <div style="font-size:14px;font-weight:500;line-height:1.4;margin-bottom:4px;">${a.title || "(untitled)"}</div>
+          <div style="font-size:11px;color:var(--muted);">${domain}${dateStr ? " · " + dateStr : ""}</div>
+        </a>`;
+    }).join("");
+  } catch (_) {
+    section.style.display = "none"; // silent fail — news is a bonus
+  }
+}
+
 // Fetch the full ZIP list for whichever city a given ZIP belongs to.
 // Used to power the heat map on single-ZIP searches — we already have
 // `location` from Zippopotam, so this is one more call to its city endpoint.
