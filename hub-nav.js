@@ -104,6 +104,7 @@ const HUB_TABS = [
   { label: "Tsunami",         icon: "🌐", href: "/tsunami.html",      match: ["tsunami.html"] },
   { label: "Recalls",         icon: "📦", href: "/recalls.html",      match: ["recalls.html"] },
   { label: "Registry",        icon: "🛡️", href: "/registry.html",     match: ["registry.html"] },
+  { label: "Income Calc",     icon: "💵", href: "/calculator.html",   match: ["calculator.html"] },
   { label: "Guides",          icon: "📖", href: "/blog/",             match: ["blog"] },
 ];
 

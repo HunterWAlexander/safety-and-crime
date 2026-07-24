@@ -79,6 +79,159 @@
       comfortable single-adult income.
     </div>
 
+    <!-- ── INTERACTIVE CALCULATOR ─────────────────────────────── -->
+    <div class="calc-card">
+      <div class="calc-head">
+        <div class="calc-title">💵 Try the math for your ZIP</div>
+        <div class="calc-sub">Enter a U.S. ZIP code — we'll pull real Census median rent for that area and run the calculation. Or type in your own rent to see the number for any budget.</div>
+      </div>
+
+      <div class="calc-row">
+        <label>
+          <div class="calc-label">ZIP code (uses Census rent)</div>
+          <input id="calcZip" type="text" inputmode="numeric" maxlength="5" placeholder="e.g. 77002" autocomplete="off" />
+        </label>
+        <label>
+          <div class="calc-label">or Monthly rent ($)</div>
+          <input id="calcRent" type="number" inputmode="numeric" min="0" placeholder="e.g. 1800" autocomplete="off" />
+        </label>
+        <button id="calcRun" class="calc-btn">Calculate</button>
+      </div>
+
+      <div id="calcError" class="calc-error" style="display:none;"></div>
+      <div id="calcLoading" class="calc-loading" style="display:none;">Fetching Census rent for that ZIP…</div>
+
+      <div id="calcResult" class="calc-result" style="display:none;">
+        <div class="calc-source" id="calcSource"></div>
+        <div class="calc-grid">
+          <div class="calc-out">
+            <div class="calc-out-label">Comfortable — single adult</div>
+            <div class="calc-out-value" id="calcSingle">—</div>
+            <div class="calc-out-sub">annual gross income</div>
+          </div>
+          <div class="calc-out">
+            <div class="calc-out-label">Comfortable — family of 3–4</div>
+            <div class="calc-out-value" id="calcFamily">—</div>
+            <div class="calc-out-sub">annual gross income (1.85× multiplier)</div>
+          </div>
+        </div>
+        <div class="calc-detail" id="calcDetail"></div>
+        <div class="calc-note">
+          Benchmark using the 30% housing rule on the rent shown. This is a budgeting reference, not financial advice.
+          Debt, ownership costs, and lifestyle change your personal number.
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .calc-card { background: #fff; border: 1.5px solid #bbf7d0; border-radius: 14px; padding: 22px 22px 20px; margin: 18px 0 22px; box-shadow: 0 2px 8px rgba(22,163,74,.06); }
+      .calc-head { margin-bottom: 14px; }
+      .calc-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 4px; }
+      .calc-sub { font-size: 13px; color: var(--muted, #6b7280); line-height: 1.6; }
+      .calc-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 10px; }
+      .calc-label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted, #6b7280); margin-bottom: 4px; font-weight: 600; }
+      .calc-card input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid rgba(0,0,0,.1); background: #f9fafb; font-size: 15px; outline: none; box-sizing: border-box; }
+      .calc-card input:focus { border-color: var(--green, #16a34a); background: #fff; }
+      .calc-btn { padding: 10px 20px; border-radius: 8px; border: none; background: var(--green, #16a34a); color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; height: 42px; }
+      .calc-btn:hover { background: #15803d; }
+      .calc-error { color: #b91c1c; font-size: 13px; padding: 8px 0; }
+      .calc-loading { font-size: 13px; color: var(--muted, #6b7280); padding: 8px 0; }
+      .calc-result { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f3f4f6; }
+      .calc-source { font-size: 12px; color: var(--muted, #6b7280); margin-bottom: 12px; }
+      .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .calc-out { background: #f0fdf4; border-radius: 10px; padding: 14px 16px; }
+      .calc-out-label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #15803d; font-weight: 700; margin-bottom: 4px; }
+      .calc-out-value { font-size: 22px; font-weight: 800; color: #111; line-height: 1.2; }
+      .calc-out-sub { font-size: 11px; color: var(--muted, #6b7280); margin-top: 2px; }
+      .calc-detail { font-size: 13px; color: #374151; margin-top: 12px; line-height: 1.7; }
+      .calc-note { font-size: 11px; color: var(--muted, #6b7280); margin-top: 10px; line-height: 1.6; font-style: italic; }
+      @media (max-width: 600px) {
+        .calc-row { grid-template-columns: 1fr; }
+        .calc-grid { grid-template-columns: 1fr; }
+        .calc-btn { width: 100%; }
+      }
+    </style>
+
+    <script>
+      (function () {
+        const CENSUS_KEY = "4cab7791abd780d5fc4658d7f18d1f1c6b01025c"; // Public Safety & Crime key
+        const zipEl = document.getElementById("calcZip");
+        const rentEl = document.getElementById("calcRent");
+        const runBtn = document.getElementById("calcRun");
+        const errEl = document.getElementById("calcError");
+        const loadEl = document.getElementById("calcLoading");
+        const resultEl = document.getElementById("calcResult");
+        const sourceEl = document.getElementById("calcSource");
+        const singleEl = document.getElementById("calcSingle");
+        const familyEl = document.getElementById("calcFamily");
+        const detailEl = document.getElementById("calcDetail");
+
+        function showError(msg) {
+          errEl.textContent = msg; errEl.style.display = "block";
+          loadEl.style.display = "none"; resultEl.style.display = "none";
+        }
+        function clearError() { errEl.style.display = "none"; errEl.textContent = ""; }
+
+        function render(rent, source, zipUsed) {
+          const single = Math.round((rent * 12 / 0.30) / 1000) * 1000;
+          const family = Math.round((single * 1.85) / 1000) * 1000;
+          const fmt = v => "$" + v.toLocaleString();
+          singleEl.textContent = fmt(single);
+          familyEl.textContent = fmt(family);
+          sourceEl.textContent = source;
+          detailEl.innerHTML = `
+            Monthly rent used: <strong>${fmt(rent)}</strong> ·
+            Annual housing: <strong>${fmt(rent * 12)}</strong> ·
+            30% rule benchmark → single-adult income needed for housing to stay at 30% of gross pay: <strong>${fmt(single)}</strong>.
+            The family figure applies a 1.85× multiplier consistent with living-wage research for a family of three to
+            four with one to two working adults.
+            ${zipUsed ? ` <br><br>See the full Comfortable Living card plus crime, demographics, and hazard data for
+            this ZIP on our <a href="/crime.html?zip=${zipUsed}" style="color:var(--green,#16a34a);">ZIP Code Search →</a>` : ""}
+          `;
+          loadEl.style.display = "none";
+          resultEl.style.display = "block";
+        }
+
+        async function calculate() {
+          clearError();
+          const zip = zipEl.value.trim();
+          const manualRent = parseFloat(rentEl.value);
+
+          // Path A: manual rent entered — no ZIP fetch needed
+          if (Number.isFinite(manualRent) && manualRent > 0) {
+            render(manualRent, "Using rent you entered.", zip && /^\d{5}$/.test(zip) ? zip : null);
+            return;
+          }
+
+          // Path B: ZIP lookup — fetch Census median rent
+          if (!/^\d{5}$/.test(zip)) {
+            showError("Enter a 5-digit ZIP code, or type in a monthly rent amount.");
+            return;
+          }
+
+          loadEl.style.display = "block"; resultEl.style.display = "none";
+          try {
+            const url = `https://api.census.gov/data/2023/acs/acs5?get=B25064_001E,B01003_001E&for=zip%20code%20tabulation%20area:${zip}&key=${CENSUS_KEY}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("Census API error");
+            const data = await res.json();
+            const rent = parseInt(data?.[1]?.[0], 10);
+            if (!Number.isFinite(rent) || rent <= 0) {
+              showError(`No Census median rent available for ${zip}. Try a nearby ZIP or enter a rent amount manually.`);
+              return;
+            }
+            render(rent, `Median rent for ZIP ${zip}: $${rent.toLocaleString()}/mo · U.S. Census ACS 5-Year`, zip);
+          } catch (e) {
+            showError("Couldn't reach the Census API right now. Try a rent amount manually, or try the ZIP again in a moment.");
+          }
+        }
+
+        runBtn.addEventListener("click", calculate);
+        zipEl.addEventListener("keydown", e => { if (e.key === "Enter") calculate(); });
+        rentEl.addEventListener("keydown", e => { if (e.key === "Enter") calculate(); });
+      })();
+    </script>
+
     <h2>Why ZIP-level beats city-level</h2>
     <p>
       "Houston" is not one housing market. It's several hundred ZIP codes ranging from under $900 median rent to well
